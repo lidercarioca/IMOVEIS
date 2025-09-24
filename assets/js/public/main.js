@@ -15,7 +15,8 @@ async function carregarHeroBanners() {
       `).join('')}
     </div>
   ` : '';
-banners.length > 1 ? `
+
+  let controls = banners.length > 1 ? `
     <button class="carousel-control-prev" type="button" data-bs-target="#heroBannerCarousel" data-bs-slide="prev">
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
       <span class="visually-hidden">Anterior</span>

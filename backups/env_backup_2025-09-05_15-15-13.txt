@@ -1,0 +1,29 @@
+# Ambiente (development, production)
+ENVIRONMENT=development
+
+# Configurações do Banco de Dados
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=
+DB_NAME=rr_imoveis
+
+# Configurações de Email/SMTP
+SMTP_HOST=smtp.exemplo.com
+SMTP_PORT=587
+SMTP_USER=seu_usuario
+SMTP_PASS=sua_senha
+SMTP_SECURE=tls
+
+# Email do Administrador
+ADMIN_EMAIL=admin@exemplo.com
+
+# Configurações de Notificação
+NOTIFY_ON_ERROR=true
+NOTIFY_ON_SUCCESS=false
+INCLUDE_LOGS=true
+MAX_LOG_LINES=20
+
+# Configurações de Segurança
+SESSION_LIFETIME=86400
+COOKIE_SECURE=false
+COOKIE_HTTPONLY=true

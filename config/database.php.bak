@@ -1,0 +1,55 @@
+<?php
+// Carrega as variáveis de ambiente
+require_once __DIR__ . '/env_loader.php';
+
+// Configurações do banco de dados
+$host = getenv('DB_HOST') ?: 'localhost';
+$user = getenv('DB_USER') ?: 'root';
+$password = getenv('DB_PASS') ?: '';
+$dbname = getenv('DB_NAME') ?: 'rr_imoveis';
+
+// Desativa logs de depuração em produção
+if (getenv('ENVIRONMENT') === 'production') {
+    error_reporting(0);
+    ini_set('display_errors', 0);
+}
+
+// Configuração PDO com tratamento de erros melhorado
+try {
+    $dsn = "mysql:host={$host};dbname={$dbname};charset=utf8mb4";
+    $options = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+        PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
+    ];
+
+    error_log("Tentando conectar ao MySQL com: host=$host, user=$user, dbname=$dbname");
+    $pdo = new PDO($dsn, $user, $password, $options);
+    error_log("Conexão PDO estabelecida com sucesso");
+    
+    // MySQLi (mantido para compatibilidade)
+    $conn = new mysqli($host, $user, $password, $dbname);
+    if ($conn->connect_error) {
+        throw new Exception("Erro de conexão MySQLi: " . $conn->connect_error);
+    }
+    $conn->set_charset("utf8mb4");
+
+} catch (Exception $e) {
+    // Log do erro
+    error_log("Erro de conexão com o banco de dados: " . $e->getMessage());
+    
+    // Se for uma chamada API
+    if (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'success' => false,
+            'message' => 'Erro ao conectar ao banco de dados. Por favor, verifique as configurações.'
+        ]);
+        exit;
+    }
+    
+    // Se for uma página normal
+    die("Erro ao conectar ao banco de dados. Por favor, verifique as configurações.");
+}
+?>
