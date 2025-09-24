@@ -1,0 +1,481 @@
+[30-Aug-2025 15:50:35 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-08-29_15-44-26.sql
+[30-Aug-2025 15:50:35 Europe/Berlin] Tentando excluir backup:
+[30-Aug-2025 15:50:35 Europe/Berlin] Filename recebido: db_backup_2025-08-29_15-44-26.sql
+[30-Aug-2025 15:50:35 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[30-Aug-2025 15:50:35 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-08-29_15-44-26.sql
+[30-Aug-2025 15:50:35 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-08-29_15-44-26.txt
+[30-Aug-2025 15:50:35 Europe/Berlin] Arquivo existe? Sim
+[30-Aug-2025 15:50:35 Europe/Berlin] Diretório existe? Sim
+[30-Aug-2025 15:50:35 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[30-Aug-2025 15:50:35 Europe/Berlin] Permissões do arquivo: 100666
+[30-Aug-2025 15:50:35 Europe/Berlin] Permissões do diretório: 40777
+[30-Aug-2025 15:50:35 Europe/Berlin] Usuário atual: Daniel Jardim
+[30-Aug-2025 15:50:35 Europe/Berlin] Separador de diretório usado: \
+[30-Aug-2025 15:50:35 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-08-29_15-44-26.sql
+[30-Aug-2025 15:50:35 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-08-29_15-44-26.sql
+[30-Aug-2025 15:50:35 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-08-29_15-44-26.txt
+[30-Aug-2025 15:50:35 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-08-29_15-44-26.zip
+[30-Aug-2025 15:50:35 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[30-Aug-2025 17:08:12 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-08-30_15-50-29.sql
+[30-Aug-2025 17:08:12 Europe/Berlin] Tentando excluir backup:
+[30-Aug-2025 17:08:12 Europe/Berlin] Filename recebido: db_backup_2025-08-30_15-50-29.sql
+[30-Aug-2025 17:08:12 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[30-Aug-2025 17:08:12 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-08-30_15-50-29.sql
+[30-Aug-2025 17:08:12 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-08-30_15-50-29.txt
+[30-Aug-2025 17:08:12 Europe/Berlin] Arquivo existe? Sim
+[30-Aug-2025 17:08:12 Europe/Berlin] Diretório existe? Sim
+[30-Aug-2025 17:08:12 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[30-Aug-2025 17:08:12 Europe/Berlin] Permissões do arquivo: 100666
+[30-Aug-2025 17:08:12 Europe/Berlin] Permissões do diretório: 40777
+[30-Aug-2025 17:08:12 Europe/Berlin] Usuário atual: Daniel Jardim
+[30-Aug-2025 17:08:12 Europe/Berlin] Separador de diretório usado: \
+[30-Aug-2025 17:08:12 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-08-30_15-50-29.sql
+[30-Aug-2025 17:08:12 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-08-30_15-50-29.sql
+[30-Aug-2025 17:08:12 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-08-30_15-50-29.txt
+[30-Aug-2025 17:08:12 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-08-30_15-50-29.zip
+[30-Aug-2025 17:09:34 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-08-30_17-08-21.sql
+[30-Aug-2025 17:09:34 Europe/Berlin] Tentando excluir backup:
+[30-Aug-2025 17:09:34 Europe/Berlin] Filename recebido: db_backup_2025-08-30_17-08-21.sql
+[30-Aug-2025 17:09:34 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[30-Aug-2025 17:09:34 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-08-30_17-08-21.sql
+[30-Aug-2025 17:09:34 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-08-30_17-08-21.txt
+[30-Aug-2025 17:09:34 Europe/Berlin] Arquivo existe? Sim
+[30-Aug-2025 17:09:34 Europe/Berlin] Diretório existe? Sim
+[30-Aug-2025 17:09:34 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[30-Aug-2025 17:09:34 Europe/Berlin] Permissões do arquivo: 100666
+[30-Aug-2025 17:09:34 Europe/Berlin] Permissões do diretório: 40777
+[30-Aug-2025 17:09:34 Europe/Berlin] Usuário atual: Daniel Jardim
+[30-Aug-2025 17:09:34 Europe/Berlin] Separador de diretório usado: \
+[30-Aug-2025 17:09:34 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-08-30_17-08-21.sql
+[30-Aug-2025 17:09:34 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-08-30_17-08-21.sql
+[30-Aug-2025 17:09:34 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-08-30_17-08-21.txt
+[30-Aug-2025 17:09:34 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-08-30_17-08-21.zip
+[30-Aug-2025 17:09:34 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[01-Sep-2025 15:09:42 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-08-30_17-09-39.sql
+[01-Sep-2025 15:09:42 Europe/Berlin] Tentando excluir backup:
+[01-Sep-2025 15:09:42 Europe/Berlin] Filename recebido: db_backup_2025-08-30_17-09-39.sql
+[01-Sep-2025 15:09:42 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[01-Sep-2025 15:09:42 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-08-30_17-09-39.sql
+[01-Sep-2025 15:09:42 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-08-30_17-09-39.txt
+[01-Sep-2025 15:09:42 Europe/Berlin] Arquivo existe? Sim
+[01-Sep-2025 15:09:42 Europe/Berlin] Diretório existe? Sim
+[01-Sep-2025 15:09:42 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[01-Sep-2025 15:09:42 Europe/Berlin] Permissões do arquivo: 100666
+[01-Sep-2025 15:09:42 Europe/Berlin] Permissões do diretório: 40777
+[01-Sep-2025 15:09:42 Europe/Berlin] Usuário atual: Daniel Jardim
+[01-Sep-2025 15:09:42 Europe/Berlin] Separador de diretório usado: \
+[01-Sep-2025 15:09:42 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-08-30_17-09-39.sql
+[01-Sep-2025 15:09:42 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-08-30_17-09-39.sql
+[01-Sep-2025 15:09:42 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-08-30_17-09-39.txt
+[01-Sep-2025 15:09:42 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-08-30_17-09-39.zip
+[01-Sep-2025 15:09:42 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[01-Sep-2025 17:05:22 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-01_15-09-49.sql
+[01-Sep-2025 17:05:22 Europe/Berlin] Tentando excluir backup:
+[01-Sep-2025 17:05:22 Europe/Berlin] Filename recebido: db_backup_2025-09-01_15-09-49.sql
+[01-Sep-2025 17:05:22 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[01-Sep-2025 17:05:22 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_15-09-49.sql
+[01-Sep-2025 17:05:22 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_15-09-49.txt
+[01-Sep-2025 17:05:22 Europe/Berlin] Arquivo existe? Sim
+[01-Sep-2025 17:05:22 Europe/Berlin] Diretório existe? Sim
+[01-Sep-2025 17:05:22 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[01-Sep-2025 17:05:22 Europe/Berlin] Permissões do arquivo: 100666
+[01-Sep-2025 17:05:22 Europe/Berlin] Permissões do diretório: 40777
+[01-Sep-2025 17:05:22 Europe/Berlin] Usuário atual: Daniel Jardim
+[01-Sep-2025 17:05:22 Europe/Berlin] Separador de diretório usado: \
+[01-Sep-2025 17:05:22 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_15-09-49.sql
+[01-Sep-2025 17:05:22 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_15-09-49.sql
+[01-Sep-2025 17:05:22 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_15-09-49.txt
+[01-Sep-2025 17:05:22 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-01_15-09-49.zip
+[01-Sep-2025 17:05:22 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[01-Sep-2025 17:12:12 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-01_17-05-29.sql
+[01-Sep-2025 17:12:12 Europe/Berlin] Tentando excluir backup:
+[01-Sep-2025 17:12:12 Europe/Berlin] Filename recebido: db_backup_2025-09-01_17-05-29.sql
+[01-Sep-2025 17:12:12 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[01-Sep-2025 17:12:12 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-05-29.sql
+[01-Sep-2025 17:12:12 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_17-05-29.txt
+[01-Sep-2025 17:12:12 Europe/Berlin] Arquivo existe? Sim
+[01-Sep-2025 17:12:12 Europe/Berlin] Diretório existe? Sim
+[01-Sep-2025 17:12:12 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[01-Sep-2025 17:12:12 Europe/Berlin] Permissões do arquivo: 100666
+[01-Sep-2025 17:12:12 Europe/Berlin] Permissões do diretório: 40777
+[01-Sep-2025 17:12:12 Europe/Berlin] Usuário atual: Daniel Jardim
+[01-Sep-2025 17:12:12 Europe/Berlin] Separador de diretório usado: \
+[01-Sep-2025 17:12:12 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-05-29.sql
+[01-Sep-2025 17:12:12 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-05-29.sql
+[01-Sep-2025 17:12:12 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_17-05-29.txt
+[01-Sep-2025 17:12:12 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-01_17-05-29.zip
+[01-Sep-2025 17:12:12 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[01-Sep-2025 17:12:32 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-01_17-12-22.sql
+[01-Sep-2025 17:12:32 Europe/Berlin] Tentando excluir backup:
+[01-Sep-2025 17:12:32 Europe/Berlin] Filename recebido: db_backup_2025-09-01_17-12-22.sql
+[01-Sep-2025 17:12:32 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[01-Sep-2025 17:12:32 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-12-22.sql
+[01-Sep-2025 17:12:32 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_17-12-22.txt
+[01-Sep-2025 17:12:32 Europe/Berlin] Arquivo existe? Sim
+[01-Sep-2025 17:12:32 Europe/Berlin] Diretório existe? Sim
+[01-Sep-2025 17:12:32 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[01-Sep-2025 17:12:32 Europe/Berlin] Permissões do arquivo: 100666
+[01-Sep-2025 17:12:32 Europe/Berlin] Permissões do diretório: 40777
+[01-Sep-2025 17:12:32 Europe/Berlin] Usuário atual: Daniel Jardim
+[01-Sep-2025 17:12:32 Europe/Berlin] Separador de diretório usado: \
+[01-Sep-2025 17:12:32 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-12-22.sql
+[01-Sep-2025 17:12:32 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-12-22.sql
+[01-Sep-2025 17:12:32 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_17-12-22.txt
+[01-Sep-2025 17:12:32 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-01_17-12-22.zip
+[01-Sep-2025 17:12:32 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[01-Sep-2025 17:15:54 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-01_17-15-46.sql
+[01-Sep-2025 17:15:54 Europe/Berlin] Tentando excluir backup:
+[01-Sep-2025 17:15:54 Europe/Berlin] Filename recebido: db_backup_2025-09-01_17-15-46.sql
+[01-Sep-2025 17:15:54 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[01-Sep-2025 17:15:54 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-15-46.sql
+[01-Sep-2025 17:15:54 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_17-15-46.txt
+[01-Sep-2025 17:15:54 Europe/Berlin] Arquivo existe? Sim
+[01-Sep-2025 17:15:54 Europe/Berlin] Diretório existe? Sim
+[01-Sep-2025 17:15:54 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[01-Sep-2025 17:15:54 Europe/Berlin] Permissões do arquivo: 100666
+[01-Sep-2025 17:15:54 Europe/Berlin] Permissões do diretório: 40777
+[01-Sep-2025 17:15:54 Europe/Berlin] Usuário atual: Daniel Jardim
+[01-Sep-2025 17:15:54 Europe/Berlin] Separador de diretório usado: \
+[01-Sep-2025 17:15:54 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-15-46.sql
+[01-Sep-2025 17:15:54 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-15-46.sql
+[01-Sep-2025 17:15:54 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_17-15-46.txt
+[01-Sep-2025 17:15:54 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-01_17-15-46.zip
+[01-Sep-2025 17:15:54 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[01-Sep-2025 17:43:56 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-01_17-39-51.sql
+[01-Sep-2025 17:43:56 Europe/Berlin] Tentando excluir backup:
+[01-Sep-2025 17:43:56 Europe/Berlin] Filename recebido: db_backup_2025-09-01_17-39-51.sql
+[01-Sep-2025 17:43:56 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[01-Sep-2025 17:43:56 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-39-51.sql
+[01-Sep-2025 17:43:56 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_17-39-51.txt
+[01-Sep-2025 17:43:56 Europe/Berlin] Arquivo existe? Sim
+[01-Sep-2025 17:43:56 Europe/Berlin] Diretório existe? Sim
+[01-Sep-2025 17:43:56 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[01-Sep-2025 17:43:56 Europe/Berlin] Permissões do arquivo: 100666
+[01-Sep-2025 17:43:56 Europe/Berlin] Permissões do diretório: 40777
+[01-Sep-2025 17:43:56 Europe/Berlin] Usuário atual: Daniel Jardim
+[01-Sep-2025 17:43:56 Europe/Berlin] Separador de diretório usado: \
+[01-Sep-2025 17:43:56 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-39-51.sql
+[01-Sep-2025 17:43:56 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-39-51.sql
+[01-Sep-2025 17:43:56 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_17-39-51.txt
+[01-Sep-2025 17:43:56 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-01_17-39-51.zip
+[01-Sep-2025 17:43:56 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[01-Sep-2025 17:44:57 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-01_17-44-50.sql
+[01-Sep-2025 17:44:57 Europe/Berlin] Tentando excluir backup:
+[01-Sep-2025 17:44:57 Europe/Berlin] Filename recebido: db_backup_2025-09-01_17-44-50.sql
+[01-Sep-2025 17:44:57 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[01-Sep-2025 17:44:57 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-44-50.sql
+[01-Sep-2025 17:44:57 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_17-44-50.txt
+[01-Sep-2025 17:44:57 Europe/Berlin] Arquivo existe? Sim
+[01-Sep-2025 17:44:57 Europe/Berlin] Diretório existe? Sim
+[01-Sep-2025 17:44:57 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[01-Sep-2025 17:44:57 Europe/Berlin] Permissões do arquivo: 100666
+[01-Sep-2025 17:44:57 Europe/Berlin] Permissões do diretório: 40777
+[01-Sep-2025 17:44:57 Europe/Berlin] Usuário atual: Daniel Jardim
+[01-Sep-2025 17:44:57 Europe/Berlin] Separador de diretório usado: \
+[01-Sep-2025 17:44:57 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-44-50.sql
+[01-Sep-2025 17:44:57 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-44-50.sql
+[01-Sep-2025 17:44:57 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_17-44-50.txt
+[01-Sep-2025 17:44:57 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-01_17-44-50.zip
+[01-Sep-2025 17:44:57 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[01-Sep-2025 17:49:45 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-01_17-45-03.sql
+[01-Sep-2025 17:49:45 Europe/Berlin] Tentando excluir backup:
+[01-Sep-2025 17:49:45 Europe/Berlin] Filename recebido: db_backup_2025-09-01_17-45-03.sql
+[01-Sep-2025 17:49:45 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[01-Sep-2025 17:49:45 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-45-03.sql
+[01-Sep-2025 17:49:45 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_17-45-03.txt
+[01-Sep-2025 17:49:45 Europe/Berlin] Arquivo existe? Sim
+[01-Sep-2025 17:49:45 Europe/Berlin] Diretório existe? Sim
+[01-Sep-2025 17:49:45 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[01-Sep-2025 17:49:45 Europe/Berlin] Permissões do arquivo: 100666
+[01-Sep-2025 17:49:45 Europe/Berlin] Permissões do diretório: 40777
+[01-Sep-2025 17:49:45 Europe/Berlin] Usuário atual: Daniel Jardim
+[01-Sep-2025 17:49:45 Europe/Berlin] Separador de diretório usado: \
+[01-Sep-2025 17:49:45 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-45-03.sql
+[01-Sep-2025 17:49:45 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-45-03.sql
+[01-Sep-2025 17:49:45 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_17-45-03.txt
+[01-Sep-2025 17:49:45 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-01_17-45-03.zip
+[01-Sep-2025 17:49:45 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[01-Sep-2025 17:51:36 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-01_17-43-52.sql
+[01-Sep-2025 17:51:36 Europe/Berlin] Tentando excluir backup:
+[01-Sep-2025 17:51:36 Europe/Berlin] Filename recebido: db_backup_2025-09-01_17-43-52.sql
+[01-Sep-2025 17:51:36 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[01-Sep-2025 17:51:36 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-43-52.sql
+[01-Sep-2025 17:51:36 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_17-43-52.txt
+[01-Sep-2025 17:51:36 Europe/Berlin] Arquivo existe? Sim
+[01-Sep-2025 17:51:36 Europe/Berlin] Diretório existe? Sim
+[01-Sep-2025 17:51:36 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[01-Sep-2025 17:51:36 Europe/Berlin] Permissões do arquivo: 100666
+[01-Sep-2025 17:51:36 Europe/Berlin] Permissões do diretório: 40777
+[01-Sep-2025 17:51:36 Europe/Berlin] Usuário atual: Daniel Jardim
+[01-Sep-2025 17:51:36 Europe/Berlin] Separador de diretório usado: \
+[01-Sep-2025 17:51:36 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-43-52.sql
+[01-Sep-2025 17:51:36 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-43-52.sql
+[01-Sep-2025 17:51:36 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_17-43-52.txt
+[01-Sep-2025 17:51:36 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-01_17-43-52.zip
+[01-Sep-2025 17:51:36 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[02-Sep-2025 14:34:13 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-01_21-37-40.sql
+[02-Sep-2025 14:34:13 Europe/Berlin] Tentando excluir backup:
+[02-Sep-2025 14:34:13 Europe/Berlin] Filename recebido: db_backup_2025-09-01_21-37-40.sql
+[02-Sep-2025 14:34:13 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[02-Sep-2025 14:34:13 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_21-37-40.sql
+[02-Sep-2025 14:34:13 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_21-37-40.txt
+[02-Sep-2025 14:34:13 Europe/Berlin] Arquivo existe? Sim
+[02-Sep-2025 14:34:13 Europe/Berlin] Diretório existe? Sim
+[02-Sep-2025 14:34:13 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[02-Sep-2025 14:34:13 Europe/Berlin] Permissões do arquivo: 100666
+[02-Sep-2025 14:34:13 Europe/Berlin] Permissões do diretório: 40777
+[02-Sep-2025 14:34:13 Europe/Berlin] Usuário atual: Daniel Jardim
+[02-Sep-2025 14:34:13 Europe/Berlin] Separador de diretório usado: \
+[02-Sep-2025 14:34:13 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_21-37-40.sql
+[02-Sep-2025 14:34:13 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_21-37-40.sql
+[02-Sep-2025 14:34:13 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_21-37-40.txt
+[02-Sep-2025 14:34:13 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-01_21-37-40.zip
+[02-Sep-2025 14:34:13 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[02-Sep-2025 14:34:21 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-01_17-51-32.sql
+[02-Sep-2025 14:34:21 Europe/Berlin] Tentando excluir backup:
+[02-Sep-2025 14:34:21 Europe/Berlin] Filename recebido: db_backup_2025-09-01_17-51-32.sql
+[02-Sep-2025 14:34:21 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[02-Sep-2025 14:34:21 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-51-32.sql
+[02-Sep-2025 14:34:21 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_17-51-32.txt
+[02-Sep-2025 14:34:21 Europe/Berlin] Arquivo existe? Sim
+[02-Sep-2025 14:34:21 Europe/Berlin] Diretório existe? Sim
+[02-Sep-2025 14:34:21 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[02-Sep-2025 14:34:21 Europe/Berlin] Permissões do arquivo: 100666
+[02-Sep-2025 14:34:21 Europe/Berlin] Permissões do diretório: 40777
+[02-Sep-2025 14:34:21 Europe/Berlin] Usuário atual: Daniel Jardim
+[02-Sep-2025 14:34:21 Europe/Berlin] Separador de diretório usado: \
+[02-Sep-2025 14:34:21 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-51-32.sql
+[02-Sep-2025 14:34:21 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-01_17-51-32.sql
+[02-Sep-2025 14:34:21 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-01_17-51-32.txt
+[02-Sep-2025 14:34:21 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-01_17-51-32.zip
+[02-Sep-2025 14:34:21 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[02-Sep-2025 21:17:32 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-02_14-34-17.sql
+[02-Sep-2025 21:17:32 Europe/Berlin] Tentando excluir backup:
+[02-Sep-2025 21:17:32 Europe/Berlin] Filename recebido: db_backup_2025-09-02_14-34-17.sql
+[02-Sep-2025 21:17:32 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[02-Sep-2025 21:17:32 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-02_14-34-17.sql
+[02-Sep-2025 21:17:32 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-02_14-34-17.txt
+[02-Sep-2025 21:17:32 Europe/Berlin] Arquivo existe? Sim
+[02-Sep-2025 21:17:32 Europe/Berlin] Diretório existe? Sim
+[02-Sep-2025 21:17:32 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[02-Sep-2025 21:17:32 Europe/Berlin] Permissões do arquivo: 100666
+[02-Sep-2025 21:17:32 Europe/Berlin] Permissões do diretório: 40777
+[02-Sep-2025 21:17:32 Europe/Berlin] Usuário atual: Daniel Jardim
+[02-Sep-2025 21:17:32 Europe/Berlin] Separador de diretório usado: \
+[02-Sep-2025 21:17:32 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-02_14-34-17.sql
+[02-Sep-2025 21:17:32 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-02_14-34-17.sql
+[02-Sep-2025 21:17:32 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-02_14-34-17.txt
+[02-Sep-2025 21:17:32 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-02_14-34-17.zip
+[02-Sep-2025 21:17:32 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[02-Sep-2025 21:27:06 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-02_21-17-22.sql
+[02-Sep-2025 21:27:06 Europe/Berlin] Tentando excluir backup:
+[02-Sep-2025 21:27:06 Europe/Berlin] Filename recebido: db_backup_2025-09-02_21-17-22.sql
+[02-Sep-2025 21:27:06 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[02-Sep-2025 21:27:06 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-02_21-17-22.sql
+[02-Sep-2025 21:27:06 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-02_21-17-22.txt
+[02-Sep-2025 21:27:06 Europe/Berlin] Arquivo existe? Sim
+[02-Sep-2025 21:27:06 Europe/Berlin] Diretório existe? Sim
+[02-Sep-2025 21:27:06 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[02-Sep-2025 21:27:06 Europe/Berlin] Permissões do arquivo: 100666
+[02-Sep-2025 21:27:06 Europe/Berlin] Permissões do diretório: 40777
+[02-Sep-2025 21:27:06 Europe/Berlin] Usuário atual: Daniel Jardim
+[02-Sep-2025 21:27:06 Europe/Berlin] Separador de diretório usado: \
+[02-Sep-2025 21:27:06 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-02_21-17-22.sql
+[02-Sep-2025 21:27:06 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-02_21-17-22.sql
+[02-Sep-2025 21:27:06 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-02_21-17-22.txt
+[02-Sep-2025 21:27:06 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-02_21-17-22.zip
+[02-Sep-2025 21:28:15 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-02_21-27-08.sql
+[02-Sep-2025 21:28:15 Europe/Berlin] Tentando excluir backup:
+[02-Sep-2025 21:28:15 Europe/Berlin] Filename recebido: db_backup_2025-09-02_21-27-08.sql
+[02-Sep-2025 21:28:15 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[02-Sep-2025 21:28:15 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-02_21-27-08.sql
+[02-Sep-2025 21:28:15 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-02_21-27-08.txt
+[02-Sep-2025 21:28:15 Europe/Berlin] Arquivo existe? Sim
+[02-Sep-2025 21:28:15 Europe/Berlin] Diretório existe? Sim
+[02-Sep-2025 21:28:15 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[02-Sep-2025 21:28:15 Europe/Berlin] Permissões do arquivo: 100666
+[02-Sep-2025 21:28:15 Europe/Berlin] Permissões do diretório: 40777
+[02-Sep-2025 21:28:15 Europe/Berlin] Usuário atual: Daniel Jardim
+[02-Sep-2025 21:28:15 Europe/Berlin] Separador de diretório usado: \
+[02-Sep-2025 21:28:15 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-02_21-27-08.sql
+[02-Sep-2025 21:28:15 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-02_21-27-08.sql
+[02-Sep-2025 21:28:15 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-02_21-27-08.txt
+[02-Sep-2025 21:28:15 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-02_21-27-08.zip
+[02-Sep-2025 21:28:15 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[02-Sep-2025 21:40:54 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-02_21-28-17.sql
+[02-Sep-2025 21:40:54 Europe/Berlin] Tentando excluir backup:
+[02-Sep-2025 21:40:54 Europe/Berlin] Filename recebido: db_backup_2025-09-02_21-28-17.sql
+[02-Sep-2025 21:40:54 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[02-Sep-2025 21:40:54 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-02_21-28-17.sql
+[02-Sep-2025 21:40:54 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-02_21-28-17.txt
+[02-Sep-2025 21:40:54 Europe/Berlin] Arquivo existe? Sim
+[02-Sep-2025 21:40:54 Europe/Berlin] Diretório existe? Sim
+[02-Sep-2025 21:40:54 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[02-Sep-2025 21:40:54 Europe/Berlin] Permissões do arquivo: 100666
+[02-Sep-2025 21:40:54 Europe/Berlin] Permissões do diretório: 40777
+[02-Sep-2025 21:40:54 Europe/Berlin] Usuário atual: Daniel Jardim
+[02-Sep-2025 21:40:54 Europe/Berlin] Separador de diretório usado: \
+[02-Sep-2025 21:40:54 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-02_21-28-17.sql
+[02-Sep-2025 21:40:54 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-02_21-28-17.sql
+[02-Sep-2025 21:40:54 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-02_21-28-17.txt
+[02-Sep-2025 21:40:54 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-02_21-28-17.zip
+[02-Sep-2025 21:40:54 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[03-Sep-2025 21:55:40 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-02_21-40-41.sql
+[03-Sep-2025 21:55:40 Europe/Berlin] Tentando excluir backup:
+[03-Sep-2025 21:55:40 Europe/Berlin] Filename recebido: db_backup_2025-09-02_21-40-41.sql
+[03-Sep-2025 21:55:40 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[03-Sep-2025 21:55:40 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-02_21-40-41.sql
+[03-Sep-2025 21:55:40 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-02_21-40-41.txt
+[03-Sep-2025 21:55:40 Europe/Berlin] Arquivo existe? Sim
+[03-Sep-2025 21:55:40 Europe/Berlin] Diretório existe? Sim
+[03-Sep-2025 21:55:40 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[03-Sep-2025 21:55:40 Europe/Berlin] Permissões do arquivo: 100666
+[03-Sep-2025 21:55:40 Europe/Berlin] Permissões do diretório: 40777
+[03-Sep-2025 21:55:40 Europe/Berlin] Usuário atual: Daniel Jardim
+[03-Sep-2025 21:55:40 Europe/Berlin] Separador de diretório usado: \
+[03-Sep-2025 21:55:40 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-02_21-40-41.sql
+[03-Sep-2025 21:55:40 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-02_21-40-41.sql
+[03-Sep-2025 21:55:40 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-02_21-40-41.txt
+[03-Sep-2025 21:55:40 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-02_21-40-41.zip
+[03-Sep-2025 22:06:51 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-03_21-55-43.sql
+[03-Sep-2025 22:06:51 Europe/Berlin] Tentando excluir backup:
+[03-Sep-2025 22:06:51 Europe/Berlin] Filename recebido: db_backup_2025-09-03_21-55-43.sql
+[03-Sep-2025 22:06:51 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[03-Sep-2025 22:06:51 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-03_21-55-43.sql
+[03-Sep-2025 22:06:51 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-03_21-55-43.txt
+[03-Sep-2025 22:06:51 Europe/Berlin] Arquivo existe? Sim
+[03-Sep-2025 22:06:51 Europe/Berlin] Diretório existe? Sim
+[03-Sep-2025 22:06:51 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[03-Sep-2025 22:06:51 Europe/Berlin] Permissões do arquivo: 100666
+[03-Sep-2025 22:06:51 Europe/Berlin] Permissões do diretório: 40777
+[03-Sep-2025 22:06:51 Europe/Berlin] Usuário atual: Daniel Jardim
+[03-Sep-2025 22:06:51 Europe/Berlin] Separador de diretório usado: \
+[03-Sep-2025 22:06:51 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-03_21-55-43.sql
+[03-Sep-2025 22:06:51 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-03_21-55-43.sql
+[03-Sep-2025 22:06:51 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-03_21-55-43.txt
+[03-Sep-2025 22:06:51 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-03_21-55-43.zip
+[03-Sep-2025 22:06:51 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[05-Sep-2025 15:15:10 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-03_22-06-59.sql
+[05-Sep-2025 15:15:10 Europe/Berlin] Tentando excluir backup:
+[05-Sep-2025 15:15:10 Europe/Berlin] Filename recebido: db_backup_2025-09-03_22-06-59.sql
+[05-Sep-2025 15:15:10 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[05-Sep-2025 15:15:10 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-03_22-06-59.sql
+[05-Sep-2025 15:15:10 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-03_22-06-59.txt
+[05-Sep-2025 15:15:10 Europe/Berlin] Arquivo existe? Sim
+[05-Sep-2025 15:15:10 Europe/Berlin] Diretório existe? Sim
+[05-Sep-2025 15:15:10 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[05-Sep-2025 15:15:10 Europe/Berlin] Permissões do arquivo: 100666
+[05-Sep-2025 15:15:10 Europe/Berlin] Permissões do diretório: 40777
+[05-Sep-2025 15:15:10 Europe/Berlin] Usuário atual: Daniel Jardim
+[05-Sep-2025 15:15:10 Europe/Berlin] Separador de diretório usado: \
+[05-Sep-2025 15:15:10 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-03_22-06-59.sql
+[05-Sep-2025 15:15:10 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-03_22-06-59.sql
+[05-Sep-2025 15:15:10 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-03_22-06-59.txt
+[05-Sep-2025 15:15:10 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-03_22-06-59.zip
+[05-Sep-2025 15:15:10 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[20-Sep-2025 16:18:37 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-05_15-15-13.sql
+[20-Sep-2025 16:18:37 Europe/Berlin] Tentando excluir backup:
+[20-Sep-2025 16:18:37 Europe/Berlin] Filename recebido: db_backup_2025-09-05_15-15-13.sql
+[20-Sep-2025 16:18:37 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[20-Sep-2025 16:18:37 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-05_15-15-13.sql
+[20-Sep-2025 16:18:37 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-05_15-15-13.txt
+[20-Sep-2025 16:18:37 Europe/Berlin] Arquivo existe? Sim
+[20-Sep-2025 16:18:37 Europe/Berlin] Diretório existe? Sim
+[20-Sep-2025 16:18:37 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[20-Sep-2025 16:18:37 Europe/Berlin] Permissões do arquivo: 100666
+[20-Sep-2025 16:18:37 Europe/Berlin] Permissões do diretório: 40777
+[20-Sep-2025 16:18:37 Europe/Berlin] Usuário atual: Daniel Jardim
+[20-Sep-2025 16:18:37 Europe/Berlin] Separador de diretório usado: \
+[20-Sep-2025 16:18:37 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-05_15-15-13.sql
+[20-Sep-2025 16:18:37 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-05_15-15-13.sql
+[20-Sep-2025 16:18:37 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-05_15-15-13.txt
+[20-Sep-2025 16:18:37 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-05_15-15-13.zip
+[20-Sep-2025 16:18:37 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[22-Sep-2025 19:08:38 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-05_15-15-13.sql
+[22-Sep-2025 19:08:38 Europe/Berlin] Tentando excluir backup:
+[22-Sep-2025 19:08:38 Europe/Berlin] Filename recebido: db_backup_2025-09-05_15-15-13.sql
+[22-Sep-2025 19:08:38 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[22-Sep-2025 19:08:38 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-05_15-15-13.sql
+[22-Sep-2025 19:08:38 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-05_15-15-13.txt
+[22-Sep-2025 19:08:38 Europe/Berlin] Arquivo existe? Sim
+[22-Sep-2025 19:08:38 Europe/Berlin] Diretório existe? Sim
+[22-Sep-2025 19:08:38 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[22-Sep-2025 19:08:38 Europe/Berlin] Permissões do arquivo: 100666
+[22-Sep-2025 19:08:38 Europe/Berlin] Permissões do diretório: 40777
+[22-Sep-2025 19:08:38 Europe/Berlin] Usuário atual: Daniel Jardim
+[22-Sep-2025 19:08:38 Europe/Berlin] Separador de diretório usado: \
+[22-Sep-2025 19:08:38 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-05_15-15-13.sql
+[22-Sep-2025 19:08:38 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-05_15-15-13.sql
+[22-Sep-2025 19:08:38 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-05_15-15-13.txt
+[22-Sep-2025 19:08:38 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-05_15-15-13.zip
+[22-Sep-2025 19:08:38 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[23-Sep-2025 16:14:45 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-23_16-14-40.sql
+[23-Sep-2025 16:14:45 Europe/Berlin] Tentando excluir backup:
+[23-Sep-2025 16:14:45 Europe/Berlin] Filename recebido: db_backup_2025-09-23_16-14-40.sql
+[23-Sep-2025 16:14:45 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[23-Sep-2025 16:14:45 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-23_16-14-40.sql
+[23-Sep-2025 16:14:45 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-23_16-14-40.txt
+[23-Sep-2025 16:14:45 Europe/Berlin] Arquivo existe? Sim
+[23-Sep-2025 16:14:45 Europe/Berlin] Diretório existe? Sim
+[23-Sep-2025 16:14:45 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[23-Sep-2025 16:14:45 Europe/Berlin] Permissões do arquivo: 100666
+[23-Sep-2025 16:14:45 Europe/Berlin] Permissões do diretório: 40777
+[23-Sep-2025 16:14:45 Europe/Berlin] Usuário atual: Daniel Jardim
+[23-Sep-2025 16:14:45 Europe/Berlin] Separador de diretório usado: \
+[23-Sep-2025 16:14:45 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-23_16-14-40.sql
+[23-Sep-2025 16:14:45 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-23_16-14-40.sql
+[23-Sep-2025 16:14:45 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-23_16-14-40.txt
+[23-Sep-2025 16:14:45 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-23_16-14-40.zip
+[23-Sep-2025 16:14:45 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[23-Sep-2025 17:21:52 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-23_17-21-46.sql
+[23-Sep-2025 17:21:52 Europe/Berlin] Tentando excluir backup:
+[23-Sep-2025 17:21:52 Europe/Berlin] Filename recebido: db_backup_2025-09-23_17-21-46.sql
+[23-Sep-2025 17:21:52 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[23-Sep-2025 17:21:52 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-23_17-21-46.sql
+[23-Sep-2025 17:21:52 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-23_17-21-46.txt
+[23-Sep-2025 17:21:52 Europe/Berlin] Arquivo existe? Sim
+[23-Sep-2025 17:21:52 Europe/Berlin] Diretório existe? Sim
+[23-Sep-2025 17:21:52 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[23-Sep-2025 17:21:52 Europe/Berlin] Permissões do arquivo: 100666
+[23-Sep-2025 17:21:52 Europe/Berlin] Permissões do diretório: 40777
+[23-Sep-2025 17:21:52 Europe/Berlin] Usuário atual: Daniel Jardim
+[23-Sep-2025 17:21:52 Europe/Berlin] Separador de diretório usado: \
+[23-Sep-2025 17:21:52 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-23_17-21-46.sql
+[23-Sep-2025 17:21:52 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-23_17-21-46.sql
+[23-Sep-2025 17:21:52 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-23_17-21-46.txt
+[23-Sep-2025 17:21:52 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[23-Sep-2025 17:46:45 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-23_12-46-27.sql
+[23-Sep-2025 17:46:45 Europe/Berlin] Tentando excluir backup:
+[23-Sep-2025 17:46:45 Europe/Berlin] Filename recebido: db_backup_2025-09-23_12-46-27.sql
+[23-Sep-2025 17:46:45 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[23-Sep-2025 17:46:45 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-23_12-46-27.sql
+[23-Sep-2025 17:46:45 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-23_12-46-27.txt
+[23-Sep-2025 17:46:45 Europe/Berlin] Arquivo existe? Sim
+[23-Sep-2025 17:46:45 Europe/Berlin] Diretório existe? Sim
+[23-Sep-2025 17:46:45 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[23-Sep-2025 17:46:45 Europe/Berlin] Permissões do arquivo: 100666
+[23-Sep-2025 17:46:45 Europe/Berlin] Permissões do diretório: 40777
+[23-Sep-2025 17:46:45 Europe/Berlin] Usuário atual: Daniel Jardim
+[23-Sep-2025 17:46:45 Europe/Berlin] Separador de diretório usado: \
+[23-Sep-2025 17:46:45 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-23_12-46-27.sql
+[23-Sep-2025 17:46:45 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-23_12-46-27.sql
+[23-Sep-2025 17:46:45 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-23_12-46-27.txt
+[23-Sep-2025 17:46:45 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-23_12-46-27.zip
+[23-Sep-2025 17:46:45 Europe/Berlin] Arquivo database.php.backup excluído: C:\XAMPP\htdocs\backups\database.php.backup
+[23-Sep-2025 22:05:27 Europe/Berlin] Nome do arquivo após basename: db_backup_2025-09-20_16-18-39.sql
+[23-Sep-2025 22:05:27 Europe/Berlin] Tentando excluir backup:
+[23-Sep-2025 22:05:27 Europe/Berlin] Filename recebido: db_backup_2025-09-20_16-18-39.sql
+[23-Sep-2025 22:05:27 Europe/Berlin] Diretório de backup: C:\XAMPP\htdocs\backups\
+[23-Sep-2025 22:05:27 Europe/Berlin] Caminho completo SQL: C:\XAMPP\htdocs\backups\db_backup_2025-09-20_16-18-39.sql
+[23-Sep-2025 22:05:27 Europe/Berlin] Caminho completo ENV: C:\XAMPP\htdocs\backups\env_backup_2025-09-20_16-18-39.txt
+[23-Sep-2025 22:05:27 Europe/Berlin] Arquivo existe? Sim
+[23-Sep-2025 22:05:27 Europe/Berlin] Diretório existe? Sim
+[23-Sep-2025 22:05:27 Europe/Berlin] Diretório atual: C:\XAMPP\htdocs\api
+[23-Sep-2025 22:05:27 Europe/Berlin] Permissões do arquivo: 100666
+[23-Sep-2025 22:05:27 Europe/Berlin] Permissões do diretório: 40777
+[23-Sep-2025 22:05:27 Europe/Berlin] Usuário atual: Daniel Jardim
+[23-Sep-2025 22:05:27 Europe/Berlin] Separador de diretório usado: \
+[23-Sep-2025 22:05:27 Europe/Berlin] realpath do arquivo: C:\XAMPP\htdocs\backups\db_backup_2025-09-20_16-18-39.sql
+[23-Sep-2025 22:05:27 Europe/Berlin] Arquivo SQL excluído: C:\XAMPP\htdocs\backups\db_backup_2025-09-20_16-18-39.sql
+[23-Sep-2025 22:05:27 Europe/Berlin] Arquivo ENV excluído: C:\XAMPP\htdocs\backups\env_backup_2025-09-20_16-18-39.txt
+[23-Sep-2025 22:05:27 Europe/Berlin] Arquivo de mídia excluído com sucesso: C:\XAMPP\htdocs\backups\media_backup_2025-09-20_16-18-39.zip

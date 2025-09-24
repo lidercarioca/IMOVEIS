@@ -1,0 +1,51 @@
+/* Estilos do sidebar */
+.sidebar-text {
+  color: white;
+  font-weight: 500;
+}
+
+/* Cores e estilos dos itens do menu */
+.tab-link {
+  color: white;
+  transition: background-color 200ms;
+}
+
+.tab-link.active {
+  background-color: rgb(29 78 216); /* blue-700 */
+}
+
+.tab-link:hover {
+  background-color: rgb(37 99 235); /* blue-600 */
+  color: white;
+}
+
+/* Ícones do menu */
+.tab-link i {
+  color: white;
+}
+
+/* Layout do sidebar */
+.sidebar-expanded {
+  width: 16rem; /* w-64 */
+  transition: all 300ms ease-in-out;
+}
+
+.sidebar-collapsed {
+  width: 4rem; /* w-16 */
+  transition: all 300ms ease-in-out;
+}
+
+.sidebar-collapsed .sidebar-text {
+  display: none;
+}
+
+/* Conteúdo principal */
+.main-content-expanded {
+  margin-left: 16rem; /* ml-64 */
+  transition: all 300ms ease-in-out;
+}
+
+.main-content-collapsed {
+  margin-left: 4rem; /* ml-16 */
+  transition: all 300ms ease-in-out;
+}

@@ -1,0 +1,780 @@
+2025-09-03 16:10:52 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #2563eb
+    [company_color2] => #10b981
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 0
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-03 16:12:19 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #2563eb
+    [company_color2] => #10b981
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 15:18:38 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #0c0d0d
+    [company_color2] => #10b981
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 15:20:04 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #2563eb
+    [company_color2] => #10b981
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 15:31:16 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #0c0d0d
+    [company_color2] => #10b981
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 15:51:23 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #0c0c0d
+    [company_color2] => #10b981
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 15:51:36 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #0909f1
+    [company_color2] => #10b981
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 15:53:10 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #0c0c0d
+    [company_color2] => #10b981
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 16:28:44 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #2563eb
+    [company_color2] => #10b981
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 16:57:57 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #111212
+    [company_color2] => #10b981
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 17:05:40 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #2563eb 
+    [company_color2] => #10b981
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 17:25:08 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #131416
+    [company_color2] => #10b981
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 17:30:19 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #e0200b
+    [company_color2] => #10b981
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 19:21:44 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #2563eb
+    [company_color2] => #10b981
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 20:14:20 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #080808
+    [company_color2] => #f00540
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 20:49:13 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #0734e9
+    [company_color2] => #f00540
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 21:12:41 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #1b1b1d
+    [company_color2] => #f00540
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 21:17:09 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #0a0ae6
+    [company_color2] => #06ea21
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 21:18:30 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #cce60a
+    [company_color2] => #06ea21
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 21:19:03 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #727845
+    [company_color2] => #06ea21
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 21:28:08 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #2563eb
+    [company_color2] => #06ea21
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 21:29:04 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #2563eb
+    [company_color2] => #10b981
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 21:29:25 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #2563eb
+    [company_color2] => #10b981
+    [company_color3] => #f50a22
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-18 21:29:48 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #2563eb
+    [company_color2] => #10b981
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-23 16:13:18 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #2563eb
+    [company_color2] => #10b981
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+
+2025-09-23 16:13:51 Dados recebidos:
+Array
+(
+    [company_name] => RR Imóveis
+    [company_email] => contato@rrimoveis.com.br
+    [company_email2] => vendas@rrimoveis.com.br
+    [company_phone] => (11) 3456-7890
+    [company_whatsapp] => (11) 98765-4321
+    [company_address] => Av. Paulista, 1000 - Bela Vista, São Paulo - SP
+    [company_weekday_hours] => 9h às 17h
+    [company_saturday_hours] => 9 às 14h
+    [company_description] => Há mais de 15 anos no mercado imobiliário, a RR Imóveis se destaca pela excelência e compromisso com seus clientes. Especializada em imóveis de alto padrão e investimentos seguros.wedwert
+    [company_facebook] => https://facebook.com/rrimoveis
+    [company_instagram] => https://instagram.com/rrimoveis
+    [company_linkedin] => https://linkedin.com/company/rrimoveis
+    [company_youtube] => https://youtube.com/rrimoveis
+    [company_logo] => assets/imagens/logo/logo.png
+    [company_color1] => #2563eb
+    [company_color2] => #10b981
+    [company_color3] => #f59e0b
+    [company_font] => Roboto
+    [email_notifications] => ozonvitanatural@gmail.com
+    [email_leads] => ozonvitanatural@gmail.com
+    [notify_new_lead] => 1
+    [notify_new_property] => 1
+    [notify_property_status] => 1
+    [notify_contact_form] => 1
+)
+
+

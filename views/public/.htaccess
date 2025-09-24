@@ -1,0 +1,48 @@
+Options +FollowSymLinks -Indexes
+
+# Headers de segurança
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://*.google.com https://*.googleapis.com https://*.gstatic.com https://*.google-analytics.com https://kit.fontawesome.com https://cdn.jsdelivr.net/npm/@popperjs/ https://polyfill.io; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com https://ka-f.fontawesome.com; font-src 'self' data: https://fonts.gstatic.com https://ka-f.fontawesome.com https://cdnjs.cloudflare.com; img-src 'self' data: https: http:; connect-src 'self' https://ka-f.fontawesome.com https://*.jsdelivr.net https://cdnjs.cloudflare.com https://wa.me https://cdn.jsdelivr.net; frame-src 'self' https://wa.me;"
+</IfModule>
+
+# Permitir acesso a recursos estáticos
+<Files ~ "\.(js|css|png|jpg|jpeg|gif|ico|html)$">
+    Require all granted
+    <IfModule mod_headers.c>
+        Header set Cache-Control "max-age=31536000, public"
+    </IfModule>
+</Files>
+
+# Permitir acesso ao index.html
+<Files "index.html">
+    Require all granted
+</Files>
+
+# Compressão GZIP
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+</IfModule>
+
+# Cache para recursos estáticos
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+</IfModule>

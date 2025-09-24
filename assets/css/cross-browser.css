@@ -1,0 +1,39 @@
+/* Prefixos vendor para compatibilidade cross-browser */
+.modal-header-dynamic,
+.modal-footer-dynamic {
+  -webkit-transition: background-color 0.3s ease;
+  -moz-transition: background-color 0.3s ease;
+  -o-transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease;
+}
+
+/* Normalize flexbox */
+.flex {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+/* Normalize transform */
+.transform {
+  -webkit-transform: translate(var(--tw-translate-x), var(--tw-translate-y));
+  -moz-transform: translate(var(--tw-translate-x), var(--tw-translate-y));
+  -ms-transform: translate(var(--tw-translate-x), var(--tw-translate-y));
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y));
+}
+
+/* Normalize animations */
+@-webkit-keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@-moz-keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

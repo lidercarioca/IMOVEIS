@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Detalhes do Imóvel</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" 
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" 
+        crossorigin="anonymous"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" 
+        integrity="sha512-..." 
+        crossorigin="anonymous"/>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f9fafb;
+      padding: 20px;
+    }
+
+    .property-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .info-box {
+      background: #e9f1ff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .info-box div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .features-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .features-list li {
+      color: #198754;
+    }
+
+    .btn-whatsapp {
+      background-color: #25D366;
+      color: white;
+    }
+
+    .btn-whatsapp:hover {
+      background-color: #1eb14e;
+    }
+
+    .carousel-inner img {
+      height: 300px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .carousel {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container bg-white p-4 rounded shadow">
+  <div id="carouselExample" class="carousel slide mb-4" data-bs-ride="carousel">
+    <div class="carousel-inner" id="carousel-images">
+      <!-- Imagens inseridas via JavaScript -->
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev" title="Imagem anterior" aria-label="Anterior">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Anterior</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next" title="Próxima imagem" aria-label="Próximo">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Próximo</span>
+    </button>
+  </div>
+
+  <div class="property-header mb-2">
+    <h2 id="property-title"></h2>
+    <h4 class="text-primary" id="property-price"></h4>
+  </div>
+  <div class="info-box mb-3">
+    <div><i class="fas fa-bed"></i> <span id="modal-bedrooms">N/A</span></div>
+    <div><i class="fas fa-bath"></i> <span id="modal-bathrooms">N/A</span></div>
+  </div>
+
+  <p><i class="fas fa-map-marker-alt"></i> <span id="property-location"></span></p>
+
+  <div class="info-box mb-3">
+    <div><i class="fas fa-ruler-combined"></i> <span id="property-area"></span></div>
+    <div><i class="fas fa-calendar-alt"></i> <span id="property-year"></span></div>
+  </div>
+
+  <h5>Descrição</h5>
+  <p id="property-description"></p>
+
+  <h5>Características</h5>
+  <ul class="features-list" id="property-features"></ul>
+
+  <div class="d-flex justify-content-between mt-4">
+    <a href="index.html" class="btn btn-secondary">Fechar</a>
+    <a href="https://wa.me/5599999999999?text=Olá, tenho interesse nesse imóvel!" target="_blank" rel="noopener" class="btn btn-whatsapp">
+      <i class="fab fa-whatsapp"></i> Contato via WhatsApp
+    </a>
+  </div>
+</div>
+
+<script>
+  async function carregarDetalhes() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    try {
+      const res = await fetch(`http://localhost:3000/properties/${id}`);
+      const property = await res.json();
+
+      document.getElementById("property-title").innerText = property.title;
+      document.getElementById("property-price").innerText = property.price;
+      document.getElementById("property-location").innerText = property.location;
+      document.getElementById("property-area").innerText = property.area || "Área indisponível";
+      document.getElementById("property-year").innerText = property.year || "Ano não informado";
+      document.getElementById("property-description").innerText = property.description || "Sem descrição.";
+
+      const features = property.features || [];
+      const ul = document.getElementById("property-features");
+      features.forEach(f => {
+        const li = document.createElement("li");
+        li.innerHTML = `<i class="fas fa-check-circle"></i> ${f}`;
+        ul.appendChild(li);
+      });
+
+      const images = property.images || ["https://via.placeholder.com/800x300"];
+      const carousel = document.getElementById("carousel-images");
+      images.forEach((img, index) => {
+        const div = document.createElement("div");
+        div.className = `carousel-item ${index === 0 ? "active" : ""}`;
+        div.innerHTML = `<img src="${img}" class="d-block w-100" alt="Imagem do imóvel">`;
+        carousel.appendChild(div);
+      });
+
+    } catch (error) {
+      document.body.innerHTML = `<div class="alert alert-danger">Erro ao carregar imóvel.</div>`;
+    }
+  }
+
+  carregarDetalhes();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

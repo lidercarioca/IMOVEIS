@@ -1,0 +1,91 @@
+# Configurações básicas
+DirectoryIndex index.php index.html
+
+# Proteger .env e logs
+<Files ".env">
+    Require all denied
+</Files>
+
+<Files ~ "\.(log|sql)$">
+    Require all denied
+</Files>
+
+# Permitir acesso aos arquivos PHP necessários
+<Files "database.php">
+    Require all granted
+</Files>
+
+# Headers básicos de segurança
+Header set X-Content-Type-Options "nosniff"
+Header set X-Frame-Options "SAMEORIGIN"
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    
+    # Prevenir acesso direto a arquivos sensíveis
+    <FilesMatch "\.(php|log|sql)$">
+        Header set X-Robots-Tag "noindex, nofollow"
+    </FilesMatch>
+</IfModule>
+
+# Permitir acesso aos arquivos estáticos com cache
+<FilesMatch "\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$">
+    Require all granted
+    <IfModule mod_headers.c>
+        Header set Cache-Control "max-age=31536000, public"
+    </IfModule>
+</FilesMatch>
+
+# Compressão GZIP
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE font/ttf
+    AddOutputFilterByType DEFLATE font/otf
+    AddOutputFilterByType DEFLATE font/woff
+    AddOutputFilterByType DEFLATE font/woff2
+</IfModule>
+
+# Rewrite Rules
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # Redirecionar HTTP para HTTPS (comentado por padrão)
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    
+    # Proteger contra ataques comuns
+    RewriteCond %{REQUEST_METHOD} ^(HEAD|TRACE|DELETE|TRACK|DEBUG) [NC]
+    RewriteRule ^(.*)$ - [F,L]
+    
+    # Bloquear acesso a arquivos ocultos
+    RewriteRule ^\.(.*)$ - [F,L]
+</IfModule>
+
+# Permitir arquivos estáticos
+<FilesMatch "\.(css|js|jpg|jpeg|png|gif|ico)$">
+    Require all granted
+</FilesMatch>
+
+# Compressão GZIP básica
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css application/javascript
+</IfModule>
+
+# Cache básico
+<IfModule mod_headers.c>
+    <FilesMatch "\.(jpg|jpeg|png|gif|ico)$">
+        Header set Cache-Control "max-age=31536000, public"
+    </FilesMatch>
+</IfModule>

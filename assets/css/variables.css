@@ -1,0 +1,61 @@
+:root {
+  --cor-primaria: #2563eb;
+  --cor-primaria-rgb: 37, 99, 235;
+  --cor-primaria-hover: #1d4ed8;
+  --cor-primaria-hover-rgb: 29, 78, 216;
+  --cor-secundaria: #10b981;
+  --cor-secundaria-rgb: 16, 185, 129;
+  --cor-destaque: #f59e0b;
+  --cor-destaque-rgb: 245, 158, 11;
+  --fonte-principal: 'Poppins', sans-serif;
+}
+
+/* Botão principal do sistema */
+.btn-sistema-principal {
+  background-color: var(--cor-primaria) !important;
+  color: #fff !important;
+  border-radius: 0.7rem !important;
+  font-weight: bold !important;
+  font-size: 1.1rem !important;
+  padding: 0.7rem 2.2rem !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+  transition: all 0.2s ease-in-out !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  line-height: 1.5 !important;
+  min-height: 44px !important;
+  width: auto !important;
+  white-space: nowrap !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+
+.btn-sistema-principal:hover {
+  background-color: var(--cor-primaria-hover) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+.btn-sistema-principal:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+}
+
+.btn-sistema-principal i,
+.btn-sistema-principal .fa,
+.btn-sistema-principal .fas,
+.btn-sistema-principal .far,
+.btn-sistema-principal .fab {
+  margin-right: 0.5rem !important;
+  font-size: 1em !important;
+  vertical-align: middle !important;
+  line-height: inherit !important;
+}

@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="min-vh-100">
+
+<head>
+  <!-- Meta tags essenciais -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  <!-- SEO tags -->
+  <title>RR Imóveis - Seu Imóvel dos Sonhos</title>
+  <meta name="description" content="Encontre seu imóvel ideal com a RR Imóveis. Casas, apartamentos e imóveis comerciais em ótimas localizações.">
+  <meta name="keywords" content="imóveis, comprar casa, alugar apartamento, imobiliária">
+  <meta name="author" content="RR Imóveis">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rrimoveis.com.br/">
+  <meta property="og:title" content="RR Imóveis - Seu Imóvel dos Sonhos">
+  <meta property="og:description" content="Encontre seu imóvel ideal com a RR Imóveis">
+  <meta property="og:image" content="/assets/imagens/og-image.jpg">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/imagens/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/imagens/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/imagens/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Preload de recursos críticos -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- CSS crítico inline para primeiro render -->
+  <style>
+    /* Variáveis CSS críticas */
+    :root {
+      --cor-primaria: #2563eb;
+      --cor-secundaria: #10b981;
+      --cor-destaque: #f59e0b;
+      --fonte-principal: 'Poppins', sans-serif;
+    }
+
+    /* Estilos críticos para primeiro render */
+    .critical-hidden { opacity: 0; }
+    .critical-visible { opacity: 1; transition: opacity .3s; }
+
+    /* Estilos da seção de contato */
+  .contact-section {
+    background-color: var(--cor-primaria) !important;
+  }
+    
+    /* Estilos críticos do ribbon */
+    .property-ribbon {
+      position: absolute ;
+      top: 20px ;
+      left: -35px ;
+      right: auto ;
+      z-index: 50 ;
+      color: #fff ;
+      padding: 8px 30px ;
+      font-size: 0.875rem ;
+      font-weight: 600 ;
+    }
+
+    /* Previne FOUC (Flash of Unstyled Content) */
+    .property-card {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .property-card.loaded {
+      opacity: 1;
+    }
+    
+  </style>
+  
+  <!-- CSS crítico externo -->
+  <!--<link rel="stylesheet" href="/assets/css/variables.css">-->
+  <!--<link rel="stylesheet" href="/assets/css/ribbons.css">-->
+  
+  <!-- CSS não crítico com carregamento otimizado -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" 
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" 
+        crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" 
+        integrity="sha512-..." 
+        crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/css/custom-bootstrap.css">
+  <link rel="stylesheet" href="/assets/css/custom.new.css">
+  <link rel="stylesheet" href="/assets/css/button-colors.css">
+  <link rel="stylesheet" href="/assets/css/shared-styles.css">
+  
+  <!-- Scripts críticos -->
+  <!-- Script do Bootstrap Bundle (inclui Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+          integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" 
+          crossorigin="anonymous"></script>
+  
+  <!-- Polyfills condicionais -->
+  <script>
+    if (!('IntersectionObserver' in window)) {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/intersection-observer@0.12.2/intersection-observer.js"><\/script>');
+    }
+  </script>
+  
+  <!-- Script para atualizar logo em tempo real -->
+  <script src="/assets/js/logo-sync-public.js"></script>
+  <!-- Script para sincronizar cores da navbar -->
+  <script src="/assets/js/public/navbar-color-sync.js"></script>
+  <script src="/assets/js/public/card-color-sync.js"></script>
+
+  <!-- CSS da faixa de status -->
+  <link rel="stylesheet" href="/assets/css/ribbons.css">
+  
+   <script>
+    // Função para garantir que os estilos estejam carregados
+    function checkStylesLoaded() {
+      const style = getComputedStyle(document.documentElement);
+      const primary = style.getPropertyValue('--cor-primaria').trim();
+      const secondary = style.getPropertyValue('--cor-secundaria').trim();
+      const highlight = style.getPropertyValue('--cor-destaque').trim();
+      return primary && secondary && highlight;
+    }
+
+    // Função para mostrar os cards quando os estilos estiverem prontos
+    function showCards() {
+      document.querySelectorAll('.property-card').forEach(card => {
+        card.classList.add('loaded');
+      });
+    }
+
+    // Carregar configurações e verificar estilos
+    document.addEventListener('DOMContentLoaded', function() {
+      aplicarFonteECores();
+      
+      // Verifica se os estilos já estão carregados
+      if (checkStylesLoaded()) {
+        showCards();
+      } else {
+        // Se não estiverem, aguarda e verifica novamente
+        const checkInterval = setInterval(() => {
+          if (checkStylesLoaded()) {
+            showCards();
+            clearInterval(checkInterval);
+          }
+        }, 50);
+        
+        // Timeout de segurança após 2 segundos
+        setTimeout(() => {
+          showCards();
+          clearInterval(checkInterval);
+        }, 2000);
+      }
+    });
+  </script>
+
+  <style>
+    /* Estilos específicos da página */
+
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    /* ------------------ BASE ------------------ */
+    body {
+  font-family: var(--fonte-principal, 'Poppins', sans-serif);
+      scroll-behavior: smooth;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ------------------ CARROSSEL HERO ------------------ */
+    .hero-section {
+      height: 500px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #carousel-container {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Seção de busca */
+    .search-section {
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* Garante que o carrossel não sobreponha outras seções */
+    .hero-section::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: rgba(0, 0, 0, 0.1);
+      z-index: 1;
+    }
+
+    #next-slide {
+      right: 10px;
+    }
+
+    /* ------------------ ANIMAÇÕES ------------------ */
+    .fade-in {
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .slide-in {
+      animation: slideIn 0.5s ease forwards;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.05);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .modal {
+      transition: opacity 0.3s ease;
+    }
+
+    /* ------------------ PROPERTY GRID ------------------ */
+
+    .property-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+
+    .property-card {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      padding: 1.5rem;
+      transition: transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .property-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+    }
+
+    /* Remover qualquer estilo que possa interferir com o ribbon */
+/*.property-card .property-ribbon {
+    padding: 4px 25px ;
+}*/
+
+    .property-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .property-info {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 0.5rem;
+    }
+
+    .btn-detalhes {
+      display: inline-block;
+      margin-top: 0.75rem;
+      background-color: #007bff;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .btn-detalhes:hover {
+      background-color: #0056b3;
+    }
+
+    :root {
+      --cor-primaria: #2563eb;
+      /* cor padrão azul */
+      --cor-secundaria: #10b981;
+      /* verde */
+      --cor-destaque: #f59e0b;
+      /* amarelo */
+  --fonte-principal: var(--fonte-principal, 'Poppins', sans-serif);
+    }
+
+    /* Estilo do navbar dinâmico */
+    .navbar-dynamic {
+      background: var(--cor-primaria) !important;
+    }
+
+    .bg-gray-900 {
+  background-color: #111827 !important;
+}
+
+    .text-white-hover:hover {
+  color: white !important;
+    }
+    
+    /* Versão mais escura para o gradiente e hover */
+    .navbar-dynamic-gradient {
+      background: linear-gradient(to right, var(--cor-primaria), color-mix(in srgb, var(--cor-primaria) 70%, #000)) !important;
+    }
+  </style>
+
+
+</head>
+
+<body class="bg-light">
+  <!-- Navbar -->
+  <nav class="navbar-dynamic-gradient text-white shadow sticky-top">
+    <div class="container py-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <img id="company-logo-img" alt="Logo RR Imóveis" class="me-2 company-logo"
+            onerror="this.style.display='none'">
+          <span class="fs-4 fw-bold">RR Imóveis</span>
+        </div>
+        <div class="d-none d-md-flex">
+          <a href="#home" class="nav-link mx-3 text-white hover-light">Início</a>
+          <a href="#properties" class="nav-link mx-3 text-white hover-light">Imóveis</a>
+          <a href="#about" class="nav-link mx-3 text-white hover-light">Sobre</a>
+          <a href="#contact" class="nav-link mx-3 text-white hover-light">Contato</a>
+        </div>
+        <div class="d-md-none">
+          <button id="mobile-menu-button" class="btn btn-link text-white border-0" aria-label="Menu">
+            <i class="fas fa-bars fs-4"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="d-md-none collapse navbar-collapse px-4 pb-4">
+      <div class="nav flex-column">
+        <a href="#home" class="nav-link text-white-50 py-2 px-3 rounded hover-light">Início</a>
+        <a href="#properties" class="nav-link text-white-50 py-2 px-3 rounded hover-light">Imóveis</a>
+        <a href="#about" class="nav-link text-white-50 py-2 px-3 rounded hover-light">Sobre</a>
+        <a href="#contact" class="nav-link text-white-50 py-2 px-3 rounded hover-light">Contato</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section with Carousel -->
+  <section id="home" class="position-relative hero-section overflow-hidden">
+    <style>
+      .hero-overlay-text {
+        position: absolute;
+        left: 50%;
+        top: 45%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        text-align: center;
+        width: auto;
+        pointer-events: auto;
+      }
+
+      .hero-overlay-text h1 {
+        font-size: 3.5rem;
+        color: white;
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.8), 0 0 1px rgba(0,0,0,0.8);
+        margin-bottom: 1rem;
+        font-weight: 700;
+      }
+
+      .hero-overlay-text p {
+        font-size: 1.5rem;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.8), 0 0 1px rgba(0,0,0,0.8);
+        font-weight: 500;
+      }
+    </style>
+    
+    <!-- Carousel wrapper -->
+    <div id="carousel-container" class="w-100 h-100"></div>
+    
+    <!-- Overlay Text -->
+<div class="hero-overlay-text text-center d-flex flex-column justify-content-center align-items-center" style="height: 100vh; pointer-events:auto;">
+  <h1 class="fw-bold">Encontre o Imóvel dos Seus Sonhos</h1>
+  <p class="mb-4">As melhores opções de imóveis com as melhores condições do mercado</p>
+
+  <div class="d-flex gap-3">
+    <a href="#properties" class="btn btn-primary btn-lg d-flex align-items-center gap-2">
+      <i class="fas fa-building"></i> Imóveis em Destaque
+    </a>
+    <a href="#contact" class="btn btn-warning btn-lg d-flex align-items-center gap-2">
+      <i class="fas fa-envelope"></i> Entre em Contato
+    </a>
+  </div>
+</div>
+</section>
+
+  <!-- Search Section -->
+  <section class="py-5 bg-white shadow search-section">
+    <div class="container-md">
+      <div class="bg-white rounded-4 p-4 shadow-sm">
+        <h2 class="fs-2 fw-semibold text-dark mb-4">Encontre seu imóvel ideal</h2>
+        <div class="row g-3 g-md-4">
+          <div class="col-12 col-md-3">
+            <label for="select-tipo" class="form-label text-secondary small">Tipo de Imóvel</label>
+            <select id="select-tipo" class="form-select form-select-lg" title="Selecione o tipo de imóvel">
+              <option value="">Todos os tipos</option>
+              <option value="house">Casa</option>
+              <option value="apartment">Apartamento</option>
+              <option value="commercial">Comercial</option>
+              <option value="land">Terreno</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="select-localizacao" class="form-label text-secondary small">Localização</label>
+            <select id="select-localizacao" class="form-select form-select-lg" title="Selecione a localização">
+              <option value="">Todas as regiões</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-3">
+            <label for="select-preco" class="form-label text-secondary small">Faixa de Preço</label>
+            <select id="select-preco" title="Selecione a faixa de preço" class="form-select form-select-lg">
+              <option value="">Qualquer preço</option>
+              <option value="0-200000">Até R$ 200.000</option>
+              <option value="200001-500000">R$ 200.000 - R$ 500.000</option>
+              <option value="500001-1000000">R$ 500.000 - R$ 1.000.000</option>
+              <option value="1000001-999999999">Acima de R$ 1.000.000</option>
+            </select>
+          </div>
+         <div class="col-12 col-md-2">
+          <label class="d-none d-md-block form-label text-secondary small">&nbsp;</label>
+          <button id="btn-limpar-filtros" class="btn h-75 w-100" style="background-color: var(--cor-secundaria); color: #fff; border: none; border-radius: 0.5rem;">
+            <i class="fas fa-eraser me-2"></i>Limpar Filtros
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Properties Section -->
+  <section id="properties" class="py-5 bg-light">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold text-dark mb-3">Imóveis em Destaque</h2>
+        <p class="text-secondary mx-auto" style="max-width: 700px">Confira nossa seleção de propriedades exclusivas com as melhores
+          condições do mercado.</p>
+      </div>
+      <div id="property-list" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <!-- Limite de 6 cards definido via JavaScript -->
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            const observer = new MutationObserver(function(mutations) {
+              mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList') {
+                  const cards = document.querySelectorAll('#property-list > div');
+                  cards.forEach((card, index) => {
+                    if (index >= 9) {
+                      card.remove();
+                    }
+                  });
+                }
+              });
+            });
+            
+            observer.observe(document.getElementById('property-list'), {
+              childList: true
+            });
+          });
+        </script>
+      </div>
+
+      <div class="text-center mt-5">
+        <a href="/views/public/todos-imoveis.html" class="btn btn-dynamic-primary px-4 py-2">
+          Ver Todos os Imóveis <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="py-5 bg-primary bg-opacity-10">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6 mb-4 mb-md-0 pe-md-4">
+          <div class="position-relative rounded-3 overflow-hidden shadow">
+            <img src="/assets/imagens/sobre/familia_imovel.png" alt="Família RR Imóveis" class="w-100 h-100 object-fit-cover">
+            <div class="position-absolute bottom-0 start-0 w-100 p-4 bg-gradient-dark">
+              <div class="text-white">
+                <h3 class="fs-4 fw-bold mb-2">RR Imóveis</h3>
+                <p class="text-white-50">Excelência em negócios imobiliários desde 2005</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <h2 class="display-5 fw-bold text-dark mb-4">Sobre a RR Imóveis</h2>
+          <div id="company-description" class="text-secondary fs-5 mb-4">
+            Carregando descrição da empresa...
+          </div>
+          <div class="row row-cols-2 g-4 mb-4">
+            <div class="col">
+              <div class="d-flex align-items-center">
+                <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3">
+                  <i class="fas fa-home text-primary fs-4"></i>
+                </div>
+                <div>
+                  <h4 class="fw-bold text-dark mb-0">+1500</h4>
+                  <p class="text-secondary mb-0">Imóveis vendidos</p>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="d-flex align-items-center">
+                <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3">
+                  <i class="fas fa-users text-primary fs-4"></i>
+                </div>
+                <div>
+                  <h4 class="fw-bold text-dark mb-0">+3000</h4>
+                  <p class="text-secondary mb-0">Clientes satisfeitos</p>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="d-flex align-items-center">
+                <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3">
+                  <i class="fas fa-map-marked-alt text-primary fs-4"></i>
+                </div>
+                <div>
+                  <h4 class="fw-bold text-dark mb-0">15</h4>
+                  <p class="text-secondary mb-0">Cidades atendidas</p>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="d-flex align-items-center">
+                <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3">
+                  <i class="fas fa-award text-primary fs-4"></i>
+                </div>
+                <div>
+                  <h4 class="fw-bold text-dark mb-0">8</h4>
+                  <p class="text-secondary mb-0">Prêmios do setor</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-dynamic-primary px-4 py-2 d-inline-flex align-items-center">
+            Conheça Nossa História <i class="fas fa-arrow-right ms-2"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold text-dark mb-3">O Que Nossos Clientes Dizem</h2>
+        <p class="text-secondary mx-auto mw-700">Veja os depoimentos de quem já realizou o sonho da casa própria com a
+          RR Imóveis.</p>
+      </div>
+
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        <!-- Testimonial 1 -->
+        <div class="col">
+          <div class="card bg-light h-100 border-0 shadow-sm">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3 d-flex align-items-center justify-content-center profile-circle">
+                  <span class="text-primary fw-bold fs-5">M</span>
+                </div>
+                <div>
+                  <h4 class="card-title h5 fw-bold mb-1">Marcos Silva</h4>
+                  <p class="text-muted small mb-0">Cliente desde 2019</p>
+                </div>
+              </div>
+              <p class="card-text text-secondary mb-4">
+                "A RR Imóveis superou todas as minhas expectativas. O atendimento foi impecável desde o primeiro contato, e
+                encontraram o apartamento perfeito para minha família em tempo recorde."
+              </p>
+              <div class="text-warning">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="col">
+          <div class="card bg-light h-100 border-0 shadow-sm">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3 d-flex align-items-center justify-content-center profile-circle">
+                  <span class="text-primary fw-bold fs-5">C</span>
+                </div>
+                <div>
+                  <h4 class="card-title h5 fw-bold mb-1">Carla Mendes</h4>
+                  <p class="text-muted small mb-0">Cliente desde 2021</p>
+                </div>
+              </div>
+              <p class="card-text text-secondary mb-4">
+                "Profissionais extremamente competentes e atenciosos. Todo o processo de compra foi tranquilo e
+                transparente. Recomendo a RR Imóveis para todos que buscam um imóvel."
+              </p>
+              <div class="text-warning">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="col">
+          <div class="card bg-light h-100 border-0 shadow-sm">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3 d-flex align-items-center justify-content-center profile-circle">
+                  <span class="text-primary fw-bold fs-5">R</span>
+                </div>
+                <div>
+                  <h4 class="card-title h5 fw-bold mb-1">Roberto Almeida</h4>
+                  <p class="text-muted small mb-0">Cliente desde 2020</p>
+                </div>
+              </div>
+              <p class="card-text text-secondary mb-4">
+                "Já é a segunda vez que faço negócio com a RR Imóveis e continuo impressionado com a qualidade do serviço.
+                Conseguiram vender meu imóvel antigo por um valor acima do esperado."
+              </p>
+              <div class="text-warning">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-5 contact-section">
+    <div class="container">
+      <div class="bg-white rounded-4 shadow overflow-hidden">
+        <div class="row g-0">
+          <div class="col-md-6 p-4 p-md-5">
+            <h2 class="display-6 fw-bold text-dark mb-4">Entre em Contato</h2>
+            <p class="text-secondary mb-4">
+              Preencha o formulário abaixo e nossa equipe entrará em contato o mais breve possível. Estamos ansiosos
+              para ajudá-lo a encontrar o imóvel dos seus sonhos!
+            </p>
+
+            <form id="contact-form" class="mb-4">
+              <div class="mb-3">
+                <label class="form-label" for="name">Nome Completo</label>
+                <input type="text" id="name" class="form-control" placeholder="Seu nome completo">
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="email">E-mail</label>
+                <input type="email" id="email" class="form-control" placeholder="seu.email@exemplo.com">
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="phone">Telefone</label>
+                <input type="tel" id="phone" class="form-control" placeholder="(00) 00000-0000">
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="subject">Assunto</label>
+                <select id="subject" class="form-select">
+                  <option>Compra de imóvel</option>
+                  <option>Venda de imóvel</option>
+                  <option>Aluguel</option>
+                  <option>Avaliação de imóvel</option>
+                  <option>Outros assuntos</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="message">Mensagem</label>
+                <textarea id="message" rows="4" class="form-control" 
+                  placeholder="Descreva como podemos ajudá-lo..."></textarea>
+              </div>
+              <div class="mb-3 form-check">
+                <input type="checkbox" id="terms" class="form-check-input">
+                <label for="terms" class="form-check-label text-secondary small">
+                  Concordo com a <a href="#" class="link-primary">Política de Privacidade</a>
+                </label>
+              </div>
+              <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-primary flex-grow-1">
+                  <i class="fas fa-paper-plane me-2"></i>Enviar Mensagem
+                </button>
+                <a id="contato-whatsapp" href="#" target="_blank" class="btn btn-success d-inline-flex align-items-center">
+                  <i class="fab fa-whatsapp me-2 fs-5"></i> WhatsApp
+                </a>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-6 bg-light p-4 p-md-5 d-flex flex-column justify-content-between">
+            <div>
+              <h3 class="h4 fw-bold text-dark mb-4">Informações de Contato</h3>
+              <div class="info-contato-dinamico mb-4">
+                <div class="text-secondary">Carregando informações...</div>
+              </div>
+            </div>
+            <div>
+              <h4 class="h5 fw-bold text-dark mb-3">Siga-nos nas Redes Sociais</h4>
+              <div id="social-links-dinamico">
+                <div class="text-secondary">Carregando...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-5">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-md-4 g-3">
+        <!-- Company Info -->
+        <div class="col">
+          <div class="d-flex align-items-center mb-2">
+            <img id="company-logo-footer" alt="Logo RR Imóveis" class="me-2" width="32" height="32"
+              onerror="this.style.display='none'">
+            <span class="fs-5 fw-bold">RR Imóveis</span>
+          </div>
+          <p class="small">
+            Sua imobiliária de confiança para encontrar o imóvel dos seus sonhos. Atendimento personalizado e as
+            melhores condições do mercado.
+          </p>
+          <div class="d-flex gap-3">
+            <a href="#" class="text-secondary hover-light" id="link-facebook-footer" title="Siga-nos no Facebook">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="text-secondary hover-light" id="link-instagram-footer" title="Siga-nos no Instagram">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="text-secondary hover-light" id="link-linkedin-footer" title="Siga-nos no LinkedIn">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="#" class="text-secondary hover-light" id="link-youtube-footer" title="Inscreva-se em nosso canal">
+              <i class="fab fa-youtube"></i>
+            </a>
+          </div>
+        </div>
+        <!-- Quick Links -->
+        <div class="col">
+          <h4 class="h5 fw-bold mb-2">Links Rápidos</h4>
+          <ul class="list-unstyled small">
+            <li class="nav-item mb-2"><a href="#home" class="nav-link px-0 text-secondary transition text-white-hover">Início</a></li>
+            <li class="nav-item mb-2"><a href="#properties" class="nav-link px-0 text-secondary transition text-white-hover">Imóveis</a></li>
+            <li class="nav-item mb-2"><a href="#about" class="nav-link px-0 text-secondary transition text-white-hover">Sobre Nós</a></li>
+            <li class="nav-item mb-2"><a href="#contact" class="nav-link px-0 text-secondary transition text-white-hover">Contato</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link px-0 text-secondary transition text-white-hover">Blog</a></li>
+          </ul>
+        </div>
+        <!-- Services -->
+        <div class="col">
+          <h4 class="h5 fw-bold mb-2">Serviços</h4>
+          <ul class="list-unstyled small">
+            <li class="nav-item mb-2"><a href="#" class="nav-link px-0 text-secondary transition text-white-hover">Compra de Imóveis</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link px-0 text-secondary transition text-white-hover">Venda de Imóveis</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link px-0 text-secondary transition text-white-hover">Consultoria Imobiliária</a></li>
+          </ul>
+        </div>
+        <!-- Newsletter -->
+        <div class="col">
+          <h4 class="h5 fw-bold mb-2">Newsletter</h4>
+          <p class="small mb-3">
+            Inscreva-se para receber novidades e ofertas exclusivas.
+          </p>
+          <form class="mb-3">
+            <div class="input-group">
+              <input type="email" class="form-control" placeholder="Seu e-mail">
+              <button type="submit" class="btn btn-primary" title="Inscrever-se na newsletter">
+                <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                <span class="visually-hidden">Inscrever-se na newsletter</span>
+              </button>
+            </div>
+          </form>
+          <p class="small mb-3">
+            Ao se inscrever, você concorda com nossa Política de Privacidade.
+          </p>
+        </div>
+      </div>
+      <!-- Footer Bottom -->
+      <div class="border-top border-secondary mt-5 pt-4">
+        <div class="row align-items-center">
+          <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+            <p class="d-flex justify-content-between small">
+              &copy; 2025 RR Imóveis. Todos os direitos reservados.
+            </p>
+          </div>
+          <div class="col-md-6">
+            <ul class="nav justify-content-center justify-content-md-end">
+              <li class="nav-item">
+                <a href="#" class="nav-link px-2 text-secondary transition text-white-hover small">Termos de Uso</a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link px-2 text-secondary transition text-white-hover small">Política de Privacidade</a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link px-2 text-secondary transition text-white-hover small">Cookies</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- Modal do Formulário de Contato -->
+  <div class="modal fade" id="contactFormModal" tabindex="-1" aria-labelledby="contactFormModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header modal-header-dynamic">
+          <h5 class="modal-title" id="contactFormModalLabel">Entre em Contato</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <form id="contact-form-modal" novalidate>
+            <div class="mb-3">
+              <label for="contact-name" class="form-label">Nome</label>
+              <input type="text" class="form-control" id="contact-name" required placeholder="Seu nome completo">
+              <div class="invalid-feedback">Por favor, informe seu nome.</div>
+            </div>
+            <div class="mb-3">
+              <label for="contact-email" class="form-label">E-mail</label>
+              <input type="email" class="form-control" id="contact-email" required placeholder="seu@email.com">
+              <div class="invalid-feedback">Por favor, informe um e-mail válido.</div>
+            </div>
+            <div class="mb-3">
+              <label for="contact-phone" class="form-label">Telefone</label>
+              <input type="tel" class="form-control" id="contact-phone" required placeholder="(00) 00000-0000">
+              <div class="invalid-feedback">Por favor, informe seu telefone.</div>
+            </div>
+            <div class="mb-3">
+              <label for="contact-message" class="form-label">Mensagem</label>
+              <textarea class="form-control" id="contact-message" rows="4" required></textarea>
+              <div class="invalid-feedback">Por favor, escreva uma mensagem.</div>
+            </div>
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-dynamic-primary">
+                <span class="spinner-border spinner-border-sm d-none me-2" role="status" aria-hidden="true"></span>
+                <i class="fas fa-paper-plane me-2"></i>Enviar Mensagem
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Detalhes do Imóvel -->
+  <div class="modal fade" id="propertyModal" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-custom-width">
+      <div class="modal-content">
+
+        <!-- Cabeçalho do Modal -->
+        <div class="modal-header modal-header-dynamic">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+
+        <!-- Corpo do Modal -->
+        <div class="modal-body">
+          <div class="row g-4">
+            <!-- Imagens do imóvel via JS -->
+            <div class="col-12">
+              <div id="modal-images"></div>
+            </div>
+
+            <!-- Detalhes do imóvel abaixo da imagem -->
+            <div class="col-12">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 id="modal-title" class="modal-title fw-bold">Título do Imóvel</h5>
+                <span id="modal-price" class="fs-5 fw-bold modal-highlight-text">R$ 0.000.000</span>
+              </div>
+
+              <p id="modal-location" class="text-muted mb-3">
+                <i class="fas fa-map-marker-alt me-2 modal-highlight-text"></i> Localização
+              </p>
+<!-- Bloco de Área e Ano de Construção -->
+<div class="d-flex justify-content-between py-2 px-3 rounded mb-4 bg-light-blue">
+  <!-- Área -->
+  <div>
+    <div class="text-muted small"></div>
+    <div class="d-flex align-items-center gap-2">
+  <!-- Ícone removido, agora é inserido via JS -->
+      <span id="modal-area" class="fw-semibold">75m²</span>
+    </div>
+  </div>
+  <!-- Ano de Construção -->
+  <div>
+    <div class="text-muted small">Ano de Construção</div>
+    <div class="d-flex align-items-center gap-2">
+  <!-- Ícone removido, agora é inserido via JS -->
+      <span id="modal-yearBuilt" class="fw-semibold">2020</span>
+    </div>
+  </div>
+</div>
+
+<!-- Ícones de quarto e banheiro abaixo da área e ano -->
+  <div class="d-flex gap-4 mb-4">
+    <div class="d-flex align-items-center gap-2">
+      <i class="fas fa-bed text-primary"></i>
+      <span id="modal-bedrooms" class="fw-semibold text-dark">N/A</span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <i class="fas fa-bath text-primary"></i>
+      <span id="modal-bathrooms" class="fw-semibold text-dark">N/A</span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <i class="fas fa-car text-primary"></i>
+      <span id="modal-garage" class="fw-semibold text-dark">N/A</span>
+    </div>
+  </div>
+<h6 class="fw-semibold mb-2">Descrição do Imóvel</h6>
+<p id="modal-description" class="mb-3 text-muted small">Descrição do imóvel</p>
+<div>
+  <h6 class="fw-semibold mb-2">Características</h6>
+  <ul id="modal-features" class="row row-cols-1 row-cols-sm-2 g-2 ps-0 text-success small list-unstyled">
+    <!-- Características via JS -->
+  </ul>
+</div>
+</div>
+</div>
+</div>
+
+        <!-- Rodapé do Modal -->
+        <div class="modal-footer d-flex justify-content-between align-items-center bg-white" style="background-color: white !important;">
+          <a id="modal-whatsapp" href="#" target="_blank" class="btn btn-success px-4 modal-btn">
+            <i class="fab fa-whatsapp me-2"></i> Contato via WhatsApp
+          </a>
+          <div class="text-center">
+            <button type="button" id="btnOpenContact" onclick="openContactForm()" class="btn btn-dynamic-primary px-4 fw-semibold">
+              <i class="fas fa-envelope me-2"></i>Entrar em Contato
+            </button>
+          </div>
+          <button type="button" class="btn btn-secondary px-4 btn-min-width" data-bs-dismiss="modal">
+            <i class="fas fa-times me-2"></i>Fechar
+          </button>
+        </div>
+
+       
+        <script>
+          // Filtros unificados: tipo, bairro e faixa de preço (corrigido para usar window.dadosImoveis e window.renderizarImoveis)
+          document.addEventListener('DOMContentLoaded', function () {
+            function aguardarImoveisCarregados() {
+              if (window.dadosImoveis && Array.isArray(window.dadosImoveis) && typeof window.renderizarImoveis === 'function') {
+                inicializarFiltros();
+              } else {
+                setTimeout(aguardarImoveisCarregados, 100);
+              }
+            }
+
+            function inicializarFiltros() {
+              const selectTipo = document.querySelector('select:not([id])'); // primeiro select (tipo)
+              const selectBairro = document.getElementById('select-localizacao');
+              const selectPreco = document.querySelectorAll('select')[2]; // terceiro select (preço)
+              if (!selectTipo || !selectBairro || !selectPreco) return;
+
+              function normalizar(str) {
+                return (str || '')
+                  .toLowerCase()
+                  .normalize('NFD')
+                  .replace(/\p{Diacritic}/gu, '')
+                  .replace(/\s+/g, '');
+              }
+              function aplicarFiltros() {
+                let filtrados = window.dadosImoveis;
+                // Filtro tipo
+                const tipo = selectTipo.value;
+                if (tipo && tipo !== 'Todos os tipos') {
+                  const tipoNorm = normalizar(tipo);
+                  filtrados = filtrados.filter(i => normalizar(i.type) === tipoNorm);
+                }
+                // Filtro bairro
+                const bairro = selectBairro.value;
+                if (bairro && bairro !== 'Todas as regiões') {
+                  filtrados = filtrados.filter(i => i.neighborhood === bairro);
+                }
+                // Filtro preço
+                const faixa = selectPreco.value;
+                filtrados = filtrados.filter(i => {
+                  const preco = Number(i.price);
+                  if (!faixa || faixa === 'Qualquer preço') return true;
+                  if (faixa === 'Até R$ 200.000') return preco <= 200000;
+                  if (faixa === 'R$ 200.000 - R$ 500.000') return preco > 200000 && preco <= 500000;
+                  if (faixa === 'R$ 500.000 - R$ 1.000.000') return preco > 500000 && preco <= 1000000;
+                  if (faixa === 'Acima de R$ 1.000.000') return preco > 1000000;
+                  return true;
+                });
+                window.renderizarImoveis(filtrados);
+              }
+
+              selectTipo.addEventListener('change', aplicarFiltros);
+              selectBairro.addEventListener('change', aplicarFiltros);
+              selectPreco.addEventListener('change', aplicarFiltros);
+            }
+            aguardarImoveisCarregados();
+          });
+        </script>
+        <script src="/assets/js/contato-dinamico.js"></script>
+        <script>
+          // Preenche o select de localização com bairros únicos do banco
+          document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(async function () {
+              const select = document.getElementById('select-localizacao');
+              if (!select) {
+                console.warn('Select de localização não encontrado no DOM.');
+                return;
+              }
+              try {
+                const res = await fetch('api/getProperties.php');
+                const json = await res.json();
+                let imoveis = [];
+                if (Array.isArray(json)) {
+                  imoveis = json;
+                } else if (json && Array.isArray(json.data)) {
+                  imoveis = json.data;
+                } else {
+                  console.warn('API não retornou dados válidos:', json);
+                  return;
+                }
+                // Extrai bairros únicos
+                const bairros = Array.from(new Set(imoveis.map(imovel => imovel.neighborhood).filter(Boolean)));
+                if (bairros.length === 0) {
+                  console.warn('Nenhum bairro encontrado nos imóveis retornados. Verifique o campo "neighborhood" no banco de dados.');
+                }
+                bairros.sort((a, b) => a.localeCompare(b, 'pt-BR'));
+                bairros.forEach(bairro => {
+                  const opt = document.createElement('option');
+                  opt.value = bairro;
+                  opt.textContent = bairro;
+                  select.appendChild(opt);
+                });
+              } catch (e) {
+                console.error('Erro ao buscar bairros:', e);
+              }
+            }, 200); // Pequeno delay para garantir que o select já existe
+          });
+        </script>
+        <script>
+          // Função para aplicar fonte e cores
+          async function aplicarFonteECores() {
+            try {
+              const res = await fetch('api/getCompanySettings.php');
+              const json = await res.json();
+              console.log('Resposta da API:', json); // Debug
+
+              if (!json.success || !json.data) {
+                console.error('Erro ao carregar configurações:', json);
+                return;
+              }
+              const data = json.data;
+              
+              // Atualizar logo
+              console.log('Dados completos da API:', data); // Debug completo
+              
+              // Verifica se há logo definido
+              const logoPath = data.company_logo || 'assets/imagens/logo/logo.png';
+              console.log('Caminho do logo:', logoPath);
+              
+              // Atualiza os elementos do logo
+              const logoEl = document.getElementById('company-logo-img');
+              const logoFooter = document.getElementById('company-logo-footer');
+              
+              // Função para lidar com erro de carregamento da imagem
+              const handleImageError = (img) => {
+                console.error('Erro ao carregar logo:', img.src);
+                img.src = 'assets/imagens/logo/logo.png'; // Fallback para logo padrão
+              };
+              
+              if (logoEl) {
+                logoEl.onerror = () => handleImageError(logoEl);
+                logoEl.src = logoPath;
+              }
+              if (logoFooter) {
+                logoFooter.onerror = () => handleImageError(logoFooter);
+                logoFooter.src = logoPath;
+              }
+              
+              // Cores
+              if (data.company_color1) {
+                document.documentElement.style.setProperty('--cor-primaria', data.company_color1);
+              }
+              if (data.company_color2) {
+                document.documentElement.style.setProperty('--cor-secundaria', data.company_color2);
+              }
+              if (data.company_color3) {
+                document.documentElement.style.setProperty('--cor-destaque', data.company_color3);
+              }
+              // Fonte
+              if (data.company_font) {
+                document.documentElement.style.setProperty('--fonte-principal', `'${data.company_font}', sans-serif`);
+                if (!['Poppins', 'Arial', 'sans-serif'].includes(data.company_font)) {
+                  // Remove links antigos da fonte customizada
+                  document.querySelectorAll('link[data-dynamic-font]').forEach(l => l.remove());
+                  const link = document.createElement('link');
+                  link.rel = 'stylesheet';
+                  link.setAttribute('data-dynamic-font', '1');
+                  link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(data.company_font)}:wght@300;400;500;600;700&display=swap`;
+                  document.head.appendChild(link);
+                }
+              }
+              // Aplica as cores em elementos principais
+              const root = document.documentElement;
+              // Atualiza as variáveis CSS
+              root.style.setProperty('--cor-primaria', data.company_color1 || '#2563eb');
+              root.style.setProperty('--cor-secundaria', data.company_color2 || '#10b981');
+              root.style.setProperty('--cor-destaque', data.company_color3 || '#f59e0b');
+              
+              // Força atualização do navbar e outros elementos
+              document.querySelectorAll('.navbar-dynamic, .navbar-dynamic-gradient').forEach(el => {
+                el.style.setProperty('--cor-primaria', data.company_color1 || '#2563eb');
+              });
+              
+              // Atualiza elementos com classes antigas do Tailwind
+              document.querySelectorAll('.bg-blue-600').forEach(el => el.style.backgroundColor = data.company_color1 || '#2563eb');
+              document.querySelectorAll('.bg-green-600').forEach(el => el.style.backgroundColor = data.company_color2 || '#10b981');
+              document.querySelectorAll('.bg-orange-500').forEach(el => el.style.backgroundColor = data.company_color3 || '#f59e0b');
+              document.querySelectorAll('.text-blue-600').forEach(el => el.style.color = data.company_color1 || '#2563eb');
+              document.querySelectorAll('.text-green-600').forEach(el => el.style.color = data.company_color2 || '#10b981');
+              document.querySelectorAll('.text-orange-500').forEach(el => el.style.color = data.company_color3 || '#f59e0b');
+            } catch (e) { }
+          }
+
+          // Aplica ao carregar
+          document.addEventListener('DOMContentLoaded', aplicarFonteECores);
+
+          // Atualização instantânea entre abas usando BroadcastChannel
+          if ('BroadcastChannel' in window) {
+            const canal = new BroadcastChannel('configuracoes_empresa');
+            canal.onmessage = (event) => {
+              console.log('Mensagem recebida do canal:', event.data);
+              
+              if (event.data && (event.data.tipo === 'fonte_atualizada' || event.data.tipo === 'atualizar_cores')) {
+                if (event.data.tipo === 'atualizar_cores') {
+                  // Recarrega as configurações quando houver mudança
+                  aplicarFonteECores();
+                  // Aplica as cores recebidas diretamente
+                  const data = event.data;
+                  if (data.company_color1) document.documentElement.style.setProperty('--cor-primaria', data.company_color1);
+                  if (data.company_color2) document.documentElement.style.setProperty('--cor-secundaria', data.company_color2);
+                  if (data.company_color3) document.documentElement.style.setProperty('--cor-destaque', data.company_color3);
+                  if (data.company_font) {
+                    document.documentElement.style.setProperty('--fonte-principal', `'${data.company_font}', sans-serif`);
+                    if (!['Poppins', 'Arial', 'sans-serif'].includes(data.company_font)) {
+                      document.querySelectorAll('link[data-dynamic-font]').forEach(l => l.remove());
+                      const link = document.createElement('link');
+                      link.rel = 'stylesheet';
+                      link.setAttribute('data-dynamic-font', '1');
+                      link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(data.company_font)}:wght@300;400;500;600;700&display=swap`;
+                      document.head.appendChild(link);
+                    }
+                  }
+                  const root = document.documentElement;
+                  root.style.setProperty('--color-primary', data.company_color1 || '#2563eb');
+                  root.style.setProperty('--color-secondary', data.company_color2 || '#10b981');
+                  root.style.setProperty('--color-accent', data.company_color3 || '#f59e0b');
+                  document.querySelectorAll('.bg-blue-600').forEach(el => el.style.backgroundColor = data.company_color1 || '#2563eb');
+                  document.querySelectorAll('.bg-green-600').forEach(el => el.style.backgroundColor = data.company_color2 || '#10b981');
+                  document.querySelectorAll('.bg-orange-500').forEach(el => el.style.backgroundColor = data.company_color3 || '#f59e0b');
+                  document.querySelectorAll('.text-blue-600').forEach(el => el.style.color = data.company_color1 || '#2563eb');
+                  document.querySelectorAll('.text-green-600').forEach(el => el.style.color = data.company_color2 || '#10b981');
+                  document.querySelectorAll('.text-orange-500').forEach(el => el.style.color = data.company_color3 || '#f59e0b');
+                  // Atualiza botões principais com cor primária instantaneamente
+                  document.querySelectorAll('button.bg-blue-600').forEach(btn => {
+                    btn.style.backgroundColor = data.company_color1 || '#2563eb';
+                  });
+                  document.querySelectorAll('button.hover\\:bg-blue-700').forEach(btn => {
+                    btn.onmouseover = function () {
+                      btn.style.backgroundColor = data.company_color1 ? shadeColor(data.company_color1, -10) : '#1d4ed8';
+                    };
+                    btn.onmouseout = function () {
+                      btn.style.backgroundColor = data.company_color1 || '#2563eb';
+                    };
+                  });
+                  // Função para escurecer cor (shade)
+                  function shadeColor(color, percent) {
+                    let R = parseInt(color.substring(1, 3), 16);
+                    let G = parseInt(color.substring(3, 5), 16);
+                    let B = parseInt(color.substring(5, 7), 16);
+                    R = parseInt(R * (100 + percent) / 100);
+                    G = parseInt(G * (100 + percent) / 100);
+                    B = parseInt(B * (100 + percent) / 100);
+                    R = (R < 255) ? R : 255;
+                    G = (G < 255) ? G : 255;
+                    B = (B < 255) ? B : 255;
+                    return "#" + (R.toString(16).padStart(2, '0')) + (G.toString(16).padStart(2, '0')) + (B.toString(16).padStart(2, '0'));
+                  }
+                } else {
+                  aplicarFonteECores();
+                }
+              }
+            };
+          }
+        </script>
+  <script src="/assets/js/utils/utils.js"></script>
+  <script src="/assets/js/company.js"></script>
+  <script src="/assets/js/filters.js"></script>
+  <script src="/assets/js/company-description.js"></script>
+  <script src="/assets/js/public/main.js"></script>
+  
+  <!-- Verificação de carregamento dos scripts -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Scripts carregados:', {
+        utils: typeof window.utils !== 'undefined',
+        company: typeof window.company !== 'undefined',
+        filters: typeof window.filters !== 'undefined',
+        mainJs: typeof window.renderizarImoveis !== 'undefined',
+        openContactForm: typeof openContactForm === 'function'
+      });
+    });
+  </script>
+
+  <!-- Script do WhatsApp -->
+  <script>
+    // Inicializa o botão do WhatsApp
+    async function initializeWhatsAppButton() {
+      const btn = document.getElementById('contato-whatsapp');
+      console.log('Botão WhatsApp encontrado:', btn);
+      
+      if (!btn) {
+        console.error('Botão WhatsApp não encontrado');
+        return;
+      }
+
+      try {
+        const res = await fetch('api/getCompanySettings.php');
+        const json = await res.json();
+        console.log('Resposta da API:', json);
+
+        if (!json.success || !json.data || !json.data.company_whatsapp) {
+          console.error('Número do WhatsApp não encontrado nas configurações');
+          btn.style.display = 'none';
+          return;
+        }
+
+        let numero = json.data.company_whatsapp.replace(/\D/g, '');
+        if (!numero) {
+          console.error('Número do WhatsApp inválido');
+          btn.style.display = 'none';
+          return;
+        }
+
+        console.log('Número formatado:', numero);
+        btn.href = `https://wa.me/${numero}`;
+        btn.style.display = 'flex';
+        
+        btn.onclick = function(e) {
+          e.preventDefault();
+          window.open(this.href, '_blank');
+        };
+      } catch (error) {
+        console.error('Erro ao configurar botão do WhatsApp:', error);
+        btn.style.display = 'none';
+      }
+    }
+
+    // Garante que o DOM está carregado antes de inicializar
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeWhatsAppButton);
+    } else {
+      initializeWhatsAppButton();
+    }
+  </script>
+
+  <script>
+    // Carrega a descrição da empresa do banco de dados
+    document.addEventListener('DOMContentLoaded', async function() {
+      const descriptionElement = document.getElementById('company-description');
+      
+      if (!descriptionElement) {
+        console.error('Elemento company-description não encontrado');
+        return;
+      }
+      
+      try {
+        const response = await fetch('/api/getCompanySettings.php');
+        if (!response.ok) {
+          throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Dados da API:', data);
+        
+        if (!data.success) {
+          throw new Error('API retornou erro: ' + (data.message || 'Erro desconhecido'));
+        }
+
+        if (!data.data) {
+          throw new Error('Dados da empresa não encontrados');
+        }
+
+        const description = data.data.company_description;
+        if (!description) {
+          throw new Error('Descrição da empresa não encontrada nas configurações');
+        }
+
+        // Verifica se o elemento existe antes de tentar atualizar
+        if (descriptionElement) {
+          // Substitui as quebras de linha do banco por tags <p>
+          const paragraphs = description.split('\n').filter(p => p.trim());
+          if (paragraphs.length === 0) {
+            throw new Error('Descrição da empresa está vazia');
+          }
+          
+          descriptionElement.innerHTML = paragraphs.map(p => 
+            `<p class="mb-6">${p.trim()}</p>`
+          ).join('');
+          
+          console.log('Descrição da empresa atualizada com sucesso');
+        } else {
+          console.error('Elemento #company-description não encontrado no DOM');
+        }
+      } catch (error) {
+        console.error('Erro ao carregar descrição da empresa:', error);
+        
+        // Mostra mensagem de erro mais informativa para o usuário
+        if (descriptionElement) {
+          descriptionElement.innerHTML = `
+            <p class="mb-6 text-red-600">
+              Há mais de 15 anos no mercado, a RR Imóveis se destaca pela excelência e compromisso com nossos clientes.
+              Nossa missão é encontrar o imóvel perfeito para você e sua família, com atendimento personalizado e as
+              melhores condições do mercado.
+            </p>
+            <p class="mb-6 text-gray-600">
+              Contamos com uma equipe de corretores especializados, prontos para oferecer todo o suporte necessário em
+              cada etapa da negociação, desde a busca pelo imóvel ideal até a finalização do contrato.
+            </p>`;
+        }
+      }
+    });
+  </script>
+  
+  <script>
+    // Preenche o botão WhatsApp do formulário de contato com o número da empresa
+    document.addEventListener('DOMContentLoaded', async function () {
+      const btn = document.getElementById('contato-whatsapp');
+      if (!btn) return;
+      let numero = '';
+      if (window.company_whatsapp) {
+        numero = window.company_whatsapp;
+      } else {
+        try {
+          const res = await fetch('api/getCompanySettings.php');
+          const json = await res.json();
+          if (json.success && json.data && json.data.company_whatsapp) {
+            numero = json.data.company_whatsapp;
+          }
+        } catch (e) {}
+      }
+      if (numero) {
+        numero = numero.replace(/\D/g, '');
+        btn.href = `https://wa.me/${numero}`;
+        btn.style.display = '';
+        btn.onclick = function(e) {
+          e.preventDefault();
+          window.open(this.href, '_blank');
+        };
+      } else {
+        btn.style.display = 'none';
+      }
+    });
+  </script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', async function () {
+      try {
+        const res = await fetch('api/getCompanySettings.php');
+        const json = await res.json();
+        
+        // Atualiza logo se disponível
+        if (json.success && json.data && json.data.company_logo) {
+          var logoPath = json.data.company_logo;
+          if (logoPath && logoPath.match(/\.(png|jpe?g|svg|webp)$/i)) {
+            var logoImg = document.getElementById('company-logo-img');
+            var logoFooter = document.getElementById('company-logo-footer');
+            if (logoImg) logoImg.src = logoPath;
+            if (logoFooter) logoFooter.src = logoPath;
+          }
+        }
+
+        // Atualiza cores
+        if (json.success && json.data) {
+          const root = document.documentElement;
+          if (json.data.company_color1) {
+            root.style.setProperty('--cor-primaria', json.data.company_color1);
+            // Força atualização do navbar
+            document.querySelectorAll('.navbar-dynamic, .navbar-dynamic-gradient').forEach(el => {
+              el.style.setProperty('background-color', json.data.company_color1, 'important');
+            });
+          }
+        }
+      } catch (e) {
+        console.error('Erro ao carregar configurações:', e);
+      }
+    });
+
+    // Escuta por mudanças de cores de outras abas/janelas
+    const colorChannel = new BroadcastChannel('color-sync');
+    colorChannel.onmessage = (event) => {
+      if (event.data && event.data.type === 'color-update') {
+        const root = document.documentElement;
+        if (event.data.primaryColor) {
+          root.style.setProperty('--cor-primaria', event.data.primaryColor);
+          // Força atualização do navbar
+          document.querySelectorAll('.navbar-dynamic, .navbar-dynamic-gradient').forEach(el => {
+            el.style.setProperty('background-color', event.data.primaryColor, 'important');
+          });
+        }
+      }
+    };
+  </script>
+
+  <!-- Scripts da aplicação -->
+  <script src="/assets/js/contact-form-handler.js"></script>
+
+</body>
+
+</html>

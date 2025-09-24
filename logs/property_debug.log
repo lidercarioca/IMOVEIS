@@ -1,0 +1,23 @@
+2025-09-23 17:29:08
+Array
+(
+    [title] => CASA DE VILA
+    [price] => 195000
+    [location] => R IBIA 517
+    [type] => house
+    [transactionType] => venda
+    [area] => 110
+    [yearBuilt] => 2024
+    [description] => EXCELENTE LOCALIZAÇÃO
+    [bedrooms] => 2
+    [bathrooms] => 1
+    [garage] => 2
+    [neighborhood] => TURIAÇU
+    [city] => Rio de Janeiro
+    [state] => RJ
+    [zip] => 21540070
+    [status] => active
+    [features] => ["Piscina","Jardim","Academia","Segurança","Churrasqueira","Mobiliado","Aceita Pet"]
+)
+
+

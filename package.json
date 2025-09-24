@@ -1,0 +1,21 @@
+{
+  "name": "imoveis-system",
+  "version": "1.0.0",
+  "scripts": {
+    "build:css": "npx tailwindcss -i ./assets/css/tailwind.css -o ./output.css --minify",
+    "watch:css": "npx tailwindcss -i ./assets/css/tailwind.css -o ./output.css --watch"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "bootstrap": "^5.3.2"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.13"
+  }
+}

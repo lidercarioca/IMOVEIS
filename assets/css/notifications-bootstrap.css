@@ -1,0 +1,111 @@
+/* Estilos para notificações usando Bootstrap */
+
+/* Container de notificações */
+.notifications-wrapper {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Item de notificação */
+.notification-item {
+    border-left: 4px solid transparent;
+    transition: background-color 0.2s ease;
+}
+
+.notification-item:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.05);
+}
+
+.notification-item.unread {
+    border-left-color: var(--bs-primary);
+    background-color: rgba(var(--bs-primary-rgb), 0.05);
+}
+
+/* Tipos de notificação */
+.notification-item.type-success {
+    border-left-color: var(--bs-success);
+}
+
+.notification-item.type-warning {
+    border-left-color: var(--bs-warning);
+}
+
+.notification-item.type-danger {
+    border-left-color: var(--bs-danger);
+}
+
+.notification-item.type-info {
+    border-left-color: var(--bs-info);
+}
+
+/* Ícones de notificação */
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.notification-icon.success {
+    background-color: rgba(var(--bs-success-rgb), 0.1);
+    color: var(--bs-success);
+}
+
+.notification-icon.warning {
+    background-color: rgba(var(--bs-warning-rgb), 0.1);
+    color: var(--bs-warning);
+}
+
+.notification-icon.danger {
+    background-color: rgba(var(--bs-danger-rgb), 0.1);
+    color: var(--bs-danger);
+}
+
+.notification-icon.info {
+    background-color: rgba(var(--bs-info-rgb), 0.1);
+    color: var(--bs-info);
+}
+
+/* Badge de notificação */
+.notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Animações */
+.notification-item {
+    animation: fadeInDown 0.3s ease-out;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsividade */
+@media (max-width: 576px) {
+    .notifications-dropdown {
+        position: fixed !important;
+        top: 60px !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    .notifications-wrapper {
+        max-height: calc(100vh - 120px);
+    }
+}

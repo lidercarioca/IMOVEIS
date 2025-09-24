@@ -1,0 +1,296 @@
+/* Estilos para formulários usando Bootstrap */
+
+/* Formulário de filtros */
+.filter-form {
+    background-color: var(--bs-gray-100);
+    border: 1px solid var(--bs-gray-200);
+    border-radius: var(--bs-border-radius);
+    padding: 1rem;
+}
+
+/* Container de formulário */
+.form-container {
+    background-color: #fff;
+    border-radius: var(--bs-border-radius);
+    box-shadow: var(--bs-box-shadow-sm);
+    padding: 1.5rem;
+}
+
+/* Grupos de campos */
+.form-group-custom {
+    margin-bottom: 1rem;
+}
+
+.form-group-custom label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--bs-gray-700);
+}
+
+/* Grid de formulário */
+.form-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .form-grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .form-grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Input personalizado */
+.form-control-custom {
+    border: 1px solid var(--bs-gray-300);
+    border-radius: var(--bs-border-radius);
+    padding: 0.5rem 0.75rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control-custom:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+    outline: 0;
+}
+
+/* Select personalizado */
+.form-select-custom {
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    border: 1px solid var(--bs-gray-300);
+    padding: 0.5rem 2rem 0.5rem 0.75rem;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    appearance: none;
+}
+
+.form-select-custom:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+    outline: 0;
+}
+
+/* Checkbox e Radio personalizados */
+.form-check-custom {
+    padding-left: 1.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-check-custom .form-check-input {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-left: -1.75rem;
+    margin-top: 0.125rem;
+    border: 1px solid var(--bs-gray-400);
+}
+
+.form-check-custom .form-check-label {
+    padding-top: 0.125rem;
+    color: var(--bs-gray-700);
+}
+
+/* Switch personalizado */
+.form-switch-custom {
+    padding-left: 3rem;
+}
+
+.form-switch-custom .form-check-input {
+    width: 2.5rem;
+    margin-left: -3rem;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%280, 0, 0, 0.25%29'/%3e%3c/svg%3e");
+    border-radius: 2rem;
+}
+
+/* Validação de formulários */
+.was-validated .form-control-custom:valid,
+.form-control-custom.is-valid {
+    border-color: var(--bs-success);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+    padding-right: calc(1.5em + 0.75rem);
+}
+
+.was-validated .form-control-custom:invalid,
+.form-control-custom.is-invalid {
+    border-color: var(--bs-danger);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+    padding-right: calc(1.5em + 0.75rem);
+}
+
+/* Mensagens de erro */
+.invalid-feedback-custom {
+    display: none;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--bs-danger);
+}
+
+.was-validated .form-control-custom:invalid ~ .invalid-feedback-custom,
+.form-control-custom.is-invalid ~ .invalid-feedback-custom {
+    display: block;
+}
+
+/* Input groups */
+.input-group-custom {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    width: 100%;
+}
+
+.input-group-custom > .form-control-custom {
+    position: relative;
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+}
+
+.input-group-text-custom {
+    display: flex;
+    align-items: center;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--bs-gray-700);
+    text-align: center;
+    white-space: nowrap;
+    background-color: var(--bs-gray-100);
+    border: 1px solid var(--bs-gray-300);
+    border-radius: var(--bs-border-radius);
+}
+
+/* Floating labels */
+.form-floating-custom {
+    position: relative;
+}
+
+.form-floating-custom > .form-control-custom {
+    height: calc(3.5rem + 2px);
+    line-height: 1.25;
+    padding: 1rem 0.75rem;
+}
+
+.form-floating-custom > label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 1rem 0.75rem;
+    overflow: hidden;
+    text-align: start;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    pointer-events: none;
+    border: 1px solid transparent;
+    transform-origin: 0 0;
+    transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
+    color: var(--bs-gray-600);
+}
+
+.form-floating-custom > .form-control-custom:focus ~ label,
+.form-floating-custom > .form-control-custom:not(:placeholder-shown) ~ label {
+    opacity: 0.65;
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+}
+
+/* Botões do formulário */
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid var(--bs-gray-200);
+}
+
+/* Loading state */
+.form-loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.form-loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1rem;
+    height: 1rem;
+    margin: -0.5rem;
+    border: 2px solid var(--bs-primary);
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Range slider */
+.form-range-custom {
+    width: 100%;
+    height: 1.5rem;
+    padding: 0;
+    background-color: transparent;
+    appearance: none;
+}
+
+.form-range-custom::-webkit-slider-thumb {
+    width: 1rem;
+    height: 1rem;
+    margin-top: -0.25rem;
+    background-color: var(--bs-primary);
+    border: 0;
+    border-radius: 1rem;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    appearance: none;
+}
+
+.form-range-custom::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 0.5rem;
+    color: transparent;
+    cursor: pointer;
+    background-color: var(--bs-gray-300);
+    border-color: transparent;
+    border-radius: 1rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 1rem;
+    }
+    
+    .form-group-custom {
+        margin-bottom: 0.75rem;
+    }
+    
+    .form-buttons {
+        padding-top: 0.75rem;
+        margin-top: 0.75rem;
+    }
+    
+    .form-check-custom {
+        padding-left: 1.5rem;
+    }
+    
+    .form-floating-custom > .form-control-custom {
+        height: calc(3rem + 2px);
+    }
+}

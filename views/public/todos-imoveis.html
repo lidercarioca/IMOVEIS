@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Todos os Imóveis - RR Imóveis</title>
+  
+  <script src="/assets/js/fallback.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="/assets/css/custom.new.css">
+  <link rel="stylesheet" href="/assets/css/button-colors.css">
+  <link rel="stylesheet" href="/assets/css/ribbons.css">
+  <link rel="stylesheet" href="/assets/css/shared-styles.css">
+  <link rel="stylesheet" href="/assets/css/todos-imoveis.css">
+  <script src="/assets/js/contact-form-handler.js"></script>
+  <script src="/assets/js/public/navbar-color-sync.js"></script>
+  
+ 
+  <script>
+    // Carrega as cores dinâmicas do site
+    (async function() {
+      try {
+        const res = await fetch('/api/getCompanySettings.php');
+        const data = await res.json();
+        if (data.success && data.data) {
+          const style = document.createElement('style');
+          style.textContent = `
+            :root {
+              --cor-primaria: ${data.data.company_color1 || '#2563eb'};
+              --cor-secundaria: ${data.data.company_color2 || '#10b981'};
+              --cor-destaque: ${data.data.company_color3 || '#f59e0b'};
+              --fonte-principal: '${data.data.company_font || 'Poppins'}', sans-serif;
+            }
+          `;
+          document.head.appendChild(style);
+        }
+      } catch (e) {
+        console.error('Erro ao carregar cores:', e);
+      }
+    })();
+  </script>
+  <style>
+  body { font-family: var(--fonte-principal, 'Poppins', sans-serif); background: #f8fafc; }
+    .property-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; padding: 2rem; }
+    .property-card { background: white; border-radius: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.08); padding: 1.5rem; transition: transform 0.3s; }
+    .property-card:hover { transform: scale(1.02); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); }
+    .property-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 0.5rem; }
+    .property-info { font-size: 0.95rem; color: #555; margin-bottom: 0.5rem; }
+    .btn-detalhes { display: inline-block; margin-top: 0.75rem; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none; transition: opacity 0.2s; }
+    .btn-detalhes:hover { opacity: 0.9; }
+    /* Estilos dinâmicos para botões e elementos */
+    .btn-voltar {
+      color: white;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      border: none;
+    }
+    .btn-voltar:hover {
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    .btn-voltar:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .bg-gray-900 {
+  background-color: #111827 ;
+}
+
+    .text-white-hover:hover {
+  color: white ;
+    }
+    
+  </style>
+</head>
+
+<body class="bg-light">
+  <nav class="navbar navbar-dark navbar-dynamic text-white shadow sticky-top">
+    <div class="container py-2">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center"></div>
+        <img id="company-logo-img" alt="Logo RR Imóveis" class="me-2 company-logo" onerror="this.style.display='none'">
+        <span class="fs-4 fw-bold">RR Imóveis</span>
+      </div>
+      <a href="/" class="nav-link text-white-50 hover-light">Voltar ao Início</a>
+    </div>
+  </nav>
+  
+  <script>
+    // Carrega o logo do backend dinamicamente
+    fetch('/assets/imagens/logo/logo.png')
+      .then(res => {
+        if (res.ok) {
+          document.getElementById('company-logo-img').src = '/assets/imagens/logo/logo.png';
+        }
+      });
+  </script>
+  <div class="container">
+    <h1 class="display-4 fw-bold text-dark mb-5 text-center">Todos os Imóveis</h1>
+
+    <!-- Seção de Filtros -->
+    <div class="bg-white rounded-3 shadow-sm p-4 mb-5">
+      <div class="row g-3 g-md-4">
+        <div class="col-12 col-md-3">
+          <label for="select-tipo" class="form-label text-secondary small">Tipo de Imóvel</label>
+          <select id="select-tipo" class="form-select form-select-lg" title="Selecione o tipo de imóvel">
+            <option value="">Todos os tipos</option>
+            <option value="house">Casa</option>
+            <option value="apartment">Apartamento</option>
+            <option value="commercial">Comercial</option>
+            <option value="land">Terreno</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-4">
+          <label for="select-localizacao" class="form-label text-secondary small">Localização</label>
+          <select id="select-localizacao" class="form-select form-select-lg" title="Selecione a localização">
+            <option value="Todas as regiões">Todas as regiões</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-3">
+          <label for="select-preco" class="form-label text-secondary small">Faixa de Preço</label>
+          <select id="select-preco" class="form-select form-select-lg" title="Selecione a faixa de preço">
+            <option value="Qualquer preço">Qualquer preço</option>
+            <option value="Até R$ 200.000">Até R$ 200.000</option>
+            <option value="R$ 200.000 - R$ 500.000">R$ 200.000 - R$ 500.000</option>
+            <option value="R$ 500.000 - R$ 1.000.000">R$ 500.000 - R$ 1.000.000</option>
+            <option value="Acima de R$ 1.000.000">Acima de R$ 1.000.000</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-2">
+          <label class="d-none d-md-block form-label text-secondary small">&nbsp;</label>
+          <button id="btn-limpar-filtros" class="btn h-75 w-100" style="background-color: var(--cor-secundaria); color: #fff; border: none;">
+            <i class="fas fa-eraser me-2"></i>Limpar Filtros
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="property-list" class="property-grid"></div>
+    
+    <!-- Botão Voltar -->
+    <div class="text-center mt-5 mb-4">
+      <a href="/" class="btn btn-lg px-5 btn-voltar" style="background-color: var(--cor-primaria); color: #fff; border: none;">
+        <i class="fas fa-home me-2"></i>
+        Voltar ao Site Principal
+      </a>
+    </div>
+  </div>
+  <script src="/assets/js/utils/utils.js"></script>
+  <script src="/assets/js/public/todos-imoveis.js"></script>
+  <script src="/assets/js/public/todos-imoveis-filter.js"></script>
+   <!-- Modal de Detalhes do Imóvel -->
+  <div class="modal fade" id="propertyModal" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-custom">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-4">
+            <!-- Imagens do imóvel via JS -->
+            <div class="col-12">
+              <div id="modal-images"></div>
+            </div>
+            <!-- Detalhes do imóvel abaixo da imagem -->
+            <div class="col-12">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 id="modal-title" class="modal-title fw-bold">Título do Imóvel</h5>
+                <span id="modal-price" class="fs-5 fw-bold text-primary">R$ 0.000.000</span>
+              </div>
+              <p id="modal-location" class="text-muted mb-3">
+                <!-- Ícone será inserido dinamicamente pelo JS -->
+              </p>
+              <!-- Bloco de Área e Ano de Construção -->
+              <div class="d-flex justify-content-between py-2 px-3 rounded mb-4 modal-bg-light">
+                <!-- Área -->
+                <div>
+                  <div class="text-muted small"></div>
+                  <div class="d-flex align-items-center gap-2">
+                    <span id="modal-area" class="fw-semibold">75m²</span>
+                  </div>
+                </div>
+                <!-- Ano de Construção -->
+                <div>
+                  <div class="text-muted small">Ano de Construção</div>
+                  <div class="d-flex align-items-center gap-2">
+                    <span id="modal-yearBuilt" class="fw-semibold">2020</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Ícones de quarto e banheiro abaixo da área e ano -->
+              <div class="d-flex gap-4 mb-4">
+                <div class="d-flex align-items-center gap-2">
+                  <span id="modal-bedrooms" class="fw-semibold text-dark">N/A</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span id="modal-bathrooms" class="fw-semibold text-dark">N/A</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span id="modal-garage" class="fw-semibold text-dark">N/A</span>
+                </div>
+              </div>
+              <div class="mb-3">
+                <strong>Características:</strong>
+                <ul id="modal-features" class="row row-cols-2 list-unstyled mt-2"></ul>
+              </div>
+              <div class="mb-3">
+                <strong>Descrição:</strong>
+                <p id="modal-description" class="mt-1"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Rodapé do Modal -->
+        <div class="modal-footer d-flex justify-content-between align-items-center modal-footer-transition">
+          <a id="modal-whatsapp" href="#" target="_blank" class="btn btn-success px-4 modal-button">
+            <i class="fab fa-whatsapp me-2"></i> Contato via WhatsApp
+          </a>
+          <div class="text-center">
+            <button type="button" id="btnOpenContact" onclick="openContactForm()" class="btn btn-primary px-4">
+              <i class="fas fa-envelope me-2"></i>Entrar em Contato
+            </button>
+          </div>
+          <button type="button" class="btn px-4 modal-button" data-bs-dismiss="modal" style="background-color: var(--cor-destaque); color: #fff; border: none;">
+            <i class="fas fa-times me-2"></i>Fechar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-5">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-md-4 g-3">
+        <div class="info-contato-dinamico mb-4" style="display: none;"></div>
+        <!-- Company Info -->
+        <div class="col">
+          <div class="d-flex align-items-center mb-2">
+            <img id="company-logo-footer" alt="Logo RR Imóveis" class="me-2" width="32" height="32"
+              onerror="this.style.display='none'">
+            <span class="fs-5 fw-bold">RR Imóveis</span>
+          </div>
+          <p class="small">
+            Sua imobiliária de confiança para encontrar o imóvel dos seus sonhos. Atendimento personalizado e as
+            melhores condições do mercado.
+          </p>
+          <div class="d-flex gap-3">
+            <a href="#" class="text-secondary hover-light" id="link-facebook-footer" title="Siga-nos no Facebook">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="text-secondary hover-light" id="link-instagram-footer" title="Siga-nos no Instagram">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="text-secondary hover-light" id="link-linkedin-footer" title="Siga-nos no LinkedIn">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="#" class="text-secondary hover-light" id="link-youtube-footer" title="Inscreva-se em nosso canal">
+              <i class="fab fa-youtube"></i>
+            </a>
+          </div>
+        </div>
+        <!-- Quick Links -->
+        <div class="col">
+          <h4 class="h5 fw-bold mb-2">Links Rápidos</h4>
+          <ul class="list-unstyled small">
+            <li class="nav-item mb-2"><a href="#" class="nav-link px-0 text-secondary hover-light text-white-hover">Início</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link px-0 text-secondary hover-light text-white-hover">Blog</a></li>
+          </ul>
+        </div>
+        <!-- Services -->
+        <div class="col">
+          <h4 class="h5 fw-bold mb-2">Serviços</h4>
+          <ul class="list-unstyled small">
+            <li class="nav-item mb-2"><a href="#" class="nav-link px-0 text-secondary hover-light text-white-hover">Compra de Imóveis</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link px-0 text-secondary hover-light text-white-hover">Venda de Imóveis</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link px-0 text-secondary hover-light text-white-hover">Avaliação de Imóveis</a></li>
+            
+          </ul>
+        </div>
+        <!-- Newsletter -->
+        <div class="col">
+          <h4 class="h5 fw-bold mb-2">Newsletter</h4>
+          <p class="small mb-3">
+            Inscreva-se para receber novidades e ofertas exclusivas.
+          </p>
+          <form class="mb-3">
+            <div class="input-group">
+              <input type="email" class="form-control" placeholder="Seu e-mail">
+              <button type="submit" class="btn btn-primary" title="Inscrever-se na newsletter">
+                <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                <span class="visually-hidden">Inscrever-se na newsletter</span>
+              </button>
+            </div>
+          </form>
+          <p class="small mb-3">
+            Ao se inscrever, você concorda com nossa Política de Privacidade.
+          </p>
+        </div>
+      </div>
+      <!-- Footer Bottom -->
+      <div class="border-top border-secondary mt-5 pt-4">
+        <div class="row align-items-center">
+          <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+            <p class="d-flex justify-content-between small">
+              &copy; 2025 RR Imóveis. Todos os direitos reservados.
+            </p>
+          </div>
+          <div class="col-md-6">
+            <ul class="nav justify-content-center justify-content-md-end">
+              <li class="nav-item">
+                <a href="#" class="nav-link px-2 text-secondary hover-light text-white-hover small">Termos de Uso</a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link px-2 text-secondary hover-light text-white-hover small">Política de Privacidade</a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link px-2 text-secondary hover-light text-white-hover small">Cookies</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script src="/assets/js/company-description.js"></script>
+<script src="/assets/js/company.js"></script>
+<script src="/assets/js/contato-dinamico.js"></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+/* Botões com cores dinâmicas */
+.btn-dynamic-primary,
+.btn-dynamic-secondary,
+.btn-dynamic-highlight,
+.ver-detalhes {
+  color: white !important;
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 1rem;
+  letter-spacing: 0.2px;
+}
+
+/* Garantir que o botão Ver Detalhes sempre tenha texto branco */
+.ver-detalhes,
+button.ver-detalhes,
+a.ver-detalhes,
+.btn.ver-detalhes,
+[class*="btn-"].ver-detalhes {
+  color: white !important;
+}
+
+.btn-dynamic-primary:hover,
+.btn-dynamic-secondary:hover,
+.btn-dynamic-highlight:hover {
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-dynamic-primary:active,
+.btn-dynamic-secondary:active,
+.btn-dynamic-highlight:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-dynamic-primary {
+  background-color: var(--cor-primaria);
+}
+
+.btn-dynamic-primary:hover {
+  background-color: var(--cor-primaria);
+  opacity: 0.95;
+}
+
+.btn-dynamic-secondary {
+  background-color: var(--cor-secundaria);
+  border-color: var(--cor-secundaria);
+}
+
+.btn-dynamic-secondary:hover {
+  background-color: var(--cor-secundaria);
+  opacity: 0.95;
+}
+
+.btn-dynamic-highlight {
+  background-color: var(--cor-destaque);
+}
+
+.btn-dynamic-highlight:hover {
+  background-color: var(--cor-destaque);
+  opacity: 0.95;
+}
