@@ -74,22 +74,22 @@ contatoBloco.innerHTML = html;
 // Preencher links das redes sociais dinamicamente
 const socialLinks = document.getElementById('social-links-dinamico');
 if (socialLinks) {
-  let htmlLinks = '<div class="d-flex gap-3">';
+  let htmlLinks = '<div class="d-flex gap-1">';
   if (data.company_facebook) {
-    htmlLinks += `<a href="${data.company_facebook}" target="_blank" rel="noopener" class="text-primary hover-light"><i class="fab fa-facebook-f"></i></a>`;
+    htmlLinks += `<a href="${data.company_facebook}" target="_blank" rel="noopener" class="bg-primary bg-opacity-10 rounded-circle p-3 me-2 d-inline-flex align-items-center justify-content-center text-primary"><i class="fab fa-facebook-f"></i></a>`;
   }
   if (data.company_instagram) {
-    htmlLinks += `<a href="${data.company_instagram}" target="_blank" rel="noopener" class="text-primary hover-light"><i class="fab fa-instagram"></i></a>`;
+    htmlLinks += `<a href="${data.company_instagram}" target="_blank" rel="noopener" class="bg-primary bg-opacity-10 rounded-circle p-3 me-2 d-inline-flex align-items-center justify-content-center text-primary "><i class="fab fa-instagram"></i></a>`;
   }
   if (data.company_linkedin) {
-    htmlLinks += `<a href="${data.company_linkedin}" target="_blank" rel="noopener" class="text-primary hover-light"><i class="fab fa-linkedin-in"></i></a>`;
+    htmlLinks += `<a href="${data.company_linkedin}" target="_blank" rel="noopener" class="bg-primary bg-opacity-10 rounded-circle p-3 me-2 d-inline-flex align-items-center justify-content-center text-primary "><i class="fab fa-linkedin-in"></i></a>`;
   }
   if (data.company_youtube) {
-    htmlLinks += `<a href="${data.company_youtube}" target="_blank" rel="noopener" class="text-primary hover-light"><i class="fab fa-youtube"></i></a>`;
+    htmlLinks += `<a href="${data.company_youtube}" target="_blank" rel="noopener" class="bg-primary bg-opacity-10 rounded-circle p-3 me-2 d-inline-flex align-items-center justify-content-center text-primary "><i class="fab fa-youtube"></i></a>`;
   }
   htmlLinks += '</div>';
   
-  if (htmlLinks === '<div class="d-flex gap-3"></div>') {
+  if (htmlLinks === '<div class="d-flex gap-1"></div>') {
     htmlLinks = '<div class="text-secondary">Nenhuma rede social cadastrada.</div>';
   }
   socialLinks.innerHTML = htmlLinks;

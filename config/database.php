@@ -40,6 +40,10 @@ try {
     throw $e;
 }
 
+/**
+ * Classe responsável pela conexão com o banco de dados
+ * e operações básicas de CRUD
+ */
 class Database {
     private $host;
     private $user;

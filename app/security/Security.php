@@ -1,7 +1,7 @@
 <?php
 class Security {
-    // Tempo máximo de inatividade da sessão (2 horas)
-    const SESSION_LIFETIME = 7200;
+    // Tempo máximo de inatividade da sessão (1 hora)
+    const SESSION_LIFETIME = 3600;
     
     // Número máximo de tentativas de login
     const MAX_LOGIN_ATTEMPTS = 5;

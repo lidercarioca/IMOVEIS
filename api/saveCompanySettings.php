@@ -10,7 +10,9 @@ require_once '../config/database.php';
 $data = json_decode(file_get_contents('php://input'), true);
 
 // Debug - Loga os dados recebidos
-file_put_contents(__DIR__ . '/../debug_settings.log', date('Y-m-d H:i:s') . " Dados recebidos:\n" . print_r($data, true) . "\n\n", FILE_APPEND);
+$config = require_once __DIR__ . '/../config/logging.php';
+$logFile = $config['path'] . $config['files']['settings'];
+file_put_contents($logFile, date('Y-m-d H:i:s') . " Dados recebidos:\n" . print_r($data, true) . "\n\n", FILE_APPEND);
 
 // Validação simples
 

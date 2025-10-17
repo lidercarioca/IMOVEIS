@@ -41,7 +41,7 @@ a.ver-detalhes,
 
 .btn-dynamic-primary:hover {
   background-color: var(--cor-primaria);
-  opacity: 0.95;
+  filter: brightness(0.85); /* escurece em 15% */
 }
 
 .btn-dynamic-secondary {

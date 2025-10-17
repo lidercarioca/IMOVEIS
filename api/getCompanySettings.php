@@ -10,7 +10,9 @@ ini_set('display_errors', 1);
 $stmt = $pdo->query('SELECT * FROM company_settings WHERE id = 1 LIMIT 1');
 if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     // Loga o array vindo do banco para depuração
-    file_put_contents(__DIR__ . '/../horas.log', date('c') . "\n" . print_r($row, true) . "\n", FILE_APPEND);
+    $config = require_once __DIR__ . '/../config/logging.php';
+    $logFile = $config['path'] . $config['files']['hours'];
+    file_put_contents($logFile, date('c') . "\n" . print_r($row, true) . "\n", FILE_APPEND);
     // Garante que os campos de horário de atendimento existam no retorno
     $row['company_weekday_hours'] = isset($row['company_weekday_hours']) ? $row['company_weekday_hours'] : '';
     $row['company_saturday_hours'] = isset($row['company_saturday_hours']) ? $row['company_saturday_hours'] : '';

@@ -18,6 +18,12 @@ register_shutdown_function(function() {
 header('Content-Type: application/json; charset=utf-8');
 
 // Função para enviar resposta JSON e encerrar
+/**
+ * Envia uma resposta JSON padronizada
+ * @param bool $success - Indica se a operação foi bem-sucedida
+ * @param string $message - Mensagem descritiva
+ * @param mixed $data - Dados adicionais para retornar
+ */
 function sendJsonResponse($success, $message = '', $data = null) {
     // Limpa qualquer output buffering
     while (ob_get_level()) ob_end_clean();

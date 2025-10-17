@@ -53,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['role'] = $user['role'];
             $_SESSION['username'] = $user['username'];
+            $_SESSION['email'] = $user['email']; // <<--- ADICIONE ESTA LINHA
             $_SESSION['last_activity'] = time();
             $_SESSION['last_regeneration'] = time();
             

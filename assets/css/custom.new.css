@@ -1,8 +1,8 @@
 /* Variáveis Bootstrap personalizadas */
 :root {
-  --bs-primary: var(--cor-primaria, #2563eb);
-  --bs-secondary: var(--cor-secundaria, #10b981);
-  --bs-warning: var(--cor-destaque, #f59e0b);
+  --bs-primary: var(--cor-primaria);
+  --bs-secondary: var(--cor-secundaria);
+  --bs-warning: var(--cor-destaque);
   --bs-font-sans-serif: var(--fonte-principal, 'Poppins', sans-serif);
   --bs-body-font-family: var(--fonte-principal, 'Poppins', sans-serif);
 }
@@ -44,7 +44,7 @@
 
 .property-ribbon.vendido { background-color: var(--bs-primary); }
 .property-ribbon.alugado { background-color: var(--bs-secondary); }
-.property-ribbon.comercial { background-color: var(--bs-warning); }
+.property-ribbon.comercial { background-color: var(--bs-warning); }*/
 
 /* Navbar personalizada */
 .navbar-dynamic-gradient {

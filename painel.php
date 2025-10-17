@@ -40,42 +40,90 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
 
   <!-- Meta tags para compatibilidade mobile -->
   <meta name="format-detection" content="telephone=no">
-  <meta name="theme-color" content="#2563eb">
+  <meta name="theme-color" content="#1e40af">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-  <!-- Polyfills para navegadores antigos -->
-  <script src="https://cdn.jsdelivr.net/npm/core-js-bundle@3.33.0/minified.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/intersection-observer@0.12.2/intersection-observer.js"></script>
+  <!-- CSS Crítico - DEVE ser o primeiro CSS carregado -->
+  <style>
+    :root {
+      --cor-primaria: #1e40af;
+      --cor-primaria-rgb: 37, 99, 235;
+      --cor-secundaria: #10b981;
+      --cor-secundaria-rgb: 16, 185, 129;
+      --cor-destaque: #f59e0b;
+      --cor-destaque-rgb: 245, 158, 11;
+    }
+
+    /* Previne flash de conteúdo e transições durante carregamento */
+    .preload * {
+      -webkit-transition: none !important;
+      -moz-transition: none !important;
+      -ms-transition: none !important;
+      -o-transition: none !important;
+      transition: none !important;
+    }
+
+    /* Sobrescreve cores do Bootstrap imediatamente */
+    .bg-primary { background-color: var(--cor-primaria) !important; }
+    .text-primary { color: var(--cor-primaria) !important; }
+    .border-primary { border-color: var(--cor-primaria) !important; }
+    .btn-primary { background-color: var(--cor-primaria) !important; border-color: var(--cor-primaria) !important; }
+    
+    /* Estilos críticos para o sidebar e elementos principais */
+    .sidebar { background-color: var(--cor-primaria) !important; }
+    .navbar { background-color: var(--cor-primaria) !important; }
+    .nav-link.active { background-color: var(--cor-primaria) !important; }
+    .btn-outline-primary { color: var(--cor-primaria) !important; border-color: var(--cor-primaria) !important; }
+    .btn-outline-primary:hover { background-color: var(--cor-primaria) !important; color: #fff !important; }
+    
+    /* Aplica imediatamente para elementos do sistema */
+    body { visibility: visible !important; }
+    #sidebar { background-color: var(--cor-primaria) !important; }
+    #content { background-color: #f8fafc !important; }
+    
+    /* Força cores personalizadas em elementos específicos */
+    [style*="background-color: var(--cor-primaria)"] { background-color: var(--cor-primaria) !important; }
+    [style*="color: var(--cor-primaria)"] { color: var(--cor-primaria) !important; }
+    
+    /* Ajustes de performance */
+    * { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  </style>
+
+  <!-- Preload de recursos críticos -->
+  <link rel="preload" href="/assets/css/variables.css" as="style">
+  <link rel="preload" href="/assets/css/sidebar.css" as="style">
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" as="style">
+
+  <!-- Polyfills com carregamento otimizado -->
+  <script src="https://cdn.jsdelivr.net/npm/core-js-bundle@3.33.0/minified.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/intersection-observer@0.12.2/intersection-observer.js" async></script>
+
+  <!-- Variáveis CSS Primeiro -->
+  <link rel="stylesheet" href="/assets/css/variables.css">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- CSS do sistema -->
-  <link rel="stylesheet" href="assets/css/notifications.css">
-  <link rel="stylesheet" href="assets/css/sidebar.css">
+  <link rel="stylesheet" href="/assets/css/notifications.css">
+  <link rel="stylesheet" href="/assets/css/custom.new.css">
+  <link rel="stylesheet" href="/assets/css/forms-bootstrap.css">
 
-
-
-  <!-- Scripts do sistema -->
-  <script src="assets/js/notifications.js"></script>
+  <!-- Scripts do sistema com carregamento otimizado -->
+  <script src="/assets/js/notifications.js" defer></script>
 
   <!-- Tailwind CSS -->
   <link href="/output.css" rel="stylesheet">
 
   <!-- Fallback CSS para navegadores sem suporte a Tailwind -->
   <noscript>
-    <link rel="stylesheet" href="assets/css/fallback.css">
+    <link rel="stylesheet" href="/assets/css/fallback.css">
   </noscript>
   <style>
-    /* Configuração de cores e variáveis com fallbacks */
-    :root {
-      --cor-primaria: #2563eb;
-      --cor-primaria-rgb: 37, 99, 235;
-      --cor-secundaria: #10b981;
-      --cor-secundaria-rgb: 16, 185, 129;
-      --cor-destaque: #f59e0b;
-      --cor-destaque-rgb: 245, 158, 11;
-      --fonte-principal: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    }
+    /* Fallbacks e suporte para navegadores antigos */
 
     /* Prefixes para navegadores antigos */
     @supports not (--css: variables) {
@@ -102,6 +150,24 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
         flex-wrap: wrap;
       }
     }
+
+    .badge-grande {
+      position: absolute !important;
+      top: 1rem !important;
+      /* Corrigido: Adicionada a unidade */
+      left: 1rem !important;
+      /* Novo: Move para a direita */
+      font-size: 1rem !important;
+      padding: 0.6rem 0.75rem !important;
+      display: inline-block !important;
+      font-weight: 600 !important;
+      border-radius: 12px !important;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+      /* Opcional: melhora legibilidade */
+
+    }
+
 
     /* Classes para badges de status */
     .badge-status {
@@ -139,22 +205,36 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
       background-color: rgba(75, 85, 99, 0.1);
       color: #4b5563;
     }
+
+    /* Botão detalhes */
+    .btn-detalhes {
+      display: inline-block;
+      margin-top: 0.75rem;
+      background-color: #1e40af;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .btn-detalhes:hover {
+      filter: brightness(0.85);
+      /* escurece em 15% */
+    }
   </style>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <meta name="theme-color" content="#2563eb">
-  <meta name="description" content="Painel Administrativo RR Imóveis - Gerencie seus imóveis de forma eficiente">
-  <title>RR Imóveis - Painel Administrativo</title>
+  <meta name="theme-color" content="#1e40af">
+  <meta name="description" content="Painel Administrativo DJ Imóveis - Gerencie seus imóveis de forma eficiente">
+  <title>DJ Imóveis - Painel Administrativo</title>
 
 
 
   <!-- Preload de recursos críticos -->
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" as="style" crossorigin="anonymous">
-
-
-  <!-- Variáveis CSS e estilos base -->
-  <link rel="stylesheet" href="assets/css/variables.css">
-
+  
+  
   <!-- PWA Support -->
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -164,9 +244,6 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
   <!-- Gerenciador de cores -->
   <script src="assets/js/color-manager.js"></script>
 
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
   <!-- Font Awesome (ícones) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -174,7 +251,11 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
   <script>
     window.isAdmin = <?php echo $isAdmin ? 'true' : 'false'; ?>;
 
-    function toggleLeadStatus(element) {
+    /**
+ * Alterna o status de um lead entre diferentes estados
+ * @param {HTMLElement} element - Elemento HTML que disparou a ação
+ */
+function toggleLeadStatus(element) {
       // Encontra o menu dentro do container relativo
       const container = element.closest('.relative');
       const menu = container.querySelector('.lead-status-menu');
@@ -265,7 +346,13 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
       }
     });
 
-    async function updateLeadStatus(leadId, status) {
+    /**
+ * Atualiza o status de um lead no servidor
+ * @param {number} leadId - ID do lead
+ * @param {string} status - Novo status do lead
+ * @returns {Promise<void>}
+ */
+async function updateLeadStatus(leadId, status) {
       const statusDiv = document.querySelector(`.lead-status[data-id="${leadId}"]`);
 
       try {
@@ -627,52 +714,137 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
 
     #properties-container {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      /* 3 colunas */
-      gap: 2;
+      gap: 1.5rem;
+      transition: all 0.3s ease;
+      padding: 1rem;
+    }
+
+    #properties-container.grid-view {
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+
+    #properties-container.list-view {
+      grid-template-columns: 1fr;
+    }
+
+    .property-card {
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .property-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Estilos para visualização em grade */
+    .grid-view .property-card {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .grid-view .property-image-container img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    /* Estilos para visualização em lista */
+    .list-view .property-card {
+      display: grid;
+      grid-template-columns: 250px 1fr auto;
+      align-items: stretch;
+    }
+
+    .list-view .property-image-container {
+      height: 100%;
+    }
+
+    .list-view .property-image-container img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .list-view .property-info {
+      padding: 1.5rem;
+    }
+
+    .list-view .property-actions {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 1rem;
+      gap: 0.5rem;
+      border-left: 1px solid #e5e7eb;
+    }
+
+    /* Responsividade para modo lista em telas menores */
+    @media (max-width: 768px) {
+      .list-view .property-card {
+        grid-template-columns: 1fr;
+      }
+
+      .list-view .property-image-container img {
+        height: 200px;
+      }
+
+      .list-view .property-actions {
+        border-left: none;
+        border-top: 1px solid #e5e7eb;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
     }
   </style>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-100 preload">
+<script>
+  // Remove a classe preload após o carregamento
+  window.addEventListener('load', function() {
+    document.body.classList.remove('preload');
+  });
+</script>
   <div class="flex min-h-screen">
     <!-- Sidebar -->
-    <div class="sidebar sidebar-expanded text-white fixed h-full z-30" id="sidebar" style="background-color: var(--cor-primaria);">
+    <div class="sidebar sidebar-expanded text-white fixed h-full z-30" id="sidebar">
       <div class="p-4">
         <div class="flex items-center justify-between mb-8">
           <div class="flex items-center space-x-2">
             <img id="company-logo-painel" src="assets/imagens/logo/logo.png" alt="Logo RR Imóveis" class="h-8 w-8 object-contain mr-2" onerror="this.style.display='none'">
-            <span class="text-xl font-bold" id="logo-text">RR Imóveis</span>
+            <span class="text-xl font-bold" id="company-name">Carregando...</span>
           </div>
-          <button class="text-white focus:outline-none" id="toggle-sidebar">
-            <i class="fas fa-bars text-xl"></i>
+          <button class="text-white bg-black hover:bg-gray-800 focus:outline-none p-1.5 rounded-md transition-colors shadow-sm" id="toggle-sidebar">
+            <i class="fas fa-bars text-sm"></i>
           </button>
         </div>
         <nav>
           <ul class="space-y-2">
             <li>
-              <a class="tab-link flex items-center space-x-3 py-3 px-4 rounded-lg bg-blue-700 hover:bg-blue-600 transition"
+              <a class="d-flex align-items-center gap-3 py-3 px-4 rounded text-white text-decoration-none transition tab-link"
                 href="#dashboard">
                 <i class="fas fa-tachometer-alt"></i>
                 <span class="sidebar-text">Dashboard</span>
               </a>
             </li>
             <li>
-              <a class="tab-link flex items-center space-x-3 py-3 px-4 rounded-lg hover:bg-blue-600 transition"
+              <a class="d-flex align-items-center gap-3 py-3 px-4 rounded text-white text-decoration-none transition tab-link"
                 href="#properties">
                 <i class="fas fa-home"></i>
                 <span class="sidebar-text">Imóveis</span>
               </a>
             </li>
             <li>
-              <a class="tab-link flex items-center space-x-3 py-3 px-4 rounded-lg hover:bg-blue-600 transition"
+              <a class="d-flex align-items-center gap-3 py-3 px-4 rounded text-white text-decoration-none transition tab-link"
                 href="#add-property">
                 <i class="fas fa-plus-circle"></i>
                 <span class="sidebar-text">Adicionar Imóvel</span>
               </a>
             </li>
             <li>
-              <a class="tab-link flex items-center space-x-3 py-3 px-4 rounded-lg hover:bg-blue-600 transition"
+              <a class="d-flex align-items-center gap-3 py-3 px-4 rounded text-white text-decoration-none transition tab-link"
                 href="#leads">
                 <i class="fas fa-user-friends"></i>
                 <span class="sidebar-text">Leads</span>
@@ -680,7 +852,7 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
             </li>
             <?php if ($isAdmin): ?>
               <li>
-                <a class="tab-link flex items-center space-x-3 py-3 px-4 rounded-lg hover:bg-blue-600 transition"
+                <a class="d-flex align-items-center gap-3 py-3 px-4 rounded text-white text-decoration-none transition tab-link"
                   href="#settings">
                   <i class="fas fa-cog"></i>
                   <span class="sidebar-text">Configurações</span>
@@ -689,14 +861,14 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
             <?php endif; ?>
             <?php if ($isAdmin): ?>
               <li>
-                <a class="tab-link flex items-center space-x-3 py-3 px-4 rounded-lg hover:bg-blue-600 transition"
+                <a class="d-flex align-items-center gap-3 py-3 px-4 rounded text-white text-decoration-none transition tab-link"
                   href="#users">
                   <i class="fas fa-users-cog"></i>
                   <span class="sidebar-text">Usuários</span>
                 </a>
               </li>
               <li>
-                <a class="tab-link flex items-center space-x-3 py-3 px-4 rounded-lg hover:bg-blue-600 transition"
+                <a class="d-flex align-items-center gap-3 py-3 px-4 rounded text-white text-decoration-none transition tab-link"
                   href="#backup">
                   <i class="fas fa-database"></i>
                   <span class="sidebar-text">Backup</span>
@@ -711,20 +883,22 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
           <!-- O script de carregamento dinâmico da aba Usuários foi movido para o final do body para garantir que o conteúdo seja exibido na área principal -->
         </nav>
       </div>
-      <div class="absolute bottom-0 left-0 right-0 p-4">
-        <div class="flex items-center space-x-3 py-3 px-4">
-          <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
-            <span class="font-semibold">A</span>
-          </div>
+      
+        <div class="position-absolute bottom-0 start-0 end-0 p-4">
+        <div class="d-flex align-items-center gap-2 py-3 px-4">
+          <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white text-decoration-none flex-shrink-0" style="width: 40px; height: 40px;">
+            <span class="fw-bold"><?php echo substr(getUserName(), 0, 2); ?></span>
+          </div>          
           <div class="sidebar-text">
             <p class="font-medium"><?php echo htmlspecialchars(getUserName()); ?></p>
-            <p class="text-xs text-blue-200"><?php echo isset($_SESSION['email']) ? htmlspecialchars($_SESSION['email']) : ''; ?></p>
+            <p class="text-xs text-white"><?php echo isset($_SESSION['email']) ? htmlspecialchars($_SESSION['email']) : ''; ?></p>
           </div>
         </div>
-        <a class="flex items-center space-x-3 py-3 px-4 rounded-lg hover:bg-blue-600 transition mt-2" href="logout.php">
+        <a href="logout.php" class="d-flex align-items-center justify-center gap-3 py-3 px-4 rounded-circle text-white text-decoration-none transition">
           <i class="fas fa-sign-out-alt"></i>
           <span class="sidebar-text">Sair</span>
         </a>
+
       </div>
     </div>
     <!-- Main Content -->
@@ -1056,15 +1230,15 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
               </button>
             </div>
             <div class="flex items-center space-x-2">
-              <button class="p-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+              <button id="list-view-btn" class="p-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition view-btn">
                 <i class="fas fa-list text-gray-600"></i>
               </button>
-              <button class="p-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition bg-gray-100">
-                <i class="fas fa-th-large text-gray-800"></i>
+              <button id="grid-view-btn" class="p-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition view-btn bg-blue-600 text-white">
+                <i class="fas fa-th-large text-white"></i>
               </button>
             </div>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="properties-container">
+          <div class="grid grid-view" id="properties-container">
             <!-- Property cards will be loaded here -->
           </div>
           <div class="mt-8 flex justify-between items-center">
@@ -1105,7 +1279,8 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
             </button>
             <button
               class="font-medium py-2 px-4 rounded-lg transition duration-300 flex items-center" style="background-color: var(--cor-primaria); color: #fff;">
-              <i class="fas fa-download mr-2" style="color: var(--cor-primaria);"></i> Exportar Leads
+              <i class="fas fa-download mr-2" style="color: #fff;"> Exportar CSV</i>
+
             </button>
           </div>
         </div>
@@ -1280,8 +1455,7 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
           <meta charset="utf-8" />
           <meta content="width=device-width, initial-scale=1.0" name="viewport" />
           <title>RR Imóveis - Encontre seu Imóvel dos Sonhos</title>
-          <script src="https://cdn.tailwindcss.com"></script>
-          <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+          <!-- Removido carregamento duplicado de Font Awesome e Tailwind -->
           <style>
             @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
@@ -1312,7 +1486,11 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
 
 
           // Salvar e carregar configurações da empresa (todos os campos)
-          function carregarCompanySettings() {
+          /**
+ * Carrega as configurações da empresa do servidor
+ * e preenche o formulário de configurações
+ */
+function carregarCompanySettings() {
           const data = JSON.parse(localStorage.getItem('companySettings') || '{}');
           document.getElementById('company-name').value = data.name || '';
           document.getElementById('company-email').value = data.email || '';
@@ -1430,7 +1608,11 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
       </template>
       <script>
         // Load recent properties for dashboard
-        function loadRecentProperties() {
+        /**
+ * Carrega os imóveis mais recentes do servidor
+ * e atualiza a seção de imóveis recentes
+ */
+function loadRecentProperties() {
           const container = document.getElementById('recent-properties');
           const properties = window.propertyData || [];
 
@@ -1446,8 +1628,7 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
     `;
             return;
           }
-
-          const recentProperties = [...properties].sort((a, b) => b.id - a.id).slice(0, 5);
+          
           recentProperties.forEach(property => {
             const priceFormatted = Number(property.price).toLocaleString('pt-BR');
             const isRent = property.transactionType === 'rent' || property.type === 'aluguel';
@@ -1509,7 +1690,11 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
         }
 
 
-        function loadPropertiesGrid() {
+        /**
+ * Carrega a grade de imóveis do servidor
+ * e atualiza a exibição na interface
+ */
+function loadPropertiesGrid() {
           const container = document.getElementById('properties-container');
           const counter = document.getElementById('properties-count');
           const properties = window.propertyData || [];
@@ -1622,7 +1807,12 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
         // Função movida para assets/js/painel/painel-main.js
 
         // Load leads
-        async function loadLeads() {
+        /**
+ * Carrega a lista de leads do servidor
+ * e atualiza a tabela de leads na interface
+ * @returns {Promise<void>}
+ */
+async function loadLeads() {
           const container = document.getElementById('leads-container');
           container.innerHTML = '';
           // Atualiza contador de leads
@@ -1645,6 +1835,7 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
             }
             leads.forEach(lead => {
               const row = document.createElement('tr');
+              row.dataset.leadId = lead.id; // Adiciona o ID do lead à linha
               // Mostra só o início da mensagem (primeiros 50 caracteres)
               let msgPreview = '';
               if (lead.message) {
@@ -1654,7 +1845,7 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
               row.innerHTML = `
           <td class="px-6 py-4 whitespace-nowrap">
             <div class="flex items-center">
-              <input type="checkbox" class="mr-3">
+              <input type="checkbox" class="mr-3 lead-checkbox" data-lead-id="${lead.id}">
               <div><div class="text-sm font-medium text-gray-900">${lead.name || ''}</div></div>
             </div>
           </td>
@@ -1944,42 +2135,43 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
           return icons[type] || 'home';
         }
 
-        function getStatusText(status) {
-          const statuses = {
-            active: 'Ativo',
-            pending: 'Pendente',
-            sold: 'Vendido',
-            rented: 'Alugado',
-            inactive: 'Inativo'
-          };
-          return statuses[status] || status;
-        }
 
-        function getStatusClass(status) {
-          // Normaliza para minúsculo e aceita português e inglês
-          if (!status) return 'badge-status status-inactive';
-          const map = {
-            'ativo': 'active',
-            'active': 'active',
-            'pendente': 'pending',
-            'pending': 'pending',
-            'vendido': 'sold',
-            'sold': 'sold',
-            'alugado': 'rented',
-            'rented': 'rented',
-            'inativo': 'inactive',
-            'inactive': 'inactive'
-          };
-          const key = map[String(status).toLowerCase()] || 'inactive';
-          const classes = {
-            active: 'badge-status status-active',
-            pending: 'badge-status status-pending',
-            sold: 'badge-status status-sold',
-            rented: 'badge-status status-rented',
-            inactive: 'badge-status status-inactive'
-          };
-          return classes[key] || 'badge-status status-inactive';
-        }
+        //ja esta no utils.js
+        /* function getStatusText(status) {
+           const statuses = {
+             'active': 'Ativo',
+             'pending': 'Pendente',
+             'sold': 'Vendido',
+             'rented': 'Alugado',
+             'inactive': 'Inativo'
+           };
+           return statuses[String(status).toLowerCase()] || status;
+         }
+         function getStatusClass(status) {
+           // Normaliza para minúsculo e aceita português e inglês
+           if (!status) return 'badge-status status-inactive';
+           const map = {
+             'ativo': 'active',
+             'active': 'active',
+             'pendente': 'pending',
+             'pending': 'pending',
+             'vendido': 'sold',
+             'sold': 'sold',
+             'alugado': 'rented',
+             'rented': 'rented',
+             'inativo': 'inactive',
+             'inactive': 'inactive'
+           };
+           const key = map[String(status).toLowerCase()] || 'inactive';
+           const classes = {
+             active: 'badge-status status-active',
+             pending: 'badge-status status-pending',
+             sold: 'badge-status status-sold',
+             rented: 'badge-status status-rented',
+             inactive: 'badge-status status-inactive'
+           };
+           return classes[key] || 'badge-status status-inactive';
+         }*/
 
         // Usando a função unificada getLeadStatusStyle
         function getLeadStatusClass(status) {
@@ -2054,8 +2246,18 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
           iframe.src = url;
         }
 
-        // Toggle sidebar
-        document.getElementById('toggle-sidebar').addEventListener('click', function() {
+                // Toggle sidebar com performance otimizada
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        const toggleBtn = document.getElementById('toggle-sidebar');
+        
+        // Previne transições durante o carregamento inicial
+        document.body.classList.add('preload');
+        window.addEventListener('load', () => {
+            document.body.classList.remove('preload');
+        });
+        
+        toggleBtn.addEventListener('click', function() {
           const sidebar = document.getElementById('sidebar');
           const mainContent = document.getElementById('main-content');
           const logoText = document.getElementById('logo-text');
@@ -2267,28 +2469,28 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
         }
 
         // Função auxiliar para obter classe CSS do status
-        function getStatusClass(status) {
-          const classes = {
-            'active': 'bg-green-100 text-green-800',
-            'pending': 'bg-yellow-100 text-yellow-800',
-            'inactive': 'bg-red-100 text-red-800',
-            'vendido': 'bg-blue-100 text-blue-800',
-            'alugado': 'bg-purple-100 text-purple-800'
-          };
-          return classes[status] || 'bg-gray-100 text-gray-800';
-        }
+        /* function getStatusClass(status) {
+           const classes = {
+             'active': 'bg-green-100 text-green-800',
+             'pending': 'bg-yellow-100 text-yellow-800',
+             'inactive': 'bg-red-100 text-red-800',
+             'vendido': 'bg-blue-100 text-blue-800',
+             'alugado': 'bg-purple-100 text-purple-800'
+           };
+           return classes[status] || 'bg-gray-100 text-gray-800';
+         }
 
-        // Função auxiliar para obter texto do status
-        function getStatusText(status) {
-          const texts = {
-            'active': 'Ativo',
-            'pending': 'Pendente',
-            'inactive': 'Inativo',
-            'vendido': 'Vendido',
-            'alugado': 'Alugado'
-          };
-          return texts[status] || status;
-        }
+         // Função auxiliar para obter texto do status
+         function getStatusText(status) {
+           const texts = {
+             'active': 'Ativo',
+             'pending': 'Pendente',
+             'inactive': 'Inativo',
+             'vendido': 'Vendido',
+             'alugado': 'Alugado'
+           };
+           return texts[status] || status;
+         }*/
 
         document.addEventListener('DOMContentLoaded', function() {
           // Carrega os imóveis ao inicializar a página
@@ -2458,23 +2660,26 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
       </div>
 
 
-      <!-- Bootstrap JS Bundle -->
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+      <!-- Bootstrap JS Bundle com carregamento otimizado -->
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
 
       <!-- Scripts da aplicação -->
       <!-- Utils primeiro, pois outros scripts dependem dele -->
-      <script src="assets/js/utils/browser-support.js"></script>
-      <script src="assets/js/utils/utils.js"></script>
-      <script src="assets/js/utils/color-utils.js"></script>
-      <script src="assets/js/painel/ui-manager.js"></script>
+      <script src="/assets/js/utils/browser-support.js"></script>
+      <script src="/assets/js/utils/utils.js"></script>
+      <script src="/assets/js/utils/color-utils.js"></script>
+      <script src="/assets/js/painel/ui-manager.js"></script>
 
       <!-- Scripts específicos do painel -->
-      <script src="assets/js/painel/settings.js"></script>
-      <script src="assets/js/painel/painel-main.js"></script>
-      <script src="assets/js/painel/performance-chart.js"></script>
-      <script src="assets/js/painel/users.js"></script>
-      <script src="assets/js/public/card-color-sync.js"></script>
-      <script src="assets/js/painel/filtro-painel.js"></script>
+      <script src="/assets/js/painel/settings.js"></script>
+      <script src="/assets/js/painel/painel-main.js"></script>
+      <script src="/assets/js/painel/performance-chart.js"></script>
+      <script src="/assets/js/painel/users.js"></script>
+      <script src="/assets/js/public/card-color-sync.js"></script>
+      <script src="/assets/js/painel/filtro-painel.js"></script>
+      <script src="/assets/js/visual_lista_grade.js"></script>
+      <script src="/assets/js/company-description.js"></script>
+      <script src="/assets/js/public/company-name.js"></script>
 
       <!-- Script do formulário -->
       <script src="assets/js/painel/adicionar-imovel.js"></script>

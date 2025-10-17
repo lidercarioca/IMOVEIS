@@ -89,6 +89,12 @@ $envBackupFile = "env_backup_{$date}.txt";
 $mediaHandler = new MediaBackupHandler($backupDir);
 
 // Função para fazer backup completo do banco de dados
+/**
+ * Realiza o backup completo do banco de dados
+ * @param PDO $pdo - Conexão com o banco de dados
+ * @param string $dbname - Nome do banco de dados
+ * @return string SQL com o backup do banco
+ */
 function backupDatabase($pdo, $dbname) {
     try {
         error_log("Iniciando backup completo do banco de dados: " . $dbname);

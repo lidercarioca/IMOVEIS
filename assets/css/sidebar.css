@@ -1,51 +1,79 @@
-/* Estilos do sidebar */
-.sidebar-text {
-  color: white;
-  font-weight: 500;
-}
-
-/* Cores e estilos dos itens do menu */
-.tab-link {
-  color: white;
-  transition: background-color 200ms;
-}
-
-.tab-link.active {
-  background-color: rgb(29 78 216); /* blue-700 */
-}
-
-.tab-link:hover {
-  background-color: rgb(37 99 235); /* blue-600 */
+/* Cores e Temas do Sidebar */
+.sidebar {
+  background-color: var(--cor-primaria);
   color: white;
 }
 
-/* Ícones do menu */
-.tab-link i {
-  color: white;
-}
-
-/* Layout do sidebar */
+/* Layout do Sidebar */
 .sidebar-expanded {
-  width: 16rem; /* w-64 */
+  width: 16rem;
   transition: all 300ms ease-in-out;
 }
 
 .sidebar-collapsed {
-  width: 4rem; /* w-16 */
+  width: 4rem;
   transition: all 300ms ease-in-out;
+}
+
+/* Texto e Ícones */
+.sidebar-text {
+  color: white;
+  font-weight: 500;
 }
 
 .sidebar-collapsed .sidebar-text {
   display: none;
 }
 
-/* Conteúdo principal */
+/* Links e Navegação */
+.tab-link {
+  color: white;
+  transition: background-color 200ms;
+}
+
+.tab-link i {
+  color: white;
+}
+
+.tab-link.active {
+  background-color: rgba(var(--cor-primaria-rgb), 0.8);
+}
+
+.tab-link:hover {
+  background-color: rgba(var(--cor-primaria-rgb), 0.6);
+  color: white;
+}
+
+/* Conteúdo Principal */
 .main-content-expanded {
-  margin-left: 16rem; /* ml-64 */
+  margin-left: 16rem;
   transition: all 300ms ease-in-out;
 }
 
 .main-content-collapsed {
-  margin-left: 4rem; /* ml-16 */
+  margin-left: 4rem;
   transition: all 300ms ease-in-out;
+}
+
+/* Melhorias de Performance */
+.sidebar {
+  will-change: width;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Media Queries para Responsividade */
+@media (max-width: 768px) {
+  .sidebar-expanded {
+    width: 100%;
+  }
+  
+  .sidebar-collapsed {
+    width: 0;
+  }
+  
+  .main-content-expanded,
+  .main-content-collapsed {
+    margin-left: 0;
+  }
 }

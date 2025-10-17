@@ -74,7 +74,7 @@ function mostrarErroValidacao(mensagem) {
 
 // Função para registrar logs
 function registrarLog(tipo, mensagem, dados = {}) {
-    console.log(`[${tipo}] ${mensagem}`, dados);
+    
 }
 
 // Função para renderizar os imóveis
@@ -84,7 +84,7 @@ function renderizarImoveis(imoveisFiltrados) {
     if (!container) return;
 
     // Não mostrar mensagem de erro se não houver cards ainda
-    const cards = container.querySelectorAll('.property-card');
+    const cards = container.querySelectorAll('.property');
     if (cards.length === 0) return;
 
     // Mapeia os IDs dos imóveis filtrados
@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const bairro = sanitizarString(selectBairro.value);
         const faixa = sanitizarString(selectPreco.value);
 
-        console.log('Aplicando filtros:', { tipo, bairro, faixa });
+        
 
         // Filtra os imóveis
         let filtrados = window.dadosImoveis;
@@ -201,11 +201,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         }
 
-        console.log('Resultados:', {
+        /*console.log('Resultados:', {
             total: window.dadosImoveis.length,
             filtrados: filtrados.length,
             filtros: { tipo, bairro, faixa }
-        });
+        });*/
 
         renderizarImoveis(filtrados);
     }

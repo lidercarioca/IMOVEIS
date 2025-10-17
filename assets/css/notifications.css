@@ -1,12 +1,19 @@
 .notification-badge {
     position: absolute !important;
-    top: 0 !important;
-    right: 0 !important;
-    width: 8px !important;
-    height: 8px !important;
+    top: -5px !important;
+    right: -5px !important;
+    min-width: 18px !important;
+    height: 18px !important;
     background-color: #ef4444 !important;
     border-radius: 9999px !important;
-    display: block !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: white !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    padding: 0 5px !important;
+    z-index: 50 !important;
 }
 
 .notification-item {

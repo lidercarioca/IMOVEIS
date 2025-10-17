@@ -165,14 +165,14 @@ if (!isset($_SESSION['user_id'])) {
         <h3 class="fs-5 fw-semibold text-dark mb-4">Personalização do Site</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <label class="block text-gray-700 mb-2">Cores Principais  Originais:> Primária #2563eb / Secundária #10b981 / Destaque #f59e0b</label>
+            <label class="block text-gray-700 mb-2 font-bold">Cores Principais  Originais >>>  Primária #1e40af / Secundária #10b981 / Destaque #d97706</label>
             <div class="flex items-center space-x-4">
               <div>
                 <span class="block text-sm text-gray-500 mb-1">Primária</span>
                 <div class="flex items-center">
-                  <span class="color-preview" id="color_preview_1" style="background-color: #2563eb; cursor:pointer;"></span>
-                  <input id="color_picker_1" type="color" value="#2563eb" style="margin-right:8px;">
-                  <input id="company_color1" type="text" value="#2563eb" class="w-24 px-2 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                  <span class="color-preview" id="color_preview_1" style="background-color: #1e40af; cursor:pointer;"></span>
+                  <input id="color_picker_1" type="color" value="#1e40af" style="margin-right:8px;">
+                  <input id="company_color1" type="text" value="#1e40af" class="w-24 px-2 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
                 </div>
               </div>
               <div>

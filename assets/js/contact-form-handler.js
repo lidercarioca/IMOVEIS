@@ -78,19 +78,17 @@ Por favor, gostaria de mais informações sobre este imóvel.`;
 function openContactForm(property) {
     try {
         console.log('Abrindo formulário de contato com propriedade:', property);
-        
-        if (!property) {
-            console.warn('Propriedade não fornecida, usando currentProperty');
-            property = window.currentProperty;
-        }
 
-        if (!property) {
+         // Verifica se a propriedade foi passada ou usa currentProperty como fallback
+            const propertyData = property || window.currentProperty;
+
+            if (!propertyData) {
             console.error('Nenhuma propriedade disponível para o formulário de contato');
             return;
         }
 
         // Gera a mensagem com os dados do imóvel
-        const message = generatePropertyMessage(property);
+        const message = generatePropertyMessage(propertyData);
         console.log('Mensagem gerada:', message);
 
         // Limpa e reseta o formulário
@@ -133,11 +131,14 @@ function cleanupModalEffects() {
     document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
     document.body.classList.remove('modal-open');
     document.body.style.removeProperty('padding-right');
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+    document.documentElement.style.paddingRight = '';
 }
 
 // Inicializa os handlers quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Inicializando handlers do formulário de contato');
+    
     
     // Adiciona listener para limpar efeitos modais quando qualquer modal for fechado
     const contactFormModal = document.getElementById('contactFormModal');
@@ -148,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Adiciona o evento de clique ao botão de contato
     const btnOpenContact = document.getElementById('btnOpenContact');
     if (btnOpenContact && !btnOpenContact.hasAttribute('data-handler-attached')) {
-        console.log('Botão de contato encontrado, adicionando evento de clique');
+        
         btnOpenContact.setAttribute('data-handler-attached', 'true');
         btnOpenContact.addEventListener('click', () => openContactForm());
     } else {
@@ -222,15 +223,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Fecha o modal após 2 segundos
                     setTimeout(() => {
                         const modal = bootstrap.Modal.getInstance(document.getElementById('contactFormModal'));
-                        modal.hide();
-                        // Remove o backdrop e limpa classes do body
-                        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-                        document.body.classList.remove('modal-open');
-                        document.body.style.removeProperty('padding-right');
-                        // Reseta o formulário
-                        form.reset();
-                        form.classList.remove('was-validated');
-                        successAlert.remove();
+                        if (modal) {
+                            // Reseta o formulário antes de fechar o modal
+                            form.reset();
+                            form.classList.remove('was-validated');
+                            successAlert.remove();
+                            
+                            // Fecha o modal usando o método do Bootstrap
+                            modal.hide();
+                            
+                            // Espera a animação terminar antes de limpar os efeitos
+                            setTimeout(() => {
+                                cleanupModalEffects();
+                            }, 300); // 300ms é a duração padrão da animação do Bootstrap
+                        }
                     }, 2000);
                 } else {
                     throw new Error(data.message || 'Erro ao enviar mensagem');

@@ -42,10 +42,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (deleteSelectedBtn) {
         deleteSelectedBtn.addEventListener('click', async function() {
             const checkedBoxes = leadsContainer.querySelectorAll('input[type="checkbox"]:checked');
-            const leadIds = Array.from(checkedBoxes).map(checkbox => {
-                const row = checkbox.closest('tr');
-                return row ? row.dataset.leadId : null;
-            }).filter(id => id !== null);
+            // Usamos o data-lead-id do checkbox para coletar os IDs
+            const leadIds = Array.from(checkedBoxes)
+                .map(checkbox => checkbox.getAttribute('data-lead-id'))
+                .filter(id => id !== null);
 
             if (leadIds.length === 0) return;
 
@@ -85,6 +85,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
 
                         alert('Leads excluídos com sucesso!');
+                        
+                        // Atualiza contadores do dashboard se a função existir
+                        if (typeof window.updateDashboardCounts === 'function') {
+                            window.updateDashboardCounts();
+                        }
                     } else {
                         throw new Error(data.message || 'Erro ao excluir leads');
                     }

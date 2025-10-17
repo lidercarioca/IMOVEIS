@@ -1,4 +1,11 @@
 <?php
+/**
+ * API endpoint para buscar banners ativos do sistema
+ * Retorna a lista de banners ordenados por posição e ID
+ * 
+ * @return JSON Lista de banners com suas informações
+ */
+
 require_once '../config/database.php';
 header('Content-Type: application/json');
 

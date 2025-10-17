@@ -26,6 +26,11 @@ window.utils = {};
  * Normaliza o tipo de imóvel para o padrão do sistema (ex: 'casa' -> 'house').
  * Aceita variações em português e inglês.
  */
+/**
+ * Normaliza o tipo de imóvel para um formato padrão
+ * @param {string} tipo - Tipo do imóvel a ser normalizado
+ * @returns {string} Tipo do imóvel normalizado
+ */
 window.utils.normalizarTipoImovel = function(tipo) {
   if (!tipo) return '';
   tipo = tipo.toLowerCase().trim();
@@ -56,6 +61,11 @@ window.utils.normalizarTipoImovel = function(tipo) {
 /**
  * Verifica se um imóvel é do tipo comercial
  */
+/**
+ * Verifica se um imóvel é do tipo comercial
+ * @param {Object} property - Objeto com os dados do imóvel
+ * @returns {boolean} true se for comercial, false caso contrário
+ */
 window.utils.isComercialProperty = function(property) {
   const type = window.utils.normalizarTipoImovel(property.type || '');
   const transaction = (property.transactionType || '').toLowerCase();
@@ -78,20 +88,29 @@ window.utils.isComercialProperty = function(property) {
 window.utils.colorCache = null;
 
 // Função para obter cores computadas do CSS
+/**
+ * Obtém as cores computadas do tema atual do sistema
+ * @returns {Object} Objeto com as cores primária e secundária
+ */
 window.utils.getComputedColors = function() {
   if (window.utils.colorCache) return window.utils.colorCache;
   
   const style = getComputedStyle(document.documentElement);
   const cores = {
-    destaque: style.getPropertyValue('--cor-destaque').trim() || '#f59e0b',
-    secundaria: style.getPropertyValue('--cor-secundaria').trim() || '#10b981',
-    primaria: style.getPropertyValue('--cor-primaria').trim() || '#2563eb'
+    destaque: style.getPropertyValue('--cor-destaque').trim(),
+    secundaria: style.getPropertyValue('--cor-secundaria').trim(),
+    primaria: style.getPropertyValue('--cor-primaria').trim()
   };
   
   window.utils.colorCache = cores;
   return cores;
 };
 
+/**
+ * Obtém as cores associadas ao tipo de imóvel
+ * @param {Object} property - Objeto com os dados do imóvel
+ * @returns {Object} Objeto com as cores para o imóvel
+ */
 window.utils.getPropertyColors = function(property) {
   // Normalização de dados de entrada
   const type = window.utils.normalizarTipoImovel(property.type || '');
@@ -122,17 +141,24 @@ window.utils.getPropertyColors = function(property) {
   );
 
   if (isAluguel) {
-    const texto = status === 'alugado' ? 'Alugado' : 'Para Alugar';
+    const texto = status === 'alugado' ? 'Alugado' : 'Aluguel';
     return criarRetorno(cores.secundaria, texto);
   }
   
   // 3. VENDA - sempre usa cor primária (azul)
-  const texto = status === 'vendido' ? 'Vendido' : 'Para Venda';
+  const texto = status === 'vendido' ? 'Vendido' : 'Venda';
   return criarRetorno(cores.primaria, texto);
 };
 
 /**
  * Formata o preço do imóvel para o padrão brasileiro, adicionando '/mês' se for aluguel ou comercial.
+ */
+/**
+ * Formata o preço do imóvel para exibição
+ * @param {number} price - Preço a ser formatado
+ * @param {boolean} isAluguel - Indica se é um valor de aluguel
+ * @param {string} type - Tipo do imóvel
+ * @returns {string} Preço formatado
  */
 window.utils.formatarPreco = function(price, isAluguel = false, type = '') {
   let priceNumber = Number(price);
@@ -160,12 +186,22 @@ window.utils.processarFeatures = function(features) {
 /**
  * Remove acentos de uma string (útil para comparações e buscas).
  */
+/**
+ * Remove acentos de uma string para facilitar comparações e buscas
+ * @param {string} str - String com acentos a ser processada
+ * @returns {string} String sem acentos
+ */
 window.utils.removeAccents = function(str) {
   return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 };
 
 /**
  * Normaliza e traduz o status do imóvel para minúsculo, sem acento, para uso em filtros e exibição.
+ */
+/**
+ * Normaliza e padroniza o status do imóvel
+ * @param {string} status - Status original do imóvel
+ * @returns {string} Status processado: minúsculo, sem acentos e sem espaços extras
  */
 window.utils.processarStatus = function(status) {
   status = (status || '').toString();
@@ -177,13 +213,33 @@ window.utils.processarStatus = function(status) {
  * Exibe uma mensagem de erro padronizada para o usuário.
  * Pode ser customizada para usar modal, toast, etc.
  */
+/**
+ * Exibe uma mensagem de erro padronizada para o usuário
+ * @param {string} mensagem - Mensagem de erro a ser exibida
+ */
 window.utils.mostrarErro = function(mensagem) {
   alert(mensagem); // Troque por modal/toast se desejar
 };
 
+
+// Adicione esta função ao objeto utils
+window.utils.processarStatus = function(status) {
+  // Mapeamento de status em inglês para português
+  const statusMap = {
+    'pending': 'Pendente',
+    'active': 'Ativo',
+    'sold': 'Vendido',
+    'rented': 'Alugado',
+    'inactive': 'Inativo'
+  };
+
+  // Retorna o status em português ou o original se não encontrar
+  return statusMap[status] || status;
+};
 /**
  * Retorna a classe CSS apropriada para o badge de status do imóvel.
  */
+
 window.utils.getStatusClass = function(status) {
   if (!status) return 'badge-status status-inactive';
   

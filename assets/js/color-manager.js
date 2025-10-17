@@ -1,7 +1,17 @@
 // Gerenciador de cores do sistema
 class ColorManager {
     static async initialize() {
+        // Previne transi\u00e7\u00f5es durante a inicializa\u00e7\u00e3o
+        document.documentElement.classList.add('preload');
+        
         try {
+            // Carrega cores do localStorage primeiro (se existirem)
+            const cachedColors = this.loadCachedColors();
+            if (cachedColors) {
+                await this.applyColors(cachedColors);
+            }
+            
+            // Busca cores atualizadas da API
             const res = await fetch('api/getCompanySettings.php');
             const json = await res.json();
             
@@ -9,9 +19,34 @@ class ColorManager {
                 const data = json.data;
                 await this.applyColors(data);
                 this.initializeColorControls();
+                
+                // Cache das cores para pr\u00f3ximo carregamento
+                this.cacheColors(data);
             }
         } catch (error) {
             console.error('Erro ao inicializar cores:', error);
+        } finally {
+            // Remove a classe preload ap\u00f3s um pequeno delay
+            setTimeout(() => {
+                document.documentElement.classList.remove('preload');
+            }, 100);
+        }
+    }
+    
+    static loadCachedColors() {
+        try {
+            const cached = localStorage.getItem('companyColors');
+            return cached ? JSON.parse(cached) : null;
+        } catch {
+            return null;
+        }
+    }
+    
+    static cacheColors(colors) {
+        try {
+            localStorage.setItem('companyColors', JSON.stringify(colors));
+        } catch {
+            console.warn('N\u00e3o foi poss\u00edvel cachear as cores');
         }
     }
 

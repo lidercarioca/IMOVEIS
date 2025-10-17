@@ -9,8 +9,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    console.log('Dados recebidos da API:', data); // Debug
-
+    
     if (!data.success || !data.data) {
       throw new Error('Dados não encontrados');
     }

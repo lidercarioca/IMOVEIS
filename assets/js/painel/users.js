@@ -30,24 +30,43 @@ window.initUsers = function() {
           return;
         }
         if (!json.data.length) {
-          usersList.innerHTML = '<div>Nenhum usuário cadastrado.</div>';
+          usersList.innerHTML = '<div class="alert alert-info">Nenhum usuário cadastrado além do administrador principal.</div>';
           return;
         }
-        usersList.innerHTML = `<table class="table table-bordered"><thead><tr><th>ID</th><th>Usuário</th><th>Nome</th><th>E-mail</th><th>Tipo</th><th>Status</th><th>Ações</th><th>Excluir</th></tr></thead><tbody>${json.data.map(u => `
+        usersList.innerHTML = `<table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Usuário</th>
+              <th>Nome</th>
+              <th>E-mail</th>
+              <th>Tipo</th>
+              <th>Status</th>
+              <th>Ações</th>
+              <th>Excluir</th>
+            </tr>
+          </thead>
+          <tbody>${json.data.map(u => `
           <tr>
             <td>${u.id}</td>
             <td>${u.username}</td>
             <td>${u.name}</td>
             <td>${u.email}</td>
             <td>${u.role === 'admin' ? 'Administrador' : 'Usuário'}</td>
-            <td>${u.active ? 'Ativo' : 'Inativo'}</td>
             <td>
-              <button class="btn btn-sm btn-primary" data-edit="${u.id}">Editar</button>
+              <span class="badge ${u.active ? 'bg-success' : 'bg-danger'}">
+                ${u.active ? 'Ativo' : 'Inativo'}
+              </span>
             </td>
             <td>
-              ${u.id !== 1 ? `
+              <button class="btn btn-sm btn-primary" data-edit="${u.id}">
+                <i class="fas fa-edit"></i> Editar
+              </button>
+            </td>
+            <td>
+              ${u.role !== 'admin' ? `
                 <button class="btn btn-sm btn-danger" data-delete="${u.id}">
-                  <i class="fas fa-trash"></i>
+                  <i class="fas fa-trash me-1"></i> Excluir
                 </button>
               ` : ''}
             </td>

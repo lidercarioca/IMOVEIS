@@ -1,7 +1,8 @@
 // Script dedicado para todos-imoveis.html
 // Carrega e renderiza todos os imóveis, e ativa o modal de detalhes
 
-(async function() {
+// Inicializa o script quando o documento estiver pronto
+document.addEventListener('DOMContentLoaded', async function() {
   // Aguarda DOM e estilos estarem prontos
   if (document.readyState === 'loading') {
     await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve));
@@ -71,13 +72,30 @@
   }
 
   // Função para renderizar cards
+  // Carrega os imóveis inicialmente
+  try {
+    const imoveis = await buscarImoveis();
+    renderizarImoveis(imoveis);
+  } catch (error) {
+    console.error('Erro ao carregar imóveis:', error);
+  }
+
+  // Função para renderizar os imóveis
   function renderizarImoveis(imoveis) {
     const container = document.getElementById('property-list');
     if (!container) return;
     container.innerHTML = '';
     imoveis.forEach(property => {
+
+      // Cria a coluna
+      const colDiv = document.createElement("div");
+      colDiv.className = "col";
+
+      // Cria o card
       const card = document.createElement('div');
-      card.className = 'card property-card bg-white rounded shadow h-100';
+      card.className = 'card property h-100 shadow-sm';
+
+      // Processa as imagens
       const images = typeof property.images === 'string' ? JSON.parse(property.images) : property.images;
       let imageSrc = images && images.length > 0 ? images[0] : '/assets/imagens/default.jpg';
       if (imageSrc && !imageSrc.startsWith('/')) imageSrc = '/' + imageSrc.replace(/^\/+/, '');
@@ -87,13 +105,25 @@
       const status = window.utils.processarStatus(property.status);
       let ribbonHTML = '';
       
-      // Se estiver vendido ou alugado, mostra o ribbon com a cor do tipo do imóvel
+      // Segurança: garante que property.type e colors.badgeText existam
+      const typeClass = property.type ? property.type : 'padrao';
+      const badgeText = colors.badgeText ? colors.badgeText : 'Imóvel';
+
       if (status === 'vendido' || status === 'alugado') {
-        // Usa as cores definidas na função getPropertyColors
-        const propertyColors = window.utils.getPropertyColors(property);
-        const backgroundColor = propertyColors.badge.replace('background-color: ', '').replace(';', '');
-        ribbonHTML = `<div class="property-ribbon" style="background-color: ${backgroundColor} !important;">${status === 'vendido' ? 'Vendido' : 'Alugado'}</div>`;
+        if (property.type === 'commercial') {
+          ribbonHTML = `<div class="property-ribbon ${typeClass}">${status === 'vendido' ? 'VENDIDO' : 'ALUGADO'}</div>`;
+        } else {
+          const statusClass = status === 'vendido' ? 'vendido' : 'aluguel';
+          ribbonHTML = `<div class="property-ribbon ${statusClass}">${status === 'vendido' ? 'Vendido' : 'ALUGADO'}</div>`;
+        }
+
+      } else {
+        ribbonHTML = '';
       }
+
+      // Badge só aparece se não tiver ribbon de status especial
+      let showBadge = status !== 'vendido' && status !== 'alugado';
+
       
       let tipoLabel = colors.badgeText;
       let btnDetalhesColor = colors.button;
@@ -102,15 +132,15 @@
       let banheiros = property.bathrooms !== undefined && property.bathrooms !== '' ? property.bathrooms : 'N/A';
       let vagas = property.garage !== undefined && property.garage !== '' ? property.garage : 'N/A';
       
-      let showBadge = !ribbonHTML; // Se tiver ribbon, não mostra o badge
+      //let showBadge = !ribbonHTML; // Se tiver ribbon, não mostra o badge
       
       card.innerHTML = `
         <div class="position-relative">
           <img src="${imageSrc}" class="card-img-top" style="height: 224px; object-fit: cover;" alt="Imagem do imóvel">
           ${ribbonHTML}
-          ${showBadge ? `<span class="position-absolute top-0 start-0 m-3 badge rounded-pill text-white" style="${colors.badge}">${tipoLabel}</span>` : ''}
-          <button class="position-absolute top-0 end-0 m-3 btn btn-light rounded-circle" style="z-index:2;">
-            <i class="fa-regular fa-heart text-danger fs-5"></i>
+          ${showBadge ? `<span class="badge-grande" style="${colors.badge}">${tipoLabel}</span>` : ''}
+          <button type="button" class="btn btn-light position-absolute top-0 end-0 m-3 rounded-circle p-2 favorite-btn" data-property-id="${property.id}" aria-label="Favoritar">
+            <i class="fa-${window.favoritesManager && window.favoritesManager.isFavorite(property.id) ? 'solid' : 'regular'} fa-heart text-danger"></i>
           </button>
         </div>
         <div class="card-body d-flex flex-column justify-content-between">
@@ -138,19 +168,50 @@
             </div>
           </div>
           <div class="mb-3">
-            <span class="text-primary fs-4 fw-bold d-block">${window.utils.formatarPreco(property.price, tipoLabel === 'Para Alugar', property.type)}</span>
+            <p class="text-primary fs-4 fw-bold d-block">
+            ${window.utils.formatarPreco(property.price, tipoLabel === 'Aluguel', property.type)}
+          </p>
           </div>
-          <button class="btn py-2 px-4 rounded-lg w-100 mt-2 ver-detalhes text-white" style="${colors.button}" data-id="${property.id}">
+          <button class="btn btn-detalhes py-2 px-4 rounded-lg w-100 mt-2 ver-detalhes text-white" style="${colors.button}" data-id="${property.id}">
           <i class="fas fa-search me-2"></i>Ver Detalhes
           </button>
         </div>
       `;
+      // Adiciona listener para o botão de detalhes
       card.querySelector('.ver-detalhes').addEventListener('click', function() {
         abrirModalDetalhes(property);
       });
+      
+      // Adiciona o card ao container
       container.appendChild(card);
     });
+
+    // Atualiza o estado dos favoritos após renderizar todos os cards
+    if (window.favoritesManager) {
+      window.favoritesManager.updateAllFavoriteButtons();
+    }
   }
+  // Adicione icones as características do ímovel
+const featuresIcons = {
+  'piscina': 'fa-water',
+  'churrasqueira': 'fa-fire',
+  'academia': 'fa-dumbbell',
+  'playground': 'fa-child',
+  'salão de festas': 'fa-glass-cheers',
+  'segurança': 'fa-shield-alt',
+  'elevador': 'fa-arrow-up',
+  'portaria': 'fa-user-shield',
+  'área de lazer': 'fa-umbrella-beach',
+  'quadra': 'fa-basketball-ball',
+  'varanda': 'fa-door-open',
+  'mobiliado': 'fa-couch',
+  'ar condicionado': 'fa-snowflake',
+  'interfone': 'fa-phone',
+  'jardim': 'fa-leaf',
+  'área gourmet': 'fa-utensils',
+  'aceita pet': 'fa-paw'
+};
+
 
   // Função para abrir o modal de detalhes
   function abrirModalDetalhes(property) {
@@ -160,16 +221,23 @@
     let features = window.utils.processarFeatures(property.features);
     features = features.filter(f => !!f && f.trim() !== '');
     let featuresHtml = '';
-    if (features.length > 0) {
-      features.forEach(f => {
-        featuresHtml += `<li class='d-flex align-items-center mb-1 col'><i class='fas fa-check me-2' style='${iconColor}'></i>${f}</li>`;
-      });
-    } else {
-      featuresHtml = '<li class="text-muted">Sem características cadastradas</li>';
-    }
+if (features.length > 0) {
+  features.forEach(f => {
+    const featureKey = f.toLowerCase().trim();
+    const iconClass = featuresIcons[featureKey] || 'fa-check';
+    featuresHtml += `<li class='d-flex align-items-center mb-1 col'>
+      <i class='fas ${iconClass} me-2' style='${iconColor}'></i>${f}
+    </li>`;
+  });
+} else {
+  featuresHtml = '<li class="text-muted">Sem características cadastradas</li>';
+}
     const el = id => document.getElementById(id);
     if (el('modal-title')) el('modal-title').textContent = property.title;
-    if (el('modal-price')) el('modal-price').textContent = window.utils.formatarPreco(property.price, false, property.type);
+    if (el('modal-price')) {
+      const isRental = (property.transactionType || '').toLowerCase().includes('aluguel');
+      el('modal-price').textContent = window.utils.formatarPreco(property.price, isRental, property.type);
+    }
     if (el('modal-location')) el('modal-location').innerHTML = `<i class="fas fa-map-marker-alt me-2 ${iconColor}"></i> ${property.location}${property.neighborhood ? ` - ${property.neighborhood}` : ''}`;
   if (el('modal-location')) el('modal-location').innerHTML = `<i class="fas fa-map-marker-alt me-2" style="${iconColor}"></i> ${property.location}${property.neighborhood ? ` - ${property.neighborhood}` : ''}`;
     if (el('modal-description')) el('modal-description').textContent = property.description || "Sem descrição disponível";
@@ -196,8 +264,21 @@
       el('modal-bathrooms').parentElement.className = 'd-flex align-items-center gap-2';
     const featuresList = el('modal-features');
     if (featuresList) {
-      featuresList.className = '';
-      featuresList.innerHTML = featuresHtml;
+      // Mantém a classe para o grid de 2 colunas
+      featuresList.className = 'row row-cols-2 g-2';
+      featuresList.innerHTML = features.length > 0 
+        ? features.map(feature => {
+            const featureKey = feature.toLowerCase().trim();
+            const iconClass = featuresIcons[featureKey] || 'fa-check';
+            return `
+              <li class="col">
+                <div class="d-flex align-items-center">
+                  <i class="fas ${iconClass} me-2" style="${iconColor}"></i>
+                  <span>${feature}</span>
+                </div>
+              </li>`;
+          }).join('')
+        : '<li class="col-12 text-muted">Sem características cadastradas</li>';
     }
     // Imagens do imóvel no carrossel
     let images = typeof property.images === 'string' ? JSON.parse(property.images) : property.images;
@@ -263,6 +344,7 @@
         });
       }, 100);
     }
+    
     // Botão WhatsApp
     const whatsappBtn = document.getElementById('modal-whatsapp');
     const msg = `Olá! Gostaria de saber mais sobre o imóvel:\n${property.title},\n${property.location}${property.neighborhood ? ' - ' + property.neighborhood : ''},\n${property.bedrooms} Quartos,\n${property.bathrooms} Banheiros,\n${property.garage} Vagas na garagem,\n${property.area}m² de área,\nPreço: ${window.utils.formatarPreco(property.price, false, property.type)}`;
@@ -274,7 +356,12 @@
       .then(json => {
         if (json.success && json.data && json.data.company_whatsapp) {
           companyWhatsapp = json.data.company_whatsapp.replace(/\D/g, '');
-          if (companyWhatsapp.length < 10) companyWhatsapp = '5511999999999';
+          // Adiciona código do país se necessário
+          if (!companyWhatsapp.startsWith('55')) {
+            companyWhatsapp = '55' + companyWhatsapp;
+          }
+          // Fallback para número padrão se o número for inválido
+          if (companyWhatsapp.length < 12) companyWhatsapp = '5511999999999';
           setupWhatsAppButton();
         }
       })
@@ -297,12 +384,37 @@
     setupWhatsAppButton();
     // Armazena a propriedade atual globalmente para o formulário de contato
     window.currentProperty = property;
+    
+    // Configura o botão de contato
+    const btnContact = document.getElementById('btnOpenContact');
+    if (btnContact) {
+      btnContact.onclick = () => {
+        const propertyModal = bootstrap.Modal.getInstance(document.getElementById('propertyModal'));
+        if (propertyModal) {
+          propertyModal.hide();
+        }
+        setTimeout(() => {
+          const contactModal = new bootstrap.Modal(document.getElementById('contactFormModal'));
+          contactModal.show();
+          // Preenche a mensagem com os dados do imóvel
+          const messageField = document.getElementById('contact-message');
+          if (messageField && window.currentProperty) {
+            messageField.value = window.generatePropertyMessage(window.currentProperty);
+          }
+        }, 500);
+      };
+    }
+    
     // Abrir modal
     const modal = new bootstrap.Modal(document.getElementById('propertyModal'));
     modal.show();
   }
 
   // Execução principal
-  const imoveis = await buscarImoveis();
-  renderizarImoveis(imoveis);
-})();
+  try {
+    const imoveis = await buscarImoveis();
+    renderizarImoveis(imoveis);
+  } catch (error) {
+    console.error('Erro ao carregar imóveis:', error);
+  }
+});

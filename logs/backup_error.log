@@ -1,119 +1,138 @@
-[20-Sep-2025 16:18:39 Europe/Berlin] Tentando conectar ao MySQL com: host=localhost, user=root, dbname=rr_imoveis
-[20-Sep-2025 16:18:39 Europe/Berlin] Conexão PDO estabelecida com sucesso
-[20-Sep-2025 16:18:39 Europe/Berlin] PHP Warning:  Undefined variable $ADMIN_EMAIL in C:\XAMPP\htdocs\backup.php on line 62
-[20-Sep-2025 16:18:39 Europe/Berlin] Iniciando backup completo do banco de dados: rr_imoveis
-[20-Sep-2025 16:18:39 Europe/Berlin] Processando tabela: banners
-[20-Sep-2025 16:18:39 Europe/Berlin] Tabela banners processada com sucesso
-[20-Sep-2025 16:18:39 Europe/Berlin] Processando tabela: company_settings
-[20-Sep-2025 16:18:39 Europe/Berlin] Tabela company_settings processada com sucesso
-[20-Sep-2025 16:18:39 Europe/Berlin] Processando tabela: leads
-[20-Sep-2025 16:18:39 Europe/Berlin] Tabela leads processada com sucesso
-[20-Sep-2025 16:18:39 Europe/Berlin] Processando tabela: login_attempts_log
-[20-Sep-2025 16:18:39 Europe/Berlin] Tabela login_attempts_log processada com sucesso
-[20-Sep-2025 16:18:39 Europe/Berlin] Processando tabela: messages
-[20-Sep-2025 16:18:39 Europe/Berlin] Tabela messages processada com sucesso
-[20-Sep-2025 16:18:39 Europe/Berlin] Processando tabela: notifications
-[20-Sep-2025 16:18:39 Europe/Berlin] Tabela notifications processada com sucesso
-[20-Sep-2025 16:18:39 Europe/Berlin] Processando tabela: password_history
-[20-Sep-2025 16:18:39 Europe/Berlin] Tabela password_history processada com sucesso
-[20-Sep-2025 16:18:39 Europe/Berlin] Processando tabela: properties
-[20-Sep-2025 16:18:39 Europe/Berlin] Tabela properties processada com sucesso
-[20-Sep-2025 16:18:39 Europe/Berlin] Processando tabela: property_images
-[20-Sep-2025 16:18:39 Europe/Berlin] Tabela property_images processada com sucesso
-[20-Sep-2025 16:18:39 Europe/Berlin] Processando tabela: users
-[20-Sep-2025 16:18:39 Europe/Berlin] Tabela users processada com sucesso
-[20-Sep-2025 16:18:39 Europe/Berlin] Backup completo do banco de dados concluído
-[23-Sep-2025 16:14:40 Europe/Berlin] Conexão PDO global estabelecida com sucesso
-[23-Sep-2025 16:14:40 Europe/Berlin] PHP Warning:  Undefined variable $ADMIN_EMAIL in C:\XAMPP\htdocs\backup.php on line 62
-[23-Sep-2025 16:14:40 Europe/Berlin] Iniciando backup completo do banco de dados: rr_imoveis
-[23-Sep-2025 16:14:40 Europe/Berlin] Processando tabela: banners
-[23-Sep-2025 16:14:40 Europe/Berlin] Tabela banners processada com sucesso
-[23-Sep-2025 16:14:40 Europe/Berlin] Processando tabela: company_settings
-[23-Sep-2025 16:14:40 Europe/Berlin] Tabela company_settings processada com sucesso
-[23-Sep-2025 16:14:40 Europe/Berlin] Processando tabela: leads
-[23-Sep-2025 16:14:40 Europe/Berlin] Tabela leads processada com sucesso
-[23-Sep-2025 16:14:40 Europe/Berlin] Processando tabela: login_attempts_log
-[23-Sep-2025 16:14:40 Europe/Berlin] Tabela login_attempts_log processada com sucesso
-[23-Sep-2025 16:14:40 Europe/Berlin] Processando tabela: messages
-[23-Sep-2025 16:14:40 Europe/Berlin] Tabela messages processada com sucesso
-[23-Sep-2025 16:14:40 Europe/Berlin] Processando tabela: notifications
-[23-Sep-2025 16:14:40 Europe/Berlin] Tabela notifications processada com sucesso
-[23-Sep-2025 16:14:40 Europe/Berlin] Processando tabela: password_history
-[23-Sep-2025 16:14:40 Europe/Berlin] Tabela password_history processada com sucesso
-[23-Sep-2025 16:14:40 Europe/Berlin] Processando tabela: properties
-[23-Sep-2025 16:14:40 Europe/Berlin] Tabela properties processada com sucesso
-[23-Sep-2025 16:14:40 Europe/Berlin] Processando tabela: property_images
-[23-Sep-2025 16:14:40 Europe/Berlin] Tabela property_images processada com sucesso
-[23-Sep-2025 16:14:40 Europe/Berlin] Processando tabela: users
-[23-Sep-2025 16:14:40 Europe/Berlin] Tabela users processada com sucesso
-[23-Sep-2025 16:14:40 Europe/Berlin] Backup completo do banco de dados concluído
-[23-Sep-2025 17:21:46 Europe/Berlin] Conexão PDO global estabelecida com sucesso
-[23-Sep-2025 17:21:46 Europe/Berlin] PHP Warning:  Undefined variable $ADMIN_EMAIL in C:\XAMPP\htdocs\backup.php on line 62
-[23-Sep-2025 17:21:46 Europe/Berlin] Iniciando backup completo do banco de dados: rr_imoveis
-[23-Sep-2025 17:21:46 Europe/Berlin] Processando tabela: banners
-[23-Sep-2025 17:21:46 Europe/Berlin] Tabela banners processada com sucesso
-[23-Sep-2025 17:21:46 Europe/Berlin] Processando tabela: company_settings
-[23-Sep-2025 17:21:46 Europe/Berlin] Tabela company_settings processada com sucesso
-[23-Sep-2025 17:21:46 Europe/Berlin] Processando tabela: leads
-[23-Sep-2025 17:21:46 Europe/Berlin] Tabela leads processada com sucesso
-[23-Sep-2025 17:21:46 Europe/Berlin] Processando tabela: login_attempts_log
-[23-Sep-2025 17:21:46 Europe/Berlin] Tabela login_attempts_log processada com sucesso
-[23-Sep-2025 17:21:46 Europe/Berlin] Processando tabela: messages
-[23-Sep-2025 17:21:46 Europe/Berlin] Tabela messages processada com sucesso
-[23-Sep-2025 17:21:46 Europe/Berlin] Processando tabela: notifications
-[23-Sep-2025 17:21:46 Europe/Berlin] Tabela notifications processada com sucesso
-[23-Sep-2025 17:21:46 Europe/Berlin] Processando tabela: password_history
-[23-Sep-2025 17:21:46 Europe/Berlin] Tabela password_history processada com sucesso
-[23-Sep-2025 17:21:46 Europe/Berlin] Processando tabela: properties
-[23-Sep-2025 17:21:47 Europe/Berlin] Tabela properties processada com sucesso
-[23-Sep-2025 17:21:47 Europe/Berlin] Processando tabela: property_images
-[23-Sep-2025 17:21:47 Europe/Berlin] Tabela property_images processada com sucesso
-[23-Sep-2025 17:21:47 Europe/Berlin] Processando tabela: users
-[23-Sep-2025 17:21:47 Europe/Berlin] Tabela users processada com sucesso
-[23-Sep-2025 17:21:47 Europe/Berlin] Backup completo do banco de dados concluído
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Conexão PDO global estabelecida com sucesso
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Iniciando backup completo do banco de dados: rr_imoveis
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Processando tabela: banners
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Tabela banners processada com sucesso
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Processando tabela: company_settings
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Tabela company_settings processada com sucesso
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Processando tabela: leads
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Tabela leads processada com sucesso
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Processando tabela: login_attempts_log
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Tabela login_attempts_log processada com sucesso
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Processando tabela: messages
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Tabela messages processada com sucesso
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Processando tabela: notifications
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Tabela notifications processada com sucesso
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Processando tabela: password_history
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Tabela password_history processada com sucesso
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Processando tabela: properties
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Tabela properties processada com sucesso
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Processando tabela: property_images
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Tabela property_images processada com sucesso
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Processando tabela: users
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Tabela users processada com sucesso
-[23-Sep-2025 12:46:27 America/Sao_Paulo] Backup completo do banco de dados concluído
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Conexão PDO global estabelecida com sucesso
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Iniciando backup completo do banco de dados: rr_imoveis
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Processando tabela: banners
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Tabela banners processada com sucesso
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Processando tabela: company_settings
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Tabela company_settings processada com sucesso
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Processando tabela: leads
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Tabela leads processada com sucesso
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Processando tabela: login_attempts_log
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Tabela login_attempts_log processada com sucesso
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Processando tabela: messages
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Tabela messages processada com sucesso
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Processando tabela: notifications
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Tabela notifications processada com sucesso
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Processando tabela: password_history
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Tabela password_history processada com sucesso
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Processando tabela: properties
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Tabela properties processada com sucesso
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Processando tabela: property_images
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Tabela property_images processada com sucesso
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Processando tabela: users
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Tabela users processada com sucesso
-[23-Sep-2025 17:05:29 America/Sao_Paulo] Backup completo do banco de dados concluído
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Conexão PDO global estabelecida com sucesso
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Iniciando backup completo do banco de dados: rr_imoveis
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Processando tabela: banners
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Tabela banners processada com sucesso
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Processando tabela: company_settings
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Tabela company_settings processada com sucesso
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Processando tabela: leads
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Tabela leads processada com sucesso
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Processando tabela: login_attempts_log
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Tabela login_attempts_log processada com sucesso
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Processando tabela: messages
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Tabela messages processada com sucesso
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Processando tabela: notifications
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Tabela notifications processada com sucesso
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Processando tabela: password_history
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Tabela password_history processada com sucesso
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Processando tabela: properties
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Tabela properties processada com sucesso
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Processando tabela: property_images
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Tabela property_images processada com sucesso
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Processando tabela: users
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Tabela users processada com sucesso
+[01-Oct-2025 09:57:22 America/Sao_Paulo] Backup completo do banco de dados concluído
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Conexão PDO global estabelecida com sucesso
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Iniciando backup completo do banco de dados: rr_imoveis
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Processando tabela: banners
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Tabela banners processada com sucesso
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Processando tabela: company_settings
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Tabela company_settings processada com sucesso
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Processando tabela: leads
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Tabela leads processada com sucesso
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Processando tabela: login_attempts_log
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Tabela login_attempts_log processada com sucesso
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Processando tabela: messages
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Tabela messages processada com sucesso
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Processando tabela: notifications
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Tabela notifications processada com sucesso
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Processando tabela: password_history
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Tabela password_history processada com sucesso
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Processando tabela: properties
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Tabela properties processada com sucesso
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Processando tabela: property_images
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Tabela property_images processada com sucesso
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Processando tabela: users
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Tabela users processada com sucesso
+[02-Oct-2025 14:25:03 America/Sao_Paulo] Backup completo do banco de dados concluído
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Conexão PDO global estabelecida com sucesso
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Iniciando backup completo do banco de dados: rr_imoveis
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Processando tabela: banners
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Tabela banners processada com sucesso
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Processando tabela: company_settings
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Tabela company_settings processada com sucesso
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Processando tabela: leads
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Tabela leads processada com sucesso
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Processando tabela: login_attempts_log
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Tabela login_attempts_log processada com sucesso
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Processando tabela: messages
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Tabela messages processada com sucesso
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Processando tabela: notifications
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Tabela notifications processada com sucesso
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Processando tabela: password_history
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Tabela password_history processada com sucesso
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Processando tabela: properties
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Tabela properties processada com sucesso
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Processando tabela: property_images
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Tabela property_images processada com sucesso
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Processando tabela: users
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Tabela users processada com sucesso
+[07-Oct-2025 11:47:29 America/Sao_Paulo] Backup completo do banco de dados concluído
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Conexão PDO global estabelecida com sucesso
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Iniciando backup completo do banco de dados: rr_imoveis
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Processando tabela: banners
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Tabela banners processada com sucesso
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Processando tabela: company_settings
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Tabela company_settings processada com sucesso
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Processando tabela: leads
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Tabela leads processada com sucesso
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Processando tabela: login_attempts_log
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Tabela login_attempts_log processada com sucesso
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Processando tabela: messages
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Tabela messages processada com sucesso
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Processando tabela: notifications
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Tabela notifications processada com sucesso
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Processando tabela: password_history
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Tabela password_history processada com sucesso
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Processando tabela: properties
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Tabela properties processada com sucesso
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Processando tabela: property_images
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Tabela property_images processada com sucesso
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Processando tabela: users
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Tabela users processada com sucesso
+[13-Oct-2025 10:57:19 America/Sao_Paulo] Backup completo do banco de dados concluído
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Conexão PDO global estabelecida com sucesso
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Iniciando backup completo do banco de dados: rr_imoveis
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Processando tabela: banners
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Tabela banners processada com sucesso
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Processando tabela: company_settings
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Tabela company_settings processada com sucesso
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Processando tabela: leads
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Tabela leads processada com sucesso
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Processando tabela: login_attempts_log
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Tabela login_attempts_log processada com sucesso
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Processando tabela: messages
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Tabela messages processada com sucesso
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Processando tabela: notifications
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Tabela notifications processada com sucesso
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Processando tabela: password_history
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Tabela password_history processada com sucesso
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Processando tabela: properties
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Tabela properties processada com sucesso
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Processando tabela: property_images
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Tabela property_images processada com sucesso
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Processando tabela: users
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Tabela users processada com sucesso
+[14-Oct-2025 16:50:41 America/Sao_Paulo] Backup completo do banco de dados concluído
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Conexão PDO global estabelecida com sucesso
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Iniciando backup completo do banco de dados: rr_imoveis
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Processando tabela: banners
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Tabela banners processada com sucesso
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Processando tabela: company_settings
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Tabela company_settings processada com sucesso
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Processando tabela: leads
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Tabela leads processada com sucesso
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Processando tabela: login_attempts_log
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Tabela login_attempts_log processada com sucesso
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Processando tabela: messages
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Tabela messages processada com sucesso
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Processando tabela: notifications
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Tabela notifications processada com sucesso
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Processando tabela: password_history
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Tabela password_history processada com sucesso
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Processando tabela: properties
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Tabela properties processada com sucesso
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Processando tabela: property_images
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Tabela property_images processada com sucesso
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Processando tabela: users
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Tabela users processada com sucesso
+[15-Oct-2025 12:09:54 America/Sao_Paulo] Backup completo do banco de dados concluído

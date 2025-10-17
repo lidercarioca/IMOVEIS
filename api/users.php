@@ -11,8 +11,11 @@ header('Content-Type: application/json');
 try {
     switch($_SERVER['REQUEST_METHOD']) {
         case 'GET':
-            // Listar usuários
-            $sql = "SELECT id, username, role, name, email, created_at, last_login, active FROM users";
+            // Listar usuários (excluindo o admin principal)
+            $sql = "SELECT id, username, role, name, email, created_at, last_login, active 
+                   FROM users 
+                   WHERE username != 'admin'
+                   ORDER BY created_at DESC";
             $stmt = $pdo->query($sql);
             $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             

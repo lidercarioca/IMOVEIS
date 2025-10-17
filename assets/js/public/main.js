@@ -2,6 +2,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   await carregarImoveis();
   carregarHeroBanners();
 // Carrega banners do backend e exibe na section hero
+/**
+ * Carrega os banners do carrossel principal
+ * @returns {Promise<void>}
+ */
 async function carregarHeroBanners() {
   const res = await fetch('api/getBanners.php');
   const banners = await res.json();
@@ -163,22 +167,36 @@ window.renderizarImoveis = function(imoveis) {
     let quartos = property.bedrooms !== undefined && property.bedrooms !== '' ? property.bedrooms : 'N/A';
     let banheiros = property.bathrooms !== undefined && property.bathrooms !== '' ? property.bathrooms : 'N/A';
     let vagas = property.garage !== undefined && property.garage !== '' ? property.garage : 'N/A';
+
     const processedStatus = window.utils.processarStatus(property.status);
+
     let ribbon = '';
     let showBadge = true;
-    
+
+    // Segurança: garante que property.type exista
+    const typeClass = property.type ? property.type : 'padrao';
+
     // Verifica status para ribbon
     if (processedStatus === 'vendido' || processedStatus === 'alugado') {
-      ribbon = `<div class="property-ribbon" style="${colors.badge}">${processedStatus === 'vendido' ? 'VENDIDO' : 'ALUGADO'}</div>`;
+      if (property.type === 'commercial') {
+        // Mantém a classe do tipo, mas texto do status
+        ribbon = `<div class="property-ribbon ${typeClass}" style="${colors.badge}">${processedStatus === 'vendido' ? 'VENDIDO' : 'ALUGADO'}</div>`;
+      } else {
+        // Outros tipos usam classe do status
+        const statusClass = processedStatus === 'vendido' ? 'vendido' : 'aluguel';
+        ribbon = `<div class="property-ribbon ${statusClass}" style="${colors.badge}">${processedStatus === 'vendido' ? 'VENDIDO' : 'ALUGADO'}</div>`;
+      }
       showBadge = false;
     }
+
+    // Monta o conteúdo do card
     card.innerHTML = `
       <div class="position-relative">
         <img src="${imageSrc}" class="card-img-top object-fit-cover" style="height: 224px;" alt="Imagem do imóvel">
         ${ribbon ? ribbon : ''}
-        ${showBadge ? `<span class="position-absolute top-0 start-0 m-3 badge rounded-pill text-white" style="${colors.badge}">${tipoLabel}</span>` : ''}
-        <button type="button" class="btn btn-light position-absolute top-0 end-0 m-3 rounded-circle p-2" aria-label="Favoritar">
-          <i class="fa-regular fa-heart text-danger"></i>
+        ${showBadge ? `<span class="position-absolute top-4 left-4 start-0 px-3 py-1 rounded-lg font-medium text-white badge-grande" style="${colors.badge}">${tipoLabel}</span>` : ''}
+        <button type="button" class="btn btn-light position-absolute top-0 end-0 m-3 rounded-circle p-2 favorite-btn" data-property-id="${property.id}" aria-label="Favoritar">
+          <i class="fa-${window.favoritesManager && window.favoritesManager.isFavorite(property.id) ? 'solid' : 'regular'} fa-heart text-danger"></i>
         </button>
       </div>
       <div class="card-body d-flex flex-column h-100">
@@ -206,15 +224,16 @@ window.renderizarImoveis = function(imoveis) {
           </div>
         </div>
         <div class="mt-auto">
-          <p class="h5 fw-bold mb-3 text-primary" style="color: var(--bs-primary) !important;">
-            ${window.utils.formatarPreco(property.price, tipoLabel === 'Para Alugar', property.type)}
+          <p class="text-primary fs-4 fw-bold d-block">
+            ${window.utils.formatarPreco(property.price, tipoLabel === 'Aluguel', property.type)}
           </p>
-          <button class="btn w-100 ver-detalhes fw-semibold py-3 rounded-3" style="${colors.button}" data-id="${property.id}">
+          <button class="btn btn-detalhes w-100 ver-detalhes fw-semibold py-3 rounded-3" style="${colors.button}" data-id="${property.id}">
             <i class="fas fa-search me-2"></i>Ver Detalhes
           </button>
         </div>
       </div>
     `;
+    
     // Adiciona eventos
     card.querySelector('.ver-detalhes').addEventListener('click', function() {
       if (window.showPropertyDetails) {
@@ -232,6 +251,10 @@ window.renderizarImoveis = function(imoveis) {
 
 /**
  * Busca os imóveis do backend e popula a listagem pública, além de expor os dados globalmente.
+ */
+/**
+ * Carrega a lista de imóveis do servidor
+ * @returns {Promise<void>}
  */
 async function carregarImoveis() {
   try {
@@ -311,7 +334,7 @@ async function carregarImoveis() {
             </div>
           </div>
           <div class="mb-2">
-            <span class="text-blue-600 font-bold text-lg block text-left">${window.utils.formatarPreco(property.price, tipoLabel === 'Para Alugar')}</span>
+            <span class="text-blue-600 font-bold text-lg block text-left">${window.utils.formatarPreco(property.price, tipoLabel === 'Aluguel')}</span>
           </div>
           <button class="${btnDetalhesColor} text-base py-2 px-4 rounded-lg transition ver-detalhes font-semibold w-full mt-2 text-white" style="${btnStyle}" data-id="${property.id}">
             Ver Detalhes
@@ -333,6 +356,26 @@ async function carregarImoveis() {
   }
 }
 
+  // Mapeamento de ícones para características
+window.featuresIcons = {
+  'piscina': 'fa-water',
+  'churrasqueira': 'fa-fire',
+  'academia': 'fa-dumbbell',
+  'playground': 'fa-child',
+  'salão de festas': 'fa-glass-cheers',
+  'segurança': 'fa-shield-alt',
+  'elevador': 'fa-arrow-up',
+  'portaria': 'fa-user-shield',
+  'área de lazer': 'fa-umbrella-beach',
+  'quadra': 'fa-basketball-ball',
+  'varanda': 'fa-door-open',
+  'mobiliado': 'fa-couch',
+  'ar condicionado': 'fa-snowflake',
+  'interfone': 'fa-phone',
+  'jardim': 'fa-leaf',
+  'área gourmet': 'fa-utensils',
+  'aceita pet': 'fa-paw'
+};
 
 /**
  * Exibe os detalhes do imóvel selecionado em um modal.
@@ -379,12 +422,17 @@ window.showPropertyDetails = function(id) {
   let features = window.utils.processarFeatures(property.features);
   // Filtrar valores vazios ou nulos
   features = features.filter(f => !!f && f.trim() !== '');
-
-  // Montar lista de características em <li> para o <ul id="modal-features">
+  
   let featuresHtml = '';
+  // aplica os icones a caracteristica do imovel
   if (features.length > 0) {
     features.forEach(f => {
-      featuresHtml += `<li class='d-flex align-items-center mb-1 col'><i class='fas fa-check modal-icon me-2'></i>${f}</li>`;
+      const featureKey = f.toLowerCase().trim();
+      const iconClass = window.featuresIcons[featureKey] || 'fa-check';
+      featuresHtml += `
+        <li class='d-flex align-items-center mb-1 col'>
+          <i class='fas ${iconClass} modal-icon me-2'></i>${f}
+        </li>`;
     });
   } else {
     featuresHtml = '<li class="text-muted">Sem características cadastradas</li>';
@@ -457,7 +505,8 @@ if (!window.showImageLightbox) {
   document.getElementById('modal-title').textContent = property.title;
   // Formata o preço no modal
   document.getElementById('modal-price').className = 'fs-5 fw-bold text-primary';
-  document.getElementById('modal-price').textContent = window.utils.formatarPreco(property.price, false, property.type);
+  const isRental = (property.transactionType || '').toLowerCase().includes('aluguel');
+  document.getElementById('modal-price').textContent = window.utils.formatarPreco(property.price, isRental, property.type);
   document.getElementById('modal-location').innerHTML = `<i class="fas fa-map-marker-alt me-2 modal-icon"></i> ${property.location}${property.neighborhood ? ` - ${property.neighborhood}` : ''}`;
   document.getElementById('modal-description').textContent = property.description || "Sem descrição disponível";
   document.getElementById('modal-area').innerHTML = `<i class="fas fa-ruler-combined modal-icon me-2"></i> <span class="fw-semibold text-dark">${property.area}m²</span>`;
@@ -478,8 +527,21 @@ if (!window.showImageLightbox) {
 
   // Características
   const featuresList = document.getElementById('modal-features');
-  featuresList.className = '';
-  featuresList.innerHTML = featuresHtml;
+  // Mantém a classe para o grid de 2 colunas
+  featuresList.className = 'row row-cols-2 g-2';
+  featuresList.innerHTML = features.length > 0 
+    ? features.map(feature => {
+        const featureKey = feature.toLowerCase().trim();
+        const iconClass = window.featuresIcons[featureKey] || 'fa-check';
+        return `
+          <li class="col">
+            <div class="d-flex align-items-center">
+              <i class="fas ${iconClass} modal-icon me-2"></i>
+              <span>${feature}</span>
+            </div>
+          </li>`;
+      }).join('')
+    : '<li class="col-12 text-muted">Sem características cadastradas</li>';
 
   // Botão WhatsApp
 const whatsappBtn = document.getElementById('modal-whatsapp');
@@ -565,6 +627,16 @@ document.getElementById('contact-form').addEventListener('submit', async functio
   }
 
   // Envia para a API de leads
+  /**
+   * Envia o formulário de contato para a API
+   * 
+   * @async
+   * @param {string} name - Nome do contato
+   * @param {string} email - Email do contato
+   * @param {string} phone - Telefone do contato
+   * @param {string} subject - Assunto da mensagem
+   * @param {string} message - Mensagem completa
+   */
   try {
     const res = await fetch('api/addLead.php', {
       method: 'POST',

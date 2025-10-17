@@ -1,119 +1,123 @@
-/* Botão principal do sistema (cor dinâmica) */
-/*.btn-sistema-principal {
-  background-color: var(--cor-primaria, #2563eb) ;
-  color: #fff ;
-  border-radius: 0.7rem ;
-  font-weight: bold ;
-  font-size: 1.1rem ;
-  padding: 0.7rem 2.2rem ;
-  border: none ;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08) ;
-  transition: all 0.2s ease-in-out ;
-  display: inline-flex ;
-  align-items: center ;
-  justify-content: center ;
-  text-align: center ;
-  vertical-align: middle ;
-  margin: 0 ;
-  box-sizing: border-box ;
-  text-decoration: none ;
-  cursor: pointer ;
-  line-height: 1.5 ;
-  min-height: 44px ;
-  width: auto ;
-  white-space: nowrap ;
-  -webkit-appearance: none ;
-  appearance: none ;
-}
-.btn-sistema-principal:hover {
-  background-color: var(--cor-primaria-hover, #1d4ed8) ;
-  transform: translateY(-1px) ;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15) ;
+:root {
+  --cor-primaria: #1e40af;
+  --cor-primaria-rgb: 30, 64, 175;
+
+  --cor-secundaria: #10b981;
+  --cor-secundaria-rgb: 16, 185, 129;
+
+  --cor-destaque: #d97706;
+  --cor-destaque-rgb: 217, 119, 6;
 }
 
-.btn-sistema-principal:active {
-  transform: translateY(0) ;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08) ;
-}
-
-.btn-sistema-principal i,
-.btn-sistema-principal .fa,
-.btn-sistema-principal .fas,
-.btn-sistema-principal .far,
-.btn-sistema-principal .fab {
-  margin-right: 0.5rem ;
-  font-size: 1em ;
-  vertical-align: middle ;
-  line-height: inherit ;
-}*/
 /* Ribbons para badges VENDIDO/ALUGADO */
-
-div.property-card {
-  position: relative; /* contêiner da imagem */
+.property-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
 }
 
+
+/* Estilo Base do Ribbon */
 div.property-ribbon {
   position: absolute ;
-  top: 15px ;
-  left: -35px ;
-  right: auto ;
+  top: 20px ;
+  left: -15px ;
+  width: 100px ;
   z-index: 50 ;
   color: #fff ;
-  padding: 8px 30px ;
-  font-size: 0.975rem ;
-  font-weight: 600 ;
-  transform-origin: center ;
-  border-radius: 4px;
-  transform: rotate(-35deg) ;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2) ;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) ;
-  letter-spacing: 0.5px ;
-  text-transform: uppercase ;
-  text-align: center ;
-  min-width: 160px ;
-  pointer-events: none ;
-  transition: all 0.3s ease;
-}
-
-div.property-ribbon.aluguel {
-  background: var(--cor-secundaria) ;
-}
-
-div.property-ribbon.comercial,
-div.property-ribbon.commercial {
-  background: var(--cor-destaque) ;
-}
-/* Efeito sutil ao hover */
-div.property-ribbon:hover {
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
-  transform: rotate(-35deg) scale(1.05);
-}
-
-/* Versão para o painel administrativo */
-.property-ribbon-painel {
-  position: absolute;
-  top: 20px;
-  left: -35px;
-  z-index: 50;
-  background: #2563eb;
-  color: #fff;
-  padding: 8px 30px;
+  padding: 4px 6px ;
   font-size: 0.875rem;
   font-weight: 600;
   transform-origin: center;
-  transform: rotate(-45deg);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  letter-spacing: 0.5px;
+  background-color: #2563eb;
+  transform: rotate(-45deg) ;
+  border-radius: 0.375rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   text-align: center;
-  min-width: 160px;
   pointer-events: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden; /* Importante para conter o efeito de brilho */
 }
 
-.property-ribbon-painel.green {
-  background: #10b981;
+/* Efeito de brilho mais refinado */
+
+/* Brilho refinado */
+div.property-ribbon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  filter: blur(8px); /* suaviza o brilho */
+  transform: skewX(-20deg);
+  animation: shineSmooth 2.5s linear infinite;
+  pointer-events: none;
+  z-index: 2;
 }
 
-.property-ribbon-painel.orange {
-  background: #f59e0b;
+/* Animação de brilho suave */
+@keyframes shineSmooth {
+  0% {
+    left: -50%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+
+/* Hover com leve brilho e aumento */
+.property-ribbon:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0.75rem 1.5rem rgba(255, 255, 255, 0.4), 0 0 10px rgba(255, 255, 255, 0.6);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.property-ribbon.aluguel {
+  background: linear-gradient(135deg,
+    var(--cor-secundaria) 0%,
+    rgba(var(--cor-secundaria-rgb), 0.85) 50%,
+    var(--cor-secundaria) 100%
+  );
+  border: 2px solid gold; /* Borda dourada */
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+
+.property-ribbon.comercial,
+.property-ribbon.commercial {
+  background: linear-gradient(135deg,
+    var(--cor-destaque) 0%,
+    rgba(var(--cor-destaque-rgb), 0.85) 50%,
+    var(--cor-destaque) 100%
+  );
+  border: 2px solid gold; /* Borda dourada */
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+
+.property-ribbon.vendido {
+  background: linear-gradient(135deg,
+    var(--cor-primaria) 0%,
+    rgba(var(--cor-primaria-rgb), 0.85) 50%,
+    var(--cor-primaria) 100%
+  );
+  border: 2px solid gold; /* Borda dourada */
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
 }

@@ -1,9 +1,25 @@
 /* Fallback CSS para navegadores sem suporte a Tailwind */
 :root {
-  --cor-primaria: #2563eb;
+  --cor-primaria: #1e40af;
+  --cor-primaria-rgb: 37, 99, 235;
   --cor-secundaria: #10b981;
+  --cor-secundaria-rgb: 16, 185, 129;
   --cor-destaque: #f59e0b;
+  --cor-destaque-rgb: 245, 158, 11;
   --fonte-principal: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Override para garantir cores corretas */
+.bg-primary,
+[class*="bg-blue-"],
+.button,
+.sidebar {
+  background-color: var(--cor-primaria) !important;
+}
+
+.text-primary,
+[class*="text-blue-"] {
+  color: var(--cor-primaria) !important;
 }
 
 /* Reset básico */
@@ -63,13 +79,14 @@ body {
 .button:hover {
   opacity: 0.9;
 }
+ 
 
 /* Status badges */
 .badge {
   display: inline-block;
-  padding: 0.25rem 0.75rem;
+  padding: 0.6rem 0.75rem;
   border-radius: 9999px;
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
 }
 
