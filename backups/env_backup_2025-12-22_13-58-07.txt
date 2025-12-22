@@ -1,4 +1,0 @@
-# .env movido para fora do webroot por segurança.
-# Local seguro: c:\XAMPP\.env
-# Remova qualquer credencial deste arquivo e edite a cópia segura.
-ENV_MOVED=true

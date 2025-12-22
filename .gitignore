@@ -4,3 +4,16 @@ node_modules/
 /.idea/
 /.vscode/
 /.DS_Store
+# Ambiente
+.env
+
+# Logs
+logs/
+*.log
+
+# Backups
+backups/
+*.zip
+
+# Cache
+.cache/
