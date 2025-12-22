@@ -16,8 +16,10 @@ function formatPhone(phone) {
 
 // Função para validar e-mail
 function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
+    // Regex simples e prática: alfanuméricos, pontos, sublinhados e sinais permitidos,
+    // domínio com letras/números e TLD com pelo menos 2 caracteres.
+    const re = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    return re.test(String(email).trim());
 }
 
 // Mapeamento de tipos de imóveis para português
@@ -183,8 +185,16 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Validação adicional de e-mail
             const emailInput = document.getElementById('contact-email');
+            if (!emailInput) {
+                console.error('Campo contact-email não encontrado');
+                return;
+            }
+            // limpar estado anterior e trim
+            emailInput.value = String(emailInput.value || '').trim();
+            emailInput.setCustomValidity('');
             if (!validateEmail(emailInput.value)) {
                 emailInput.setCustomValidity('E-mail inválido');
+                emailInput.reportValidity();
                 return;
             }
             
@@ -195,6 +205,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 phone: phoneInput.value.replace(/\D/g, ''),
                 message: document.getElementById('contact-message').value.trim()
             };
+            
+            // Adiciona property_id se estiver disponível (vem do window.currentProperty)
+            const propertyData = window.currentProperty;
+            if (propertyData && propertyData.id) {
+                formData.property_id = propertyData.id;
+            }
             
             // Mostra loading
             const submitBtn = this.querySelector('button[type="submit"]');

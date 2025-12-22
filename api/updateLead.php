@@ -1,6 +1,9 @@
 <?php
 header("Content-Type: application/json");
 require_once '../config/database.php';
+require_once '../auth.php';
+
+checkAuth();
 
 try {
     // Verifica se é um POST
@@ -16,6 +19,23 @@ try {
     // Verificação básica
     if (!isset($data['id'])) {
         throw new Exception("ID do lead não informado.");
+    }
+
+    // Verifica se é admin
+    $isAdmin = isAdmin();
+    $userId = $_SESSION['user_id'] ?? null;
+
+    // Se não for admin, verifica se o lead pertence a uma propriedade atribuída ao usuário
+    if (!$isAdmin && $userId) {
+        $checkStmt = $pdo->prepare("SELECT COUNT(*) as count FROM leads 
+                                   WHERE id = ? 
+                                   AND (property_id IS NULL OR property_id IN (SELECT id FROM properties WHERE assigned_user_id = ?))");
+        $checkStmt->execute([$data['id'], $userId]);
+        $result = $checkStmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($result['count'] == 0) {
+            throw new Exception("Acesso negado. Você não tem permissão para atualizar esse lead.");
+        }
     }
 
     // Permite atualizar status e/ou notes

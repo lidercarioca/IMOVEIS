@@ -106,5 +106,19 @@ window.utils.processarStatus = function(status) {
  * Pode ser customizada para usar modal, toast, etc.
  */
 window.utils.mostrarErro = function(mensagem) {
-  alert(mensagem); // Troque por modal/toast se desejar
+  if (typeof Swal !== 'undefined') {
+    Swal.fire('Erro!', mensagem, 'error');
+  } else {
+    alert(mensagem);
+  }
 };
+
+/**
+ * Exibe uma mensagem de sucesso padronizada para o usuário.
+ */
+window.utils.mostrarSucesso = function(mensagem) {
+  if (typeof Swal !== 'undefined') {
+    Swal.fire('Sucesso!', mensagem, 'success');
+  } else {
+    alert(mensagem);
+  }

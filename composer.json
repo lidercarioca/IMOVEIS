@@ -1,0 +1,11 @@
+{
+  "name": "imoveis-system/google-integration",
+  "description": "Google Gmail API integration for property management system",
+  "require": {
+    "php": ">=7.4",
+    "google/apiclient": "^2.15"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
+  }
+}

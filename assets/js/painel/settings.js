@@ -56,6 +56,10 @@ async function updateBannerInfo(id, data) {
     } else {
       // Atualiza a interface se necessário
       console.log('Banner atualizado com sucesso');
+      // Notifica invalidação de cache para o site público
+      if (typeof CacheInvalidator !== 'undefined') {
+        CacheInvalidator.notify('banners', { banner_id: id, action: 'updated' });
+      }
     }
   } catch (error) {
     console.error('Erro ao atualizar banner:', error);
@@ -106,6 +110,10 @@ async function initializeSettings() {
         if (result.success) {
           modalFeedback.textContent = 'Imagem enviada!';
           modal.style.display = 'none';
+          // Notifica invalidação de cache para o site público
+          if (typeof CacheInvalidator !== 'undefined') {
+            CacheInvalidator.notify('banners', { action: 'created' });
+          }
           carregarBannerImages();
         } else {
           modalFeedback.textContent = result.error || 'Erro ao enviar.';
@@ -152,6 +160,8 @@ async function initializeSettings() {
       }
     }
   });
+
+  // Cor da fonte principal removida — nada a sincronizar aqui.
 
   const form = document.getElementById("company_settings_form");
   if (form) {
@@ -254,6 +264,10 @@ async function carregarBannerImages() {
                   thumbs.innerHTML = '<div class="text-gray-400">Nenhuma imagem cadastrada.</div>';
                 }
               }, 300);
+              // Notifica invalidação de cache para o site público
+              if (typeof CacheInvalidator !== 'undefined') {
+                CacheInvalidator.notify('banners', { banner_id: banner.id, action: 'deleted' });
+              }
             }
           } else {
             btn.innerHTML = originalHtml;
@@ -384,11 +398,13 @@ async function carregarCompanySettings() {
         }
       }
       
+      // Campo company_font_color foi removido da UI — nada a preencher.
       // Adiciona campos de e-mail e notificações (apenas checkboxes pois os inputs já são preenchidos no loop anterior)
       if ('notify_new_lead' in json.data) document.getElementById('notify_new_lead').checked = json.data.notify_new_lead == 1;
       if ('notify_new_property' in json.data) document.getElementById('notify_new_property').checked = json.data.notify_new_property == 1;
       if ('notify_property_status' in json.data) document.getElementById('notify_property_status').checked = json.data.notify_property_status == 1;
       if ('notify_contact_form' in json.data) document.getElementById('notify_contact_form').checked = json.data.notify_contact_form == 1;
+      if ('notify_agendamento' in json.data) document.getElementById('notify_agendamento').checked = json.data.notify_agendamento == 1;
 
       // Debug para verificar os valores
       console.log('Valores de email:', {
@@ -435,6 +451,7 @@ async function salvarCompanySettings() {
   data['notify_new_property'] = document.getElementById('notify_new_property')?.checked ? 1 : 0;
   data['notify_property_status'] = document.getElementById('notify_property_status')?.checked ? 1 : 0;
   data['notify_contact_form'] = document.getElementById('notify_contact_form')?.checked ? 1 : 0;
+  data['notify_agendamento'] = document.getElementById('notify_agendamento')?.checked ? 1 : 0;
   if (missing.length > 0) {
     const labels = {
       'company_name': 'Nome da Empresa',
@@ -446,6 +463,7 @@ async function salvarCompanySettings() {
     window.utils.mostrarErro('Preencha os campos obrigatórios:\n' + missing.map(id => '- ' + labels[id]).join('\n'));
     return;
   }
+  // Campo company_font_color removido da UI — não adicionamos mais esse dado.
   try {
     const res = await fetch("api/saveCompanySettings.php", {
       method: "POST",
@@ -494,6 +512,8 @@ async function salvarCompanySettings() {
         document.documentElement.style.setProperty('--cor-destaque-rgb', hexToRgb(d.company_color3));
       }
 
+        // Campo company_font_color removido da UI — nada a aplicar.
+
       // Notifica outras abas sobre mudanças de cores e fonte
       if ('BroadcastChannel' in window) {
         const canal = new BroadcastChannel('configuracoes_empresa');
@@ -502,7 +522,7 @@ async function salvarCompanySettings() {
           company_color1: d.company_color1,
           company_color2: d.company_color2,
           company_color3: d.company_color3,
-          company_font: d.company_font 
+          company_font: d.company_font
         });
         canal.close();
       }

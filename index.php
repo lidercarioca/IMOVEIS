@@ -49,6 +49,60 @@ if ($html === false) {
 $html = str_replace('src="assets/', 'src="' . $baseDir . 'assets/', $html);
 $html = str_replace('href="assets/', 'href="' . $baseDir . 'assets/', $html);
 
+// Se for solicitado um imóvel específico via query (?property=ID), busca dados e injeta meta tags OG
+try {
+    if (isset($_GET['property']) && is_numeric($_GET['property'])) {
+        // Inclui configuração do DB e busca o imóvel
+        require_once __DIR__ . '/config/database.php';
+        $propId = intval($_GET['property']);
+        $stmt = $pdo->prepare('SELECT id, title, description FROM properties WHERE id = :id LIMIT 1');
+        $stmt->execute([':id' => $propId]);
+        $prop = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($prop) {
+            // Busca a primeira imagem do imóvel
+            $imgStmt = $pdo->prepare('SELECT image_url FROM property_images WHERE property_id = :id ORDER BY id ASC LIMIT 1');
+            $imgStmt->execute([':id' => $propId]);
+            $img = $imgStmt->fetch(PDO::FETCH_COLUMN);
+
+            // Normaliza URL/paths
+            $host = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+            $propertyUrl = $host . ($_SERVER['REQUEST_URI'] ? strtok($_SERVER['REQUEST_URI'], '?') : '/');
+            $propertyUrl = rtrim($propertyUrl, '/') . '/?property=' . $propId;
+
+            $ogTitle = htmlspecialchars($prop['title'] ?: 'Imóvel', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            $ogDescription = htmlspecialchars(substr(strip_tags($prop['description'] ?? ''), 0, 200), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            $ogImage = '';
+            if ($img && trim($img) !== '') {
+                // Garante que o caminho seja absoluto
+                if (strpos($img, 'http') === 0) {
+                    $ogImage = $img;
+                } else {
+                    $ogImage = $host . (strpos($img, '/') === 0 ? $img : '/' . $img);
+                }
+            } else {
+                // fallback para imagem OG padrão já presente no HTML
+                $ogImage = $host . '/assets/imagens/og-image.jpg';
+            }
+
+            // Substitui as meta tags OG no HTML carregado
+            // <title>
+            $html = preg_replace('/<title>.*?<\/title>/is', '<title>' . $ogTitle . ' - DJ Imóveis</title>', $html, 1);
+            // meta description
+            $html = preg_replace('/<meta\s+name="description"\s+content="[^"]*"\s*\/?>/i', '<meta name="description" content="' . $ogDescription . '">', $html, 1);
+            // canonical
+            $html = preg_replace('/<link\s+rel="canonical"\s+href="[^"]*"\s*\/?>/i', '<link rel="canonical" href="' . $propertyUrl . '">', $html, 1);
+
+            // OG tags
+            $html = preg_replace('/<meta\s+property="og:url"\s+content="[^"]*"\s*\/?>/i', '<meta property="og:url" content="' . $propertyUrl . '">', $html, 1);
+            $html = preg_replace('/<meta\s+property="og:title"\s+content="[^"]*"\s*\/?>/i', '<meta property="og:title" content="' . $ogTitle . '">', $html, 1);
+            $html = preg_replace('/<meta\s+property="og:description"\s+content="[^"]*"\s*\/?>/i', '<meta property="og:description" content="' . $ogDescription . '">', $html, 1);
+            $html = preg_replace('/<meta\s+property="og:image"\s+content="[^"]*"\s*\/?>/i', '<meta property="og:image" content="' . $ogImage . '">', $html, 1);
+        }
+    }
+} catch (Exception $e) {
+    error_log('Erro ao montar OG dinâmico: ' . $e->getMessage());
+}
+
 // Adiciona marca de debug
 $html = "<!-- Servido via index.php em " . date('Y-m-d H:i:s') . " -->\n" . $html;
 

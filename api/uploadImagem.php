@@ -15,12 +15,24 @@ $uploaded = [];
 if (!empty($_FILES['imagens'])) {
   foreach ($_FILES['imagens']['tmp_name'] as $idx => $tmpName) {
     if ($_FILES['imagens']['error'][$idx] !== UPLOAD_ERR_OK) continue;
-    $ext = pathinfo($_FILES['imagens']['name'][$idx], PATHINFO_EXTENSION);
+    $info = @getimagesize($tmpName);
+    if ($info === false) continue;
+    $mime = $info['mime'] ?? '';
+    $mimeMap = [
+      'image/jpeg' => 'jpg',
+      'image/png' => 'png',
+      'image/gif' => 'gif',
+      'image/webp' => 'webp'
+    ];
+    if (!isset($mimeMap[$mime])) continue;
+    $ext = $mimeMap[$mime];
     $filename = uniqid() . '.' . $ext;
     $dest = $targetDir . $filename;
-    if (move_uploaded_file($tmpName, $dest)) {
+    // Re-encoda a imagem para remover metadados e scripts embutidos
+    require_once __DIR__ . '/../app/utils/image.php';
+    $reencoded = reencode_image($tmpName, $dest, $mime);
+    if ($reencoded) {
       try {
-        // Salva referência no banco
         $stmt = $pdo->prepare('INSERT INTO property_images (property_id, image_url) VALUES (:property_id, :image_url)');
         $stmt->execute([
           ':property_id' => $id,
@@ -29,10 +41,13 @@ if (!empty($_FILES['imagens'])) {
         $uploaded[] = $filename;
       } catch (PDOException $e) {
         error_log("Erro ao salvar imagem no banco: " . $e->getMessage());
-        // Remove o arquivo se falhar ao salvar no banco
-        unlink($dest);
+        @unlink($dest);
         continue;
       }
+    } else {
+      // falha ao re-encodar
+      error_log("Falha ao re-encodar imagem: " . ($tmpName ?? '')); 
+      continue;
     }
   }
 }

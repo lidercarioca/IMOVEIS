@@ -38,24 +38,34 @@ try {
         throw new Exception($uploadErrors[$_FILES['image']['error']] ?? 'Erro desconhecido no upload');
     }
 
-    // Verifica o tipo do arquivo
-    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    $fileType = $_FILES['image']['type'];
-    if (!in_array($fileType, $allowedTypes)) {
-        throw new Exception('Tipo de arquivo não permitido. Use apenas JPG, PNG ou GIF');
+    // Validação robusta do tipo do arquivo usando getimagesize
+    $info = @getimagesize($_FILES['image']['tmp_name']);
+    if ($info === false) {
+        throw new Exception('Arquivo não é uma imagem válida');
+    }
+    $mime = $info['mime'] ?? '';
+    $mimeMap = [
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+        'image/gif' => 'gif',
+        'image/webp' => 'webp'
+    ];
+    if (!isset($mimeMap[$mime])) {
+        throw new Exception('Tipo de arquivo não permitido. Use apenas JPG, PNG, GIF ou WEBP');
     }
 
-    // Gera nome único para o arquivo
-    $fileName = uniqid() . '_' . basename($_FILES['image']['name']);
+    // Gera nome único com extensão segura
+    $ext = $mimeMap[$mime];
+    $fileName = uniqid() . '.' . $ext;
     $targetFile = $targetDir . $fileName;
     $imagePath = 'assets/imagens/banners/' . $fileName;
 
-    // Move o arquivo
-    if (!move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
-        error_log("Falha ao mover arquivo para: " . $targetFile);
-        error_log("Arquivo temporário: " . $_FILES['image']['tmp_name']);
-        error_log("Permissões do diretório: " . substr(sprintf('%o', fileperms($targetDir)), -4));
-        throw new Exception('Falha ao mover o arquivo para o servidor');
+    // Re-encoda a imagem usando utilitário (remove metadados/payloads)
+    require_once __DIR__ . '/../app/utils/image.php';
+    $reencoded = reencode_image($_FILES['image']['tmp_name'], $targetFile, $mime);
+    if (!$reencoded) {
+        error_log("Falha ao re-encodar imagem para: " . $targetFile);
+        throw new Exception('Falha ao processar a imagem enviada');
     }
 
     // Prepara os dados

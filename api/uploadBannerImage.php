@@ -9,17 +9,22 @@ try {
 
     $file = $_FILES['banner'];
     
-    // Validação do tipo MIME
-    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (!in_array($file['type'], $allowedTypes)) {
+    // Validação robusta do arquivo de imagem
+    $info = @getimagesize($file['tmp_name']);
+    if ($info === false) {
+        throw new Exception('Arquivo enviado não é uma imagem válida.');
+    }
+    $mime = $info['mime'] ?? '';
+    $mimeMap = [
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+        'image/gif' => 'gif',
+        'image/webp' => 'webp'
+    ];
+    if (!isset($mimeMap[$mime])) {
         throw new Exception('Formato de imagem não suportado. Use JPG, PNG, GIF ou WebP.');
     }
-
-    // Validação da extensão
-    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-    if (!in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
-        throw new Exception('Extensão de arquivo não suportada.');
-    }
+    $ext = $mimeMap[$mime];
 
     $targetDir = '../assets/imagens/banners/';
     if (!is_dir($targetDir)) {
@@ -39,11 +44,12 @@ try {
     $newName = uniqid('banner_') . '.' . $ext;
     $targetPath = $targetDir . $newName;
     
-    if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
-        error_log("Falha ao mover arquivo. Detalhes:");
-        error_log("Arquivo temporário existe: " . (file_exists($file['tmp_name']) ? 'Sim' : 'Não'));
-        error_log("Permissões do diretório: " . substr(sprintf('%o', fileperms($targetDir)), -4));
-        throw new Exception('Falha ao salvar imagem no servidor');
+    // Re-encoda a imagem para remover metadados e scripts embutidos
+    require_once __DIR__ . '/../app/utils/image.php';
+    $reencoded = reencode_image($file['tmp_name'], $targetPath, $mime);
+    if (!$reencoded) {
+        error_log("Falha ao re-encodar banner: " . $targetPath);
+        throw new Exception('Falha ao processar imagem enviada');
     }
 
     $imagePath = 'assets/imagens/banners/' . $newName;

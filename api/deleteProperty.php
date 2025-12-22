@@ -13,6 +13,9 @@ if (!isAdmin()) {
 file_put_contents(__DIR__.'/../log_delete.txt', 'INICIOU SCRIPT'.PHP_EOL, FILE_APPEND);
 header("Content-Type: application/json");
 
+// Helper de logging de ações do usuário
+require_once __DIR__ . '/../app/utils/logger_functions.php';
+
 // Verifica se foi enviado via POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     file_put_contents(__DIR__.'/../log_delete.txt', 'ERRO: método'.PHP_EOL, FILE_APPEND);
@@ -79,6 +82,11 @@ try {
         echo json_encode(["success" => false, "message" => "Imóvel não encontrado ou já removido."]);
         exit;
     }
+
+    // Log de exclusão de imóvel
+    log_user_action('property_delete', [
+        'property_id' => $propertyId
+    ]);
 
     echo json_encode(["success" => true, "message" => "Imóvel excluído com sucesso."]);
     exit;

@@ -44,7 +44,11 @@ class NotificationManager {
             INSERT INTO messages (from_name, from_email, subject, message, property_id, user_id)
             VALUES (?, ?, ?, ?, ?, ?)
         ");
-        return $stmt->execute([$fromName, $fromEmail, $subject, $message, $propertyId, $userId]);
+        $ok = $stmt->execute([$fromName, $fromEmail, $subject, $message, $propertyId, $userId]);
+        if ($ok) {
+            return (int)$this->pdo->lastInsertId();
+        }
+        return false;
     }
 
     /**
@@ -119,5 +123,43 @@ class NotificationManager {
         $message = "Mensagem recebida de {$name} ({$email}): " . substr($message, 0, 100) . "...";
         
         return $this->createNotification('contact', $title, $message, 'painel.php?tab=messages');
+    }
+
+    /**
+     * Notifica sobre novo agendamento
+     */
+    public function notifyNewAgendamento($propertyTitle, $dataAgendamento, $userName) {
+        // Verifica se as notificações de agendamento estão ativadas
+        if (!$this->isNotificationEnabled('agendamento')) {
+            return false;
+        }
+
+        $title = "Novo Agendamento Criado";
+        $dataFormatada = date('d/m/Y H:i', strtotime($dataAgendamento));
+        $message = "Novo agendamento para o imóvel \"{$propertyTitle}\" em {$dataFormatada} por {$userName}";
+        
+        return $this->createNotification('agendamento', $title, $message, 'painel.php?tab=agendamentos');
+    }
+
+    /**
+     * Notifica sobre alteração de status de agendamento
+     */
+    public function notifyAgendamentoStatusChange($propertyTitle, $novoStatus, $userName) {
+        // Verifica se as notificações de agendamento estão ativadas
+        if (!$this->isNotificationEnabled('agendamento')) {
+            return false;
+        }
+
+        $statusTexto = [
+            'confirmado' => 'Confirmado',
+            'cancelado' => 'Cancelado',
+            'realizado' => 'Realizado'
+        ];
+
+        $titulo = isset($statusTexto[$novoStatus]) ? $statusTexto[$novoStatus] : ucfirst($novoStatus);
+        $title = "Agendamento {$titulo}";
+        $message = "O agendamento para \"{$propertyTitle}\" foi marcado como {$titulo} por {$userName}";
+        
+        return $this->createNotification('agendamento', $title, $message, 'painel.php?tab=agendamentos');
     }
 }

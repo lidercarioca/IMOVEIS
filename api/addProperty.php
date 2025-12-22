@@ -11,6 +11,9 @@ require_once '../config/database.php';
 
 header('Content-Type: application/json');
 
+// Helper de logging de ações do usuário
+require_once __DIR__ . '/../app/utils/logger_functions.php';
+
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new Exception("Método inválido");
@@ -28,10 +31,14 @@ try {
     $bedrooms = isset($_POST['bedrooms']) ? intval($_POST['bedrooms']) : 0;
     $bathrooms = isset($_POST['bathrooms']) ? intval($_POST['bathrooms']) : 0;
     $garage = isset($_POST['garage']) ? $_POST['garage'] : null;
+    $condominium = $_POST['condominium'] ?? null;
+    $iptu = $_POST['iptu'] ?? null;
+    $suites = isset($_POST['suites']) && $_POST['suites'] !== '' ? intval($_POST['suites']) : null;
     $neighborhood = $_POST['neighborhood'] ?? '';
     $city = $_POST['city'] ?? '';
     $state = $_POST['state'] ?? '';
     $zip = $_POST['zip'] ?? '';
+    $assigned_user_id = isset($_POST['assigned_user_id']) && is_numeric($_POST['assigned_user_id']) ? intval($_POST['assigned_user_id']) : null;
     $status = $_POST['status'] ?? '';
     
     $features = $_POST['features'] ?? '';
@@ -66,6 +73,9 @@ try {
             'bedrooms' => $bedrooms,
             'bathrooms' => $bathrooms,
             'garage' => $garage,
+            'condominium' => $condominium,
+            'iptu' => $iptu,
+            'suites' => $suites,
             'neighborhood' => $neighborhood,
             'city' => $city,
             'state' => $state,
@@ -87,9 +97,21 @@ try {
 
    
     // Insere imóvel
-    $stmt = $pdo->prepare("INSERT INTO properties (title, price, location, type, transactionType, area, yearBuilt, description, bedrooms, bathrooms, garage, neighborhood, city, state, zip, status, features) 
-                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    if (!$stmt->execute([$title, $price, $location, $type, $transactionType, $area, $yearBuilt, $description, $bedrooms, $bathrooms, $garage, $neighborhood, $city, $state, $zip, $status, $features])) {
+    // Sanitize currency inputs (Condomínio/IPTU) — aceita vírgula ou ponto
+    function parseCurrency($val) {
+        if ($val === null || $val === '') return null;
+        $v = preg_replace('/[^0-9,\.\-]/', '', $val);
+        $v = str_replace(',', '.', $v);
+        return number_format((float)$v, 2, '.', '');
+    }
+
+    $condominiumVal = parseCurrency($condominium);
+    $iptuVal = parseCurrency($iptu);
+
+    $stmt = $pdo->prepare("INSERT INTO properties (title, price, location, type, transactionType, area, yearBuilt, description, bedrooms, bathrooms, garage, condominium, iptu, suites, neighborhood, city, state, zip, assigned_user_id, status, features) 
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    if (!$stmt->execute([$title, $price, $location, $type, $transactionType, $area, $yearBuilt, $description, $bedrooms, $bathrooms, $garage, $condominiumVal, $iptuVal, $suites, $neighborhood, $city, $state, $zip, $assigned_user_id, $status, $features])) {
+        
         $errorInfo = $stmt->errorInfo();
         throw new Exception("Erro ao inserir no banco: " . $errorInfo[2]);
     }
@@ -103,20 +125,40 @@ try {
             mkdir($targetDir, 0777, true);
         }
 
+        require_once __DIR__ . '/../app/utils/image.php';
         foreach ($_FILES['imagens']['tmp_name'] as $index => $tmpName) {
             if ($_FILES['imagens']['error'][$index] !== UPLOAD_ERR_OK) continue;
-            
-            $ext = pathinfo($_FILES['imagens']['name'][$index], PATHINFO_EXTENSION);
+            $info = @getimagesize($tmpName);
+            if ($info === false) continue;
+            $mime = $info['mime'] ?? '';
+            $mimeMap = [
+                'image/jpeg' => 'jpg',
+                'image/png' => 'png',
+                'image/gif' => 'gif',
+                'image/webp' => 'webp'
+            ];
+            if (!isset($mimeMap[$mime])) continue;
+            $ext = $mimeMap[$mime];
             $filename = uniqid() . '.' . $ext;
             $dest = $targetDir . $filename;
-
-            if (move_uploaded_file($tmpName, $dest)) {
-                // Salva imagem no banco
+            $reencoded = reencode_image($tmpName, $dest, $mime);
+            if ($reencoded) {
                 $stmtImg = $pdo->prepare("INSERT INTO property_images (property_id, image_url) VALUES (?, ?)");
                 $stmtImg->execute([$propertyId, $filename]);
             }
         }
     }
+
+    // Log de criação de imóvel
+    log_user_action('property_create', [
+        'property_id' => $propertyId,
+        'title' => $title,
+        'price' => $price,
+        'condominium' => $condominiumVal,
+        'iptu' => $iptuVal,
+        'suites' => $suites,
+        'location' => $location
+    ]);
 
     echo json_encode(["success" => true, "message" => "Imóvel adicionado com sucesso.", "id" => $propertyId]);
 } catch (Exception $e) {

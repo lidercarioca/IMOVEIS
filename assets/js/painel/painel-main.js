@@ -304,6 +304,33 @@ function abrirModalDetalhes(id) {
         iconColor = 'text-blue-600';
       }
       locEl.innerHTML = `<i class="fas fa-map-marker-alt me-2 ${iconColor}"></i> ${property.location}${property.neighborhood ? ' - ' + property.neighborhood : ''}`;
+      
+      // Exibe o usuário atribuído se existir
+      const assignedUserSection = document.getElementById("modal-assigned-user-section");
+      const assignedUserName = document.getElementById("modal-assigned-user-name");
+      if (assignedUserSection && assignedUserName) {
+        if (property.assigned_user_id) {
+          // Busca o nome do usuário pela API
+          fetch(`api/users.php?id=${property.assigned_user_id}`)
+            .then(r => r.json())
+            .then(j => {
+              if (j.success && Array.isArray(j.data) && j.data.length > 0) {
+                const user = j.data[0];
+                assignedUserName.textContent = `${user.name} (${user.username})`;
+                assignedUserSection.style.display = 'block';
+              } else {
+                assignedUserSection.style.display = 'none';
+              }
+            })
+            .catch(err => {
+              console.error('Erro ao carregar usuário atribuído:', err);
+              assignedUserSection.style.display = 'none';
+            });
+        } else {
+          assignedUserSection.style.display = 'none';
+        }
+      }
+
       // Atualiza os valores de área e ano
       areaEl.innerHTML = `<i class="fas fa-ruler-combined ${iconColor} me-2"></i> <span class="fw-semibold text-dark">${formatarArea(property.area)}m²</span>`;
       yearEl.innerHTML = `<i class="fas fa-calendar-alt ${iconColor} me-2"></i> <span class="fw-semibold text-dark">${property.yearBuilt || 'N/A'}</span>`;
@@ -312,6 +339,10 @@ function abrirModalDetalhes(id) {
       const bedrooms = property.bedrooms !== undefined && property.bedrooms !== '' ? property.bedrooms : 'N/A';
       const bathrooms = property.bathrooms !== undefined && property.bathrooms !== '' ? property.bathrooms : 'N/A';
       const garage = property.garage !== undefined && property.garage !== '' ? property.garage : 'N/A';
+      const suites = property.suites !== undefined && property.suites !== null && property.suites !== '' ? property.suites : 'N/A';
+      const condominium = property.condominium !== undefined && property.condominium !== null && property.condominium !== '' ? parseFloat(property.condominium).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : 'N/A';
+      const iptu = property.iptu !== undefined && property.iptu !== null && property.iptu !== '' ? parseFloat(property.iptu).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : 'N/A';
+
       let areaBox = areaEl.parentElement.parentElement;
       let descParent = descEl.parentElement;
       let infoRow = document.getElementById('modal-info-row');
@@ -332,8 +363,16 @@ function abrirModalDetalhes(id) {
           <i class="fas fa-bath ${iconColor}"></i> <span class="fw-semibold text-dark">${bathrooms} Banheiros</span>
         </div>
         <div class="d-flex align-items-center gap-2">
+          <i class="fas fa-door-closed ${iconColor}"></i> <span class="fw-semibold text-dark">${suites} Suítes</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
           <i class="fas fa-car ${iconColor}"></i> <span class="fw-semibold text-dark">${garage} Vagas</span>
         </div>
+        <div class="d-flex align-items-center gap-2">
+          <i class="fas fa-building ${iconColor}"></i> <span class="fw-semibold text-dark">${condominium} Condominio</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <i class="fas fa-receipt ${iconColor}"></i> <span class="fw-semibold text-dark">${iptu} IPTU</span>
       `;
 
       // Atualiza as classes e estrutura do container
@@ -435,7 +474,7 @@ window.featuresIcons = {
  */
 async function carregarImoveisPainel() {
   try {
-    const res = await fetch("api/getProperties.php");
+    const res = await fetch("api/getProperties.php?panel=1");
     const properties = await res.json();
 
     // Salva os dados globalmente
@@ -654,6 +693,10 @@ window.renderizarPagina = function (pagina) {
 
           // Preenche os campos do formulário
           for (const [key, value] of Object.entries(property)) {
+            // Pula assigned_user_id - será tratado separadamente abaixo
+            if (key === 'assigned_user_id') {
+              continue;
+            }
             // Tratamento especial para features
             if (key === 'features') {
               const features = typeof value === 'string' ? JSON.parse(value) : value;
@@ -789,6 +832,80 @@ window.renderizarPagina = function (pagina) {
           }
           editId.value = property.id;
         }, 100);
+        
+        // Carrega usuários para o select de assigned_user_id após 150ms para garantir que o form esteja visível
+        setTimeout(() => {
+          const f = document.getElementById('property-form');
+          if (!f) {
+            console.log('[assigned_user_id] form não encontrado no DOM');
+            return;
+          }
+          const assignedSelect = f.querySelector('[name="assigned_user_id"]');
+          if (!assignedSelect) {
+            console.log('[assigned_user_id] Select não encontrado no formulário');
+            return;
+          }
+
+          console.log('[assigned_user_id] Property ID:', property.id, 'assigned_user_id:', property.assigned_user_id);
+          console.log('[assigned_user_id] Select encontrado, options.length:', assignedSelect.options.length);
+
+          // Se o select ainda não estiver preenchido com usuários, tenta carregar
+          if (assignedSelect.options.length <= 1) {
+            console.log('[assigned_user_id] Carregando usuários da API...');
+            fetch('api/users.php')
+              .then(r => r.json())
+              .then(j => {
+                console.log('[assigned_user_id] Resposta da API:', j);
+                if (j.success && Array.isArray(j.data)) {
+                  console.log('[assigned_user_id] Populando select com', j.data.length, 'usuários');
+                  assignedSelect.innerHTML = '<option value="">Nenhum</option>';
+                  j.data.forEach(u => {
+                    const o = document.createElement('option');
+                    o.value = String(u.id);
+                    o.textContent = u.name + ' (' + u.username + ')';
+                    assignedSelect.appendChild(o);
+                    console.log('[assigned_user_id] Adicionada opção: ID=' + u.id + ', nome=' + u.name);
+                  });
+                  
+                  // Define o valor APÓS as opções serem adicionadas
+                  if (property.assigned_user_id) {
+                    const valueToSet = String(property.assigned_user_id);
+                    assignedSelect.value = valueToSet;
+                    console.log('[assigned_user_id] Valor definido para:', valueToSet);
+                    console.log('[assigned_user_id] Valor atual do select:', assignedSelect.value);
+                    if (assignedSelect.selectedIndex !== -1) {
+                      console.log('[assigned_user_id] Texto selecionado:', assignedSelect.options[assignedSelect.selectedIndex].text);
+                    } else {
+                      console.warn('[assigned_user_id] Valor não encontrado nas opções!');
+                    }
+                  } else {
+                    assignedSelect.value = '';
+                    console.log('[assigned_user_id] Nenhum usuário atribuído');
+                  }
+                }
+              })
+              .catch(err => {
+                console.error('[assigned_user_id] Erro ao carregar usuários:', err);
+              });
+          } else {
+            console.log('[assigned_user_id] Select já tem opções, apenas definindo valor');
+            // Select já foi preenchido, apenas define o valor
+            if (property.assigned_user_id) {
+              const valueToSet = String(property.assigned_user_id);
+              assignedSelect.value = valueToSet;
+              console.log('[assigned_user_id] Valor definido para:', valueToSet);
+              console.log('[assigned_user_id] Valor atual do select:', assignedSelect.value);
+              if (assignedSelect.selectedIndex !== -1) {
+                console.log('[assigned_user_id] Texto selecionado:', assignedSelect.options[assignedSelect.selectedIndex].text);
+              } else {
+                console.warn('[assigned_user_id] Valor não encontrado nas opções!');
+              }
+            } else {
+              assignedSelect.value = '';
+              console.log('[assigned_user_id] Nenhum usuário atribuído');
+            }
+          }
+        }, 150);
       });
     }
     if (window.isAdmin) {
@@ -810,6 +927,10 @@ window.renderizarPagina = function (pagina) {
                   if (typeof window.updateDashboardCounts === 'function') {
                     window.updateDashboardCounts();
                   }
+                  // Notifica invalidação de cache para o site público
+                  if (typeof CacheInvalidator !== 'undefined') {
+                    CacheInvalidator.notify('properties', { property_id: property.id, action: 'deleted' });
+                  }
                 } else {
                   window.utils.mostrarErro(data.message || 'Erro ao excluir imóvel.');
                 }
@@ -829,11 +950,17 @@ window.renderizarPagina = function (pagina) {
 
   // Atualiza a paginação dinâmica
   atualizarPaginacao();
+
+  // Atualiza o contador de imóveis
+  const counter = document.getElementById('properties-count');
+  if (counter) {
+    const inicio = (pagina - 1) * itensPorPagina + 1;
+    const fim = Math.min(pagina * itensPorPagina, window.todasAsProperties.length);
+    const total = window.todasAsProperties.length;
+    counter.textContent = `Mostrando ${inicio}-${fim} de ${total} imóveis`;
+  }
 }
 
-/**
- * Atualiza os controles de paginação da lista de imóveis
- */
 function atualizarPaginacao() {
   // Seleciona o container correto da paginação do painel
   const paginacaoContainer = document.querySelector('.flex.space-x-1');
@@ -847,26 +974,26 @@ function atualizarPaginacao() {
   const btnPrev = document.createElement('button');
   btnPrev.className = baseBtn;
   btnPrev.innerHTML = '<i class="fas fa-chevron-left"></i>';
-  btnPrev.disabled = paginaAtual === 1;
+  btnPrev.disabled = window.paginaAtual === 1;
   btnPrev.addEventListener('click', (e) => {
     e.preventDefault();
-    if (paginaAtual > 1) {
-      paginaAtual--;
-      renderizarPagina(paginaAtual);
+    if (window.paginaAtual > 1) {
+      window.paginaAtual--;
+      renderizarPagina(window.paginaAtual);
     }
   });
   paginacaoContainer.appendChild(btnPrev);
   // Botões de página
   for (let i = 1; i <= totalPaginas; i++) {
     const btn = document.createElement('button');
-    btn.className = baseBtn + (i === paginaAtual ? ' ' + activeBtn : '');
+    btn.className = baseBtn + (i === window.paginaAtual ? ' ' + activeBtn : '');
     btn.innerText = i;
-    btn.disabled = i === paginaAtual;
+    btn.disabled = i === window.paginaAtual;
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      if (paginaAtual !== i) {
-        paginaAtual = i;
-        renderizarPagina(paginaAtual);
+      if (window.paginaAtual !== i) {
+        window.paginaAtual = i;
+        renderizarPagina(window.paginaAtual);
       }
     });
     paginacaoContainer.appendChild(btn);
@@ -875,12 +1002,12 @@ function atualizarPaginacao() {
   const btnNext = document.createElement('button');
   btnNext.className = baseBtn;
   btnNext.innerHTML = '<i class="fas fa-chevron-right"></i>';
-  btnNext.disabled = paginaAtual === totalPaginas;
+  btnNext.disabled = window.paginaAtual === totalPaginas;
   btnNext.addEventListener('click', (e) => {
     e.preventDefault();
-    if (paginaAtual < totalPaginas) {
-      paginaAtual++;
-      renderizarPagina(paginaAtual);
+    if (window.paginaAtual < totalPaginas) {
+      window.paginaAtual++;
+      renderizarPagina(window.paginaAtual);
     }
   });
   paginacaoContainer.appendChild(btnNext);

@@ -1,15 +1,15 @@
 <?php
 // Headers de segurança
-header('X-Frame-Options: SAMEORIGIN');
-header('X-Content-Type-Options: nosniff');
-header('Referrer-Policy: no-referrer-when-downgrade');
-header('Content-Security-Policy: default-src \'self\'; script-src \'self\' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src \'self\' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; connect-src \'self\' https://ka-f.fontawesome.com https://cdnjs.cloudflare.com https://*.jsdelivr.net https://cdn.jsdelivr.net;');
+require_once 'app/security/SecurityHeaders.php';
 
 require_once 'app/security/Security.php';
 require_once 'config/database.php';
 
 // Inicializa configurações de segurança (já inclui session_start)
 Security::init();
+
+// Helper de logging de ações do usuário
+require_once __DIR__ . '/app/utils/logger_functions.php';
 
 if (isset($_SESSION['user_id'])) {
     header("Location: painel.php");
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     
     try {
-        $sql = "SELECT * FROM users WHERE username = :username AND active = 1";
+        $sql = "SELECT * FROM users WHERE username = BINARY :username AND active = 1";
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['username' => $username]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -60,6 +60,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Atualiza último login
             $update = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE id = :id");
             $update->execute(['id' => $user['id']]);
+
+            // Log de ação do usuário - login bem sucedido
+            log_user_action('login_success', [
+                'user_id' => $user['id'],
+                'username' => $user['username']
+            ]);
             
             header("Location: painel.php");
             exit;
@@ -202,6 +208,9 @@ if (isset($_GET['error']) && $_GET['error'] === 'session_expired') {
                                 <label class="form-label">Senha</label>
                                 <input type="password" name="password" class="form-control" 
                                        required autocomplete="current-password">
+                                <div class="text-end mt-2">
+                                    <a href="forgot-password.php" class="small text-decoration-none">Esqueci minha senha</a>
+                                </div>
                             </div>
                             
                             <button type="submit" class="btn btn-primary w-100">Entrar</button>

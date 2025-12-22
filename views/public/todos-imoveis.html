@@ -3,8 +3,12 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Todos os Imóveis - DJ Imóveis</title>
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="">
+  <script>/* definir canonical absoluto sem query/hash */(function(){try{var c=document.querySelector('link[rel="canonical"]'); if(c) c.href = location.origin + location.pathname;}catch(e){console.error(e);}})();</script>
+  <meta property="og:title" content="Todos os Imóveis - DJ Imóveis">
 
   <!-- Dependências externas -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -49,10 +53,12 @@
   <link rel="stylesheet" href="/assets/css/shared-styles.css">
   <link rel="stylesheet" href="/assets/css/todos-imoveis.css">
   <link rel="stylesheet" href="/assets/css/modal.css">
-  
+  <link rel="stylesheet" href="/assets/css/fixes.css">
 
   <!-- Scripts essenciais primeiro -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/assets/js/cache-invalidator.js"></script>
+  <script src="/assets/js/public/cache-sync.js"></script>
   <script src="/assets/js/favorites.js"></script>
   <script src="/assets/js/public/property-filter.js"></script>
   <script src="/assets/js/phone-mask.js"></script>
@@ -179,7 +185,8 @@
     }
 
     .bg-gray-900 {
-      background-color: #111827;
+      background-color: var(--cor-primaria) !important;
+
     }
 
     .text-white-hover:hover {
@@ -271,8 +278,8 @@
     <div class="container py-2">
       <div class="d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
-          <a href="/"><img id="company-logo-img" alt="Logo RR Imóveis" class="me-2 company-logo"
-              onerror="this.style.display='none'"></a>
+          <a href="/" title="Voltar ao site"><img id="company-logo-img" alt="Logo RR Imóveis" class="me-2 company-logo"
+              onerror="this.classList.add('d-none')"></a>
           <a href="/" class="nav-link fs-4 fw-bold" id="company-name">Carregando...</a>
         </div>
       </div>
@@ -282,7 +289,7 @@
         <a href="#properties" class="nav-link mx-3 text-white hover-light"
           onclick="showAllProperties(); return false;"><i class="fas fa-building"></i> Imóveis</a>
         <a href="#properties" class="nav-link text-white hover-light" onclick="showFavorites(); return false;">
-          Favoritos <i class="fa-solid fa-heart-circle-check" style="color: #f91201;"></i>
+          Favoritos <i class="fa-solid fa-heart-circle-check icon-danger"></i>
         </a>
       </div>
     </div>
@@ -323,8 +330,7 @@
           </div>
           <div class="col-12 col-md-2">
             <label class="d-none d-md-block form-label text-secondary small">&nbsp;</label>
-            <button id="btn-limpar-filtros" class="btn h-75 w-100"
-              style="background-color: var(--cor-secundaria); color: #fff; border: none;">
+            <button id="btn-limpar-filtros" class="btn h-75 w-100 btn-dynamic-secondary" title="Limpar filtros">
               <i class="fas fa-eraser me-2"></i>Limpar Filtros
             </button>
           </div>
@@ -336,8 +342,7 @@
 
       <!-- Botão Voltar -->
       <div class="text-center mt-5 mb-4">
-        <a href="/" class="btn px-5 btn-voltar btn-dynamic-primary"
-          style="background-color: var(--cor-primaria); color: #fff; border: none;">
+        <a href="/" class="btn px-5 btn-voltar btn-dynamic-primary rounded" title="Voltar ao site">
           <i class="fas fa-home me-2"></i>
           Voltar ao Site Principal
         </a>
@@ -347,6 +352,7 @@
     <script src="/assets/js/public/todos-imoveis.js"></script>
     <script src="/assets/js/public/todos-imoveis-filter.js"></script>
     <script src="/assets/js/public/toggle-favorites.js"></script>
+    <script src="/assets/js/public/visit-tracker.js"></script>
 
     <style>
       #modal-features {
@@ -394,6 +400,66 @@
         /* Opcional: melhora legibilidade */
 
       }
+
+      /* Estilos para os botões de compartilhamento */
+      #propertyModal .rounded-circle {
+        transition: all 0.3s ease;
+        border: none;
+        font-size: 1.2rem;
+      }
+
+      #propertyModal .rounded-circle:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      #propertyModal .rounded-circle i {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      @media (max-width: 576px) {
+        #propertyModal .rounded-circle {
+          width: 36px !important;
+          height: 36px !important;
+          font-size: 1rem;
+        }
+      }
+
+      /* Cores específicas para cada botão de compartilhamento */
+      #share-linkedin {
+        background-color: #0A66C2;
+        color: white;
+      }
+
+      #share-telegram {
+        background-color: #0088cc;
+        color: white;
+      }
+
+      #share-email {
+        background-color: #EA4335;
+        color: white;
+      }
+
+      #share-pinterest {
+        background-color: #E60023;
+        color: white;
+      }
+
+      /* Tamanho consistente para todos os botões de compartilhamento */
+      .share-button-modal {
+        width: 40px;
+        height: 40px;
+      }
+
+      @media (max-width: 576px) {
+        .share-button-modal {
+          width: 36px !important;
+          height: 36px !important;
+        }
+      }
     </style>
 
 
@@ -416,6 +482,33 @@
                   <h5 id="modal-title" class="modal-title fw-bold">Título do Imóvel</h5>
                   <span id="modal-price" class="fs-5 fw-bold text-primary">R$ 0.000.000</span>
                 </div>
+                <!-- Botões de Compartilhamento em Redes Sociais -->
+                <div class="d-flex gap-2 mb-3 flex-wrap">
+                  <a id="share-whatsapp" href="#" class="btn btn-sm btn-success rounded-circle d-flex align-items-center justify-content-center share-button-modal" title="Compartilhar no WhatsApp" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-whatsapp"></i>
+                  </a>
+                  <a id="share-facebook" href="#" class="btn btn-sm btn-primary rounded-circle d-flex align-items-center justify-content-center share-button-modal" title="Compartilhar no Facebook" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-facebook-f"></i>
+                  </a>
+                  <a id="share-linkedin" href="#" class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center share-button-modal" title="Compartilhar no LinkedIn" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-linkedin-in"></i>
+                  </a>
+                  <a id="share-telegram" href="#" class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center share-button-modal" title="Compartilhar no Telegram" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-telegram"></i>
+                  </a>
+                  <a id="share-x" href="#" class="btn btn-sm btn-dark rounded-circle d-flex align-items-center justify-content-center share-button-modal" title="Compartilhar no X (Twitter)" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-x-twitter"></i>
+                  </a>
+                  <a id="share-email" href="#" class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center share-button-modal" title="Compartilhar por Email" target="_blank" rel="noopener noreferrer">
+                    <i class="fas fa-envelope"></i>
+                  </a>
+                  <a id="share-pinterest" href="#" class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center share-button-modal" title="Compartilhar no Pinterest" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-pinterest"></i>
+                  </a>
+                  <button id="share-copy" type="button" class="btn btn-sm btn-secondary rounded-circle d-flex align-items-center justify-content-center share-button-modal" title="Copiar link">
+                    <i class="fas fa-copy"></i>
+                  </button>
+                </div>
                 <p id="modal-location" class="text-muted mb-3">
                   <!-- Ícone será inserido dinamicamente pelo JS -->
                 </p>
@@ -430,22 +523,38 @@
                   </div>
                   <!-- Ano de Construção -->
                   <div>
-                    <div class="text-muted small">Ano de Construção</div>
+                    <div class="small">Ano de Construção</div>
                     <div class="d-flex align-items-center gap-2">
+                      <i class="fas fa-calendar-alt modal-icon"></i>
                       <span id="modal-yearBuilt" class="fw-semibold">2020</span>
                     </div>
                   </div>
                 </div>
-                <!-- Ícones de quarto e banheiro abaixo da área e ano -->
-                <div class="d-flex gap-4 mb-4">
-                  <div class="d-flex align-items-center gap-2">
-                    <span id="modal-bedrooms" class="fw-semibold text-dark">N/A</span>
+                <!-- Linha de estatísticas: Quartos, Banheiros, Suítes, Vagas, Condomínio, IPTU -->
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+                  <div class="d-flex align-items-center gap-2 small">
+                    <i class="fas fa-bed modal-icon"></i>
+                    <span id="modal-bedrooms" class="fw-semibold">N/A</span>
                   </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <span id="modal-bathrooms" class="fw-semibold text-dark">N/A</span>
+                  <div class="d-flex align-items-center gap-2 small">
+                    <i class="fas fa-bath modal-icon"></i>
+                    <span id="modal-bathrooms" class="fw-semibold">N/A</span>
                   </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <span id="modal-garage" class="fw-semibold text-dark">N/A</span>
+                  <div class="d-flex align-items-center gap-2 small">
+                    <i class="fas fa-door-open modal-icon"></i>
+                    <div class="fw-semibold" id="modal-suites">N/A</div>
+                  </div>
+                  <div class="d-flex align-items-center gap-2 small">
+                    <i class="fas fa-car modal-icon"></i>
+                    <span id="modal-garage" class="fw-semibold">N/A</span>
+                  </div>
+                  <div class="d-flex align-items-center gap-2 small">
+                    <i class="fas fa-building modal-icon"></i>
+                    <div class="fw-semibold" id="modal-condominium">N/A</div>
+                  </div>
+                  <div class="d-flex align-items-center gap-2 small">
+                    <i class="fas fa-receipt modal-icon"></i>
+                    <div class="fw-semibold" id="modal-iptu">N/A</div>
                   </div>
                 </div>
                 <h6 class="fw-semibold mb-2">Descrição do Imóvel</h6>
@@ -490,7 +599,7 @@
   <footer class="bg-gray-900 text-white py-5">
     <div class="container">
       <div class="row row-cols-1 row-cols-md-4 g-3">
-        <div class="info-contato-dinamico mb-4" style="display: none;"></div>
+        <div class="info-contato-dinamico mb-4 d-none"></div>
         <!-- Company Info -->
         <div class="col">
           <div class="d-flex align-items-center mb-2">
@@ -652,6 +761,9 @@
   </div>
 
   <script src="/assets/js/contato-dinamico.js"></script>
+
+  <!-- Performance: lazy-loading automático para imagens -->
+  <script src="/assets/js/performance-lazyload.js" defer></script>
 
 </body>
 

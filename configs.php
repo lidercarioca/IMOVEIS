@@ -165,7 +165,7 @@ if (!isset($_SESSION['user_id'])) {
         <h3 class="fs-5 fw-semibold text-dark mb-4">Personalização do Site</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <label class="block text-gray-700 mb-2 font-bold">Cores Principais  Originais >>>  Primária #1e40af / Secundária #10b981 / Destaque #d97706</label>
+            <label class="block text-gray-700 mb-2 font-bold">Cores Principais  Originais >>>  Primária #111827 / Secundária #10b981 / Destaque #d97706</label>
             <div class="flex items-center space-x-4">
               <div>
                 <span class="block text-sm text-gray-500 mb-1">Primária</span>
@@ -193,18 +193,20 @@ if (!isset($_SESSION['user_id'])) {
               </div>
             </div>
           </div>
-          <div>
-            <div class="form-floating">
-              <select class="form-select" id="company_font">
-                <option>Poppins</option>
-                <option>Roboto</option>
-                <option>Open Sans</option>
-                <option>Montserrat</option>
-                <option>Lato</option>
-              </select>
-              <label for="company_font">Fonte Principal</label>
-            </div>
-          </div>
+                  <div class="col-md-3">
+                    <div class="form-floating">
+                      <select class="form-select" id="company_font" style="max-width:220px;">
+                        <option>Poppins</option>
+                        <option>Roboto</option>
+                        <option>Open Sans</option>
+                        <option>Montserrat</option>
+                        <option>Lato</option>
+                      </select>
+                      <label for="company_font">Fonte Principal</label>
+                    </div>
+                  </div>
+                  <!-- Cor da Fonte Principal removida (campo retirado conforme solicitado) -->
+          <!-- (duplicado removido: campo Fonte Principal mantido ao lado das cores) -->
         </div>
         <div class="mb-4">
           <h5 class="mb-3">Logo da Empresa</h5>
@@ -271,6 +273,10 @@ if (!isset($_SESSION['user_id'])) {
             <div class="form-check">
               <input type="checkbox" class="form-check-input" id="notify_contact_form" checked>
               <label class="form-check-label" for="notify_contact_form">Mensagem do formulário de contato</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id="notify_agendamento" checked>
+              <label class="form-check-label" for="notify_agendamento">Novo agendamento e alteração de status</label>
             </div>
           </div>
         </div>

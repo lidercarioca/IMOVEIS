@@ -24,18 +24,20 @@ if (isset($_FILES['logo'])) {
         exit;
     }
 
-    // Valida o tipo de arquivo (MIME type)
-    $allowedTypes = ['image/png'];
-    if (!in_array($file['type'], $allowedTypes)) {
-        echo json_encode(['success' => false, 'message' => 'Tipo de arquivo não permitido. Apenas arquivos PNG são aceitos.']);
+    // Validação robusta do arquivo: usa getimagesize para validar imagem e tipo
+    $imageInfo = @getimagesize($file['tmp_name']);
+    if ($imageInfo === false) {
+        echo json_encode(['success' => false, 'message' => 'Arquivo enviado não é uma imagem válida.']);
         exit;
     }
-    // Garante extensão .png
-    $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-    if ($fileExtension !== 'png') {
-        echo json_encode(['success' => false, 'message' => 'Apenas arquivos com extensão .png são aceitos.']);
+    $mime = $imageInfo['mime'] ?? '';
+    $allowedMimes = ['image/png'];
+    if (!in_array($mime, $allowedMimes)) {
+        echo json_encode(['success' => false, 'message' => 'Tipo de arquivo não permitido. Apenas PNG são aceitos.']);
         exit;
     }
+    // Força extensão correta a partir do tipo detectado
+    $fileExtension = 'png';
 
     // Valida o tamanho do arquivo (ex: máximo de 5MB)
     if ($file['size'] > 5 * 1024 * 1024) { 
@@ -57,26 +59,25 @@ if (isset($_FILES['logo'])) {
         @unlink('../' . $oldLogoPath);
     }
 
-    // Gera um nome de arquivo único para evitar sobreposições
-    $fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
+    // Gera um nome de arquivo único para evitar sobreposições (mantém 'logo' para compatibilidade)
     $newFileName = 'logo.' . $fileExtension; // Salva sempre como 'logo' para ser fácil de encontrar
     $uploadPath = $uploadDir . $newFileName;
 
-    // Move o arquivo para o diretório de destino
-    if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
-        // Atualiza o caminho no banco de dados
+    // Re-encoda e salva o arquivo para remover metadados e possíveis payloads
+    require_once __DIR__ . '/../app/utils/image.php';
+    $reencoded = reencode_image($file['tmp_name'], $uploadPath, $mime);
+    if ($reencoded) {
         $relativeFilePath = 'assets/imagens/logo/' . $newFileName;
         try {
             $stmt = $pdo->prepare('UPDATE company_settings SET company_logo = :logo_path WHERE id = 1');
             $stmt->execute([':logo_path' => $relativeFilePath]);
         } catch (Exception $e) {
-            // Se falhar, ainda retorna sucesso do upload, mas avisa
             echo json_encode(['success' => true, 'filePath' => $relativeFilePath, 'warning' => 'Logo salva, mas não foi possível atualizar o banco.']);
             exit;
         }
         echo json_encode(['success' => true, 'filePath' => $relativeFilePath]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Falha ao mover o arquivo para o destino. Verifique as permissões da pasta.']);
+        echo json_encode(['success' => false, 'message' => 'Falha ao processar a imagem.']);
     }
 } else {
     echo json_encode(['success' => false, 'message' => 'Nenhum arquivo foi enviado.']);

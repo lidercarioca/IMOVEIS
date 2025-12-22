@@ -2,6 +2,12 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Elementos do DOM
     const notificationsBtn = document.getElementById('notifications-btn');
+    
+    // Verifica se o botão de notificações existe (apenas para admins)
+    if (!notificationsBtn) {
+        return; // Sai se não for admin
+    }
+    
     const notificationsList = document.getElementById('notifications-list');
     const notificationBadge = document.getElementById('notifications-badge');
     const markAllReadBtn = document.getElementById('mark-all-notifications-read');

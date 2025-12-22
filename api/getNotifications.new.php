@@ -12,6 +12,7 @@ header('Content-Type: application/json; charset=utf-8');
 try {
     // Verifica autenticação
     checkAuth();
+    
     $userId = $_SESSION['user_id'];
     
     // Busca notificações

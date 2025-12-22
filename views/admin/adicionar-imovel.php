@@ -90,6 +90,27 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQ
         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
     </div>
 
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 mt-2">
+      <div>
+        <label class="block text-gray-700 mb-2" for="condominium">Condomínio (R$)</label>
+        <input id="condominium" name="condominium" type="text" inputmode="decimal"
+          placeholder="Ex: 450,00"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+      <div>
+        <label class="block text-gray-700 mb-2" for="iptu">IPTU (R$)</label>
+        <input id="iptu" name="iptu" type="text" inputmode="decimal"
+          placeholder="Ex: 1200,00"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+      <div>
+        <label class="block text-gray-700 mb-2" for="suites">Suítes</label>
+        <input id="suites" name="suites" type="number" min="0"
+          placeholder="Ex: 1"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+    </div>
+
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 mt-6">
       <div>
         <label class="block text-gray-700 mb-2" for="bedrooms">Quartos</label>
@@ -123,6 +144,16 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQ
         <input id="neighborhood" name="neighborhood" type="text" required
           placeholder="Ex: Pinheiros"
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div>
+        <label class="block text-gray-700 mb-2" for="assigned_user_id">Atribuir a Usuário (opcional)</label>
+        <select id="assigned_user_id" name="assigned_user_id"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">Nenhum</option>
+        </select>
       </div>
     </div>
 

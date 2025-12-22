@@ -87,6 +87,29 @@ function inicializarFormularioImovel() {
   // Form já foi verificado no início da função
   console.log('Formulário encontrado:', form);
 
+  // Preencher select de usuários para atribuição
+  async function carregarUsuariosParaSelect() {
+    try {
+      const res = await fetch('api/users.php');
+      const json = await res.json();
+      const select = document.getElementById('assigned_user_id');
+      if (!select) return;
+      if (json.success && Array.isArray(json.data)) {
+        // Limpa opções exceto a primeira
+        select.innerHTML = '<option value="">Nenhum</option>';
+        json.data.forEach(u => {
+          const opt = document.createElement('option');
+          opt.value = String(u.id);  // Garante que seja string
+          opt.textContent = u.name + ' (' + u.username + ')';
+          select.appendChild(opt);
+        });
+      }
+    } catch (e) {
+      console.warn('Não foi possível carregar usuários para o select:', e);
+    }
+  }
+  carregarUsuariosParaSelect();
+
   if (form._listenersAdded) {
     return;
   }
@@ -162,6 +185,17 @@ function inicializarFormularioImovel() {
       features.push(el.value);
     });
     formData.set("features", JSON.stringify(features));
+
+    // Assigned User ID (garante que seja enviado mesmo que vazio)
+    const assignedUserSelect = form.querySelector('#assigned_user_id');
+    if (assignedUserSelect) {
+      const assignedUserId = assignedUserSelect.value;
+      if (assignedUserId) {
+        formData.set('assigned_user_id', assignedUserId);
+      } else {
+        formData.set('assigned_user_id', '');
+      }
+    }
 
     // Área (com casas decimais)
     const areaInput = form.querySelector('#area');
@@ -254,6 +288,12 @@ function inicializarFormularioImovel() {
         // O upload de imagens agora é tratado pelo backend (addProperty.php ou updateProperty.php)
         
         alert(editId ? "Imóvel editado com sucesso!" : "Imóvel cadastrado com sucesso!");
+        
+        // Notifica invalidação de cache para o site público
+        if (typeof CacheInvalidator !== 'undefined') {
+          const action = editId ? 'updated' : 'created';
+          CacheInvalidator.notify('properties', { property_id: propertyId, action: action });
+        }
         
         // Redireciona para a aba de propriedades para forçar a atualização da lista
         window.location.href = 'painel.php?tab=properties';

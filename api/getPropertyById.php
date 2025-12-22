@@ -30,6 +30,21 @@ try {
     if (isset($row['area'])) {
         $row['area'] = floatval($row['area']);
     }
+    if (isset($row['condominium'])) {
+        $row['condominium'] = is_null($row['condominium']) ? null : floatval($row['condominium']);
+    } else {
+        $row['condominium'] = null;
+    }
+    if (isset($row['iptu'])) {
+        $row['iptu'] = is_null($row['iptu']) ? null : floatval($row['iptu']);
+    } else {
+        $row['iptu'] = null;
+    }
+    if (isset($row['suites'])) {
+        $row['suites'] = is_null($row['suites']) ? null : intval($row['suites']);
+    } else {
+        $row['suites'] = null;
+    }
 
     // Decodificar features se estiver em JSON
     if (!empty($row['features'])) {

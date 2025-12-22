@@ -221,6 +221,14 @@ window.utils.mostrarErro = function(mensagem) {
   alert(mensagem); // Troque por modal/toast se desejar
 };
 
+// Função de sucesso (consistente com outros módulos que usam window.utils)
+window.utils.mostrarSucesso = function(mensagem) {
+  if (typeof Swal !== 'undefined') {
+    Swal.fire('Sucesso!', mensagem, 'success');
+  } else {
+    alert(mensagem);
+  }
+};
 
 // Adicione esta função ao objeto utils
 window.utils.processarStatus = function(status) {

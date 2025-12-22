@@ -115,7 +115,7 @@ function renderizarImoveis(imoveisFiltrados) {
 document.addEventListener("DOMContentLoaded", async () => {
     async function carregarDadosImoveis() {
         try {
-            const response = await fetch('/api/getProperties.php');
+            const response = await fetch('/api/getProperties.php?panel=1');
             const data = await response.json();
             
             // Verifica e sanitiza os dados

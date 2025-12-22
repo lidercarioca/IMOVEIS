@@ -136,14 +136,27 @@ window.initUsers = function() {
     userForm.reset();
     userFormContainer.style.display = 'block';
     userFormTitle.textContent = edit ? 'Editar Usuário' : 'Novo Usuário';
-    document.getElementById('user-id').value = user.id || '';
-    document.getElementById('user-username').value = user.username || '';
-    document.getElementById('user-password').value = '';
+    
+    const userIdInput = document.getElementById('user-id');
+    const usernameInput = document.getElementById('user-username');
+    const passwordInput = document.getElementById('user-password');
+    
+    userIdInput.value = user.id || '';
+    usernameInput.value = user.username || '';
+    passwordInput.value = '';
     document.getElementById('user-name').value = user.name || '';
     document.getElementById('user-email').value = user.email || '';
     document.getElementById('user-role').value = user.role || 'user';
-    if (edit) document.getElementById('user-username').setAttribute('readonly', 'readonly');
-    else document.getElementById('user-username').removeAttribute('readonly');
+    
+    if (edit) {
+      // Modo edição: username desabilita, senha não obrigatória
+      usernameInput.disabled = true;
+      passwordInput.required = false;
+    } else {
+      // Modo criação: username habilitado, senha obrigatória
+      usernameInput.disabled = false;
+      passwordInput.required = true;
+    }
   }
 
   /**
@@ -161,26 +174,52 @@ window.initUsers = function() {
   userForm.addEventListener('submit', function (e) {
     e.preventDefault();
     const id = document.getElementById('user-id').value;
-    const username = document.getElementById('user-username').value;
     const password = document.getElementById('user-password').value;
     const name = document.getElementById('user-name').value;
     const email = document.getElementById('user-email').value;
     const role = document.getElementById('user-role').value;
     const method = id ? 'PUT' : 'POST';
-    const body = JSON.stringify({ id, username, password, name, email, role });
+    
+    console.log('Enviando', method, 'com dados:', { id, name, email, role, password: password ? '***' : '' });
+    
+    // No PUT, não envia username (não pode ser alterado)
+    const body = id 
+      ? JSON.stringify({ id, password, name, email, role })
+      : JSON.stringify({ username: document.getElementById('user-username').value, password, name, email, role });
+    
     fetch('api/users.php', {
       method,
       headers: { 'Content-Type': 'application/json' },
       body
     })
-      .then(res => res.json())
+      .then(res => {
+        console.log('Status da resposta:', res.status);
+        return res.text().then(text => {
+          console.log('Resposta bruta:', text.substring(0, 200));
+          try {
+            return JSON.parse(text);
+          } catch (e) {
+            console.error('Erro ao fazer parse JSON:', e);
+            throw new Error('Resposta inválida: ' + text.substring(0, 100));
+          }
+        });
+      })
       .then(json => {
-        if (json.success) {
+        console.log('JSON parseado:', json);
+        if (json && json.success) {
+          console.log('Sucesso! Recarregando lista...');
           hideForm();
           renderUsers();
+          window.utils.mostrarSucesso(json.message || 'Usuário salvo com sucesso!');
         } else {
-          window.utils.mostrarErro(json.message || 'Erro ao salvar usuário');
+          const erro = json?.message || 'Erro desconhecido ao salvar usuário';
+          console.error('Erro na resposta:', erro);
+          window.utils.mostrarErro(erro);
         }
+      })
+      .catch(err => {
+        console.error('Erro na requisição:', err.message, err);
+        window.utils.mostrarErro('Erro ao salvar usuário: ' + (err.message || 'Erro desconhecido'));
       });
   });
 

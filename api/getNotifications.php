@@ -19,15 +19,24 @@ while (ob_get_level()) {
 try {
     // Verifica autenticação
     checkAuth();
+    
+    // Obtém o ID do usuário logado
     $userId = $_SESSION['user_id'];
     
     // Pega o timestamp da última verificação (se fornecido)
     $lastCheck = isset($_GET['timestamp']) ? (int)$_GET['timestamp'] : 0;
     
-    // Query base para notificações
-    $baseQuery = "
-        FROM notifications 
-        WHERE (user_id = ? OR user_id IS NULL)";
+        // Verifica se é admin
+        $isAdmin = isAdmin();
+
+        // Query base para notificações
+        if ($isAdmin) {
+            // Admin vê todas as notificações
+            $baseQuery = "FROM notifications";
+        } else {
+            // Usuário comum vê apenas notificações dirigidas a ele ou notificações globais (user_id IS NULL)
+            $baseQuery = "FROM notifications WHERE (user_id = ? OR user_id IS NULL)";
+        }
     
     // Adiciona filtro de timestamp se fornecido
     if ($lastCheck > 0) {
@@ -43,35 +52,43 @@ try {
     ");
     
     // Executa a query com os parâmetros apropriados
-    if ($lastCheck > 0) {
-        $stmt->execute([$userId, $lastCheck]);
+    if ($isAdmin) {
+        if ($lastCheck > 0) {
+            $stmt->execute([$lastCheck]);
+        } else {
+            $stmt->execute();
+        }
     } else {
-        $stmt->execute([$userId]);
+        if ($lastCheck > 0) {
+            $stmt->execute([$userId, $lastCheck]);
+        } else {
+            $stmt->execute([$userId]);
+        }
     }
     $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     // Conta não lidas (sempre usa a query completa para contar)
-    $stmtCount = $pdo->prepare("
-        SELECT COUNT(*) 
-        FROM notifications 
-        WHERE (user_id = ? OR user_id IS NULL) 
-        AND is_read = FALSE
-    ");
-    
-    $stmtCount->execute([$userId]);
-    $unreadCount = (int)$stmtCount->fetchColumn();
+        // Conta não lidas (usa filtro apropriado para admin/usuário)
+        if ($isAdmin) {
+            $stmtCount = $pdo->prepare("SELECT COUNT(*) FROM notifications WHERE is_read = FALSE");
+            $stmtCount->execute();
+        } else {
+            $stmtCount = $pdo->prepare("SELECT COUNT(*) FROM notifications WHERE (user_id = ? OR user_id IS NULL) AND is_read = FALSE");
+            $stmtCount->execute([$userId]);
+        }
+        $unreadCount = (int)$stmtCount->fetchColumn();
     
     // Verifica se há novas notificações desde a última verificação
     $hasNewNotifications = false;
     if ($lastCheck > 0) {
-        $stmtNew = $pdo->prepare("
-            SELECT COUNT(*) 
-            FROM notifications 
-            WHERE (user_id = ? OR user_id IS NULL) 
-            AND UNIX_TIMESTAMP(created_at) * 1000 > ?
-        ");
-        $stmtNew->execute([$userId, $lastCheck]);
-        $hasNewNotifications = (int)$stmtNew->fetchColumn() > 0;
+            if ($isAdmin) {
+                $stmtNew = $pdo->prepare("SELECT COUNT(*) FROM notifications WHERE UNIX_TIMESTAMP(created_at) * 1000 > ?");
+                $stmtNew->execute([$lastCheck]);
+            } else {
+                $stmtNew = $pdo->prepare("SELECT COUNT(*) FROM notifications WHERE (user_id = ? OR user_id IS NULL) AND UNIX_TIMESTAMP(created_at) * 1000 > ?");
+                $stmtNew->execute([$userId, $lastCheck]);
+            }
+            $hasNewNotifications = (int)$stmtNew->fetchColumn() > 0;
     }
     
     // Prepara resposta

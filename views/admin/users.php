@@ -44,11 +44,11 @@ ob_start();
         <input type="hidden" id="user-id" />
         <div>
           <label for="user-username" class="block">Usuário (login)</label>
-          <input id="user-username" class="form-control" required />
+          <input id="user-username" class="form-control" required disabled />
         </div>
         <div>
           <label for="user-password" class="block">Senha</label>
-          <input id="user-password" type="password" class="form-control" required />
+          <input id="user-password" type="password" class="form-control" />
         </div>
         <div>
           <label for="user-name" class="block">Nome</label>

@@ -48,46 +48,77 @@ try {
     // Data inicial para o período selecionado
     $startDate = date('Y-m-d', strtotime("-$period days"));
     
+    // Verifica se é admin
+    require_once '../auth.php';
+    $isAdmin = isAdmin();
+    $userId = $_SESSION['user_id'] ?? null;
+    
+    // Monta a cláusula WHERE para leads se não for admin
+    $leadsWhere = "WHERE created_at >= :start_date";
+    if (!$isAdmin && $userId) {
+        $leadsWhere .= " AND (leads.property_id IS NULL OR leads.property_id IN (SELECT id FROM properties WHERE assigned_user_id = :user_id))";
+    }
+    
     // Consulta visualizações/contatos por dia
     $query = "SELECT 
         DATE(created_at) as date,
         COUNT(*) as total_leads
     FROM leads 
-    WHERE created_at >= :start_date
+    {$leadsWhere}
     GROUP BY DATE(created_at)
     ORDER BY date";
     
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(':start_date', $startDate);
+    if (!$isAdmin && $userId) {
+        $stmt->bindParam(':user_id', $userId);
+    }
     $stmt->execute();
     $leadStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Monta a cláusula WHERE para propriedades se não for admin
+    $propertiesWhere = "WHERE created_at >= :start_date";
+    if (!$isAdmin && $userId) {
+        $propertiesWhere .= " AND assigned_user_id = :user_id";
+    }
     
     // Consulta imóveis novos por dia
     $query = "SELECT 
         DATE(created_at) as date,
         COUNT(*) as new_properties
     FROM properties 
-    WHERE created_at >= :start_date
+    {$propertiesWhere}
     GROUP BY DATE(created_at)
     ORDER BY date";
     
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(':start_date', $startDate);
+    if (!$isAdmin && $userId) {
+        $stmt->bindParam(':user_id', $userId);
+    }
     $stmt->execute();
     $propertyStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Monta a cláusula WHERE para negócios fechados se não for admin
+    $dealsWhere = "WHERE (status = 'vendido' OR status = 'alugado') AND updated_at >= :start_date";
+    if (!$isAdmin && $userId) {
+        $dealsWhere .= " AND assigned_user_id = :user_id";
+    }
     
     // Consulta status alterados para vendido/alugado por dia
     $query = "SELECT 
         DATE(updated_at) as date,
         COUNT(*) as closed_deals
     FROM properties 
-    WHERE (status = 'vendido' OR status = 'alugado')
-    AND updated_at >= :start_date
+    {$dealsWhere}
     GROUP BY DATE(updated_at)
     ORDER BY date";
     
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(':start_date', $startDate);
+    if (!$isAdmin && $userId) {
+        $stmt->bindParam(':user_id', $userId);
+    }
     $stmt->execute();
     $dealsStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
@@ -129,6 +160,12 @@ try {
     // Converte para array e remove as chaves
     $finalStats = array_values($stats);
 
+    // Monta a cláusula WHERE para categorias se não for admin
+    $categoryWhere = "WHERE status != 'inactive'";
+    if (!$isAdmin && $userId) {
+        $categoryWhere .= " AND assigned_user_id = :user_id";
+    }
+    
     // Consulta imóveis por categoria e status
     $query = "SELECT 
         CASE 
@@ -139,11 +176,14 @@ try {
         END as categoria,
         COUNT(*) as total
     FROM properties 
-    WHERE status != 'inactive'
+    {$categoryWhere}
     GROUP BY type 
     ORDER BY type";
     
     $stmt = $pdo->prepare($query);
+    if (!$isAdmin && $userId) {
+        $stmt->bindParam(':user_id', $userId);
+    }
     $stmt->execute();
     $categoryStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

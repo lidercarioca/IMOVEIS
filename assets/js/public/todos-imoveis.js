@@ -131,9 +131,22 @@ document.addEventListener('DOMContentLoaded', async function() {
       let quartos = property.bedrooms !== undefined && property.bedrooms !== '' ? property.bedrooms : 'N/A';
       let banheiros = property.bathrooms !== undefined && property.bathrooms !== '' ? property.bathrooms : 'N/A';
       let vagas = property.garage !== undefined && property.garage !== '' ? property.garage : 'N/A';
+      let suites = property.suites !== undefined && property.suites !== null && property.suites !== '' ? property.suites : 'N/A';
       
       //let showBadge = !ribbonHTML; // Se tiver ribbon, não mostra o badge
       
+      // Monta endereço completo para o link do Google Maps
+      const addressParts = [];
+      if (property.address) addressParts.push(property.address);
+      if (property.location) addressParts.push(property.location);
+      if (property.neighborhood) addressParts.push(property.neighborhood);
+      if (property.city) addressParts.push(property.city);
+      if (property.state) addressParts.push(property.state);
+      if (property.zip) addressParts.push(property.zip);
+      const fullAddress = addressParts.filter(Boolean).join(', ');
+      const mapsUrl = fullAddress ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(fullAddress) : '';
+      const mapsLinkHtml = fullAddress ? `<a href="javascript:void(0)" rel="noopener noreferrer" class="d-flex align-items-center text-primary mt-1" onclick="(function(){const w=900,h=600;const left=Math.max(0,Math.round((screen.width-w)/2));const top=Math.max(0,Math.round((screen.height-h)/2));const popup = window.open('${mapsUrl}','rr_map_popup','width='+w+',height='+h+',left='+left+',top='+top+',menubar=no,toolbar=no,resizable=yes,scrollbars=yes'); if(!popup){ window.open('${mapsUrl}','_blank'); } return false; })()"><i class="fas fa-map-marker-alt me-2"></i>Ver no Google Maps</a>` : '';
+
       card.innerHTML = `
         <div class="position-relative">
           <img src="${imageSrc}" class="card-img-top" style="height: 224px; object-fit: cover;" alt="Imagem do imóvel">
@@ -149,6 +162,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             <i class="fas fa-map-marker-alt me-2" style="${iconColor}"></i>
             ${property.location}${property.neighborhood ? ` - ${property.neighborhood}` : ''}
           </p>
+          ${mapsLinkHtml}
           <div class="d-flex justify-content-between text-secondary small mb-4">
             <div class="d-flex align-items-center me-2">
               <i class="fas fa-bed me-1" style="${iconColor}"></i>
@@ -157,6 +171,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             <div class="d-flex align-items-center me-2">
               <i class="fas fa-bath me-1" style="${iconColor}"></i>
               <span>${banheiros} Banheiros</span>
+            </div>
+            <div class="d-flex align-items-center me-2">
+              <i class="fas fa-door-closed me-1" style="${iconColor}"></i>
+              <span>${suites} Suítes</span>
             </div>
             <div class="d-flex align-items-center me-2">
               <i class="fas fa-car me-1" style="${iconColor}"></i>
@@ -218,6 +236,35 @@ const featuresIcons = {
     // (Reutiliza a lógica do showPropertyDetails, mas sem depender de variáveis globais)
     const colors = window.utils.getPropertyColors(property);
     let iconColor = colors.icon;
+    // Aplica cores do painel ao modal (header/footer, botões, ícones e textos)
+    const modalEl = document.getElementById('propertyModal');
+    if (modalEl) {
+      const modalHeader = modalEl.querySelector('.modal-header');
+      const modalFooter = modalEl.querySelector('.modal-footer');
+      if (modalHeader) modalHeader.style.cssText = colors.badge;
+      if (modalFooter) modalFooter.style.cssText = colors.badge;
+      const modalButtons = modalEl.querySelectorAll('.btn-primary, .btn-detalhes');
+      modalButtons.forEach(btn => btn.style.cssText = colors.button);
+      let style = modalEl.querySelector('#propertyModalColors');
+      if (!style) {
+        style = document.createElement('style');
+        style.id = 'propertyModalColors';
+        modalEl.appendChild(style);
+      }
+      style.textContent = `\n        .modal-icon {\n          ${colors.icon}\n          transition: color 0.3s ease;\n        }\n      `;
+      try {
+        const m = /color\s*:\s*([^;]+);?/.exec(colors.icon || '');
+        const colorValue = m && m[1] ? m[1].trim() : '';
+        if (colorValue) {
+          ['modal-bedrooms','modal-bathrooms','modal-garage','modal-condominium','modal-iptu','modal-suites','modal-area','modal-location'].forEach(id => {
+            const e = document.getElementById(id);
+            if (e) e.style.color = colorValue;
+          });
+        }
+      } catch (e) {
+        console.warn('Erro ao aplicar cor ao texto do modal todos-imoveis:', e);
+      }
+    }
     let features = window.utils.processarFeatures(property.features);
     features = features.filter(f => !!f && f.trim() !== '');
     let featuresHtml = '';
@@ -241,23 +288,48 @@ if (features.length > 0) {
     if (el('modal-location')) el('modal-location').innerHTML = `<i class="fas fa-map-marker-alt me-2 ${iconColor}"></i> ${property.location}${property.neighborhood ? ` - ${property.neighborhood}` : ''}`;
   if (el('modal-location')) el('modal-location').innerHTML = `<i class="fas fa-map-marker-alt me-2" style="${iconColor}"></i> ${property.location}${property.neighborhood ? ` - ${property.neighborhood}` : ''}`;
     if (el('modal-description')) el('modal-description').textContent = property.description || "Sem descrição disponível";
-    if (el('modal-area')) el('modal-area').innerHTML = `<i class="fas fa-ruler-combined ${iconColor} me-1"></i> ${property.area}m²`;
-  if (el('modal-area')) el('modal-area').innerHTML = `<i class="fas fa-ruler-combined me-1" style="${iconColor}"></i> ${property.area}m²`;
+  if (el('modal-area')) el('modal-area').innerHTML = `<i class="fas fa-ruler-combined modal-icon me-1"></i> <span class="text-dark">${property.area}m²</span>`;
     const yearBuiltValue = property.yearBuilt && property.yearBuilt.toString().trim() !== '' ? property.yearBuilt : 'N/A';
-    if (el('modal-yearBuilt')) el('modal-yearBuilt').innerHTML = `<i class="fas fa-calendar-alt ${iconColor} me-1"></i> ${yearBuiltValue}`;
-  if (el('modal-yearBuilt')) el('modal-yearBuilt').innerHTML = `<i class="fas fa-calendar-alt me-1" style="${iconColor}"></i> ${yearBuiltValue}`;
-    if (el('modal-bedrooms'))
-  el('modal-bedrooms').innerHTML = `<i class="fas fa-bed" style="${iconColor}"></i> ${property.bedrooms !== undefined && property.bedrooms !== '' ? property.bedrooms : 'N/A'} Quartos`;
-    if (el('modal-bathrooms'))
-  el('modal-bathrooms').innerHTML = `<i class="fas fa-bath" style="${iconColor}"></i> ${property.bathrooms !== undefined && property.bathrooms !== '' ? property.bathrooms : 'N/A'} Banheiros`;
-    if (el('modal-garage'))
-  el('modal-garage').innerHTML = `<i class="fas fa-car" style="${iconColor}"></i> ${property.garage !== undefined && property.garage !== '' ? property.garage : 'N/A'} Vagas`;
+    if (el('modal-yearBuilt')) el('modal-yearBuilt').textContent = yearBuiltValue;
+    // Preencher Condomínio / IPTU / Suítes (corrige ausência desses campos no modal da página todos-imoveis)
+    const condoEl = el('modal-condominium');
+    const iptuEl = el('modal-iptu');
+    const suitesEl = el('modal-suites');
+    if (condoEl) {
+      const val = (property.condominium !== undefined && property.condominium !== null && property.condominium !== '') ? window.utils.formatarPreco(property.condominium, false) : 'N/A';
+      condoEl.textContent = `${val} Condomínio`;
+      if (condoEl.parentElement) condoEl.parentElement.classList.add('d-flex','align-items-center','gap-2','small');
+    }
+    if (iptuEl) {
+      const val = (property.iptu !== undefined && property.iptu !== null && property.iptu !== '') ? window.utils.formatarPreco(property.iptu, false) : 'N/A';
+      iptuEl.textContent = `${val} IPTU`;
+      if (iptuEl.parentElement) iptuEl.parentElement.classList.add('d-flex','align-items-center','gap-2','small');
+    }
+    if (suitesEl) {
+      const val = (property.suites !== undefined && property.suites !== null && property.suites !== '') ? property.suites : 'N/A';
+      suitesEl.textContent = `${val} Suítes`;
+      if (suitesEl.parentElement) suitesEl.parentElement.classList.add('d-flex','align-items-center','gap-2','small');
+    }
+    if (el('modal-bedrooms')) {
+      const b = el('modal-bedrooms');
+      b.textContent = `${property.bedrooms !== undefined && property.bedrooms !== '' ? property.bedrooms : 'N/A'} Quartos`;
+      if (b.parentElement) b.parentElement.classList.add('d-flex','align-items-center','gap-2','small');
+    }
+    if (el('modal-bathrooms')) {
+      const b = el('modal-bathrooms');
+      b.textContent = `${property.bathrooms !== undefined && property.bathrooms !== '' ? property.bathrooms : 'N/A'} Banheiros`;
+      if (b.parentElement) b.parentElement.classList.add('d-flex','align-items-center','gap-2','small');
+    }
+    if (el('modal-garage')) {
+      const g = el('modal-garage');
+      g.textContent = `${property.garage !== undefined && property.garage !== '' ? property.garage : 'N/A'} Vagas`;
+      if (g.parentElement) g.parentElement.classList.add('d-flex','align-items-center','gap-2','small');
+    }
     if (el('modal-area') && el('modal-area').parentElement && el('modal-area').parentElement.parentElement)
       el('modal-area').parentElement.parentElement.className = 'd-flex justify-content-between bg-blue-50 p-3 rounded mb-4';
     if (el('modal-area') && el('modal-area').parentElement)
       el('modal-area').parentElement.className = 'd-flex flex-column';
-    if (el('modal-yearBuilt') && el('modal-yearBuilt').parentElement)
-      el('modal-yearBuilt').parentElement.className = 'd-flex flex-column text-end';
+
     if (el('modal-bedrooms') && el('modal-bedrooms').parentElement)
       el('modal-bedrooms').parentElement.className = 'd-flex align-items-center gap-2';
     if (el('modal-bathrooms') && el('modal-bathrooms').parentElement)
@@ -384,6 +456,74 @@ if (features.length > 0) {
     setupWhatsAppButton();
     // Armazena a propriedade atual globalmente para o formulário de contato
     window.currentProperty = property;
+
+    // --- Configura botões de compartilhamento no modal (todos-imoveis) ---
+    try {
+      const shareUrl = (property.url && property.url.length > 0)
+        ? property.url
+        : `${window.location.origin}${window.location.pathname}?property=${property.id}`;
+      const shareTitle = property.title || '';
+      const firstImage = (images && images.length>0) ? images[0] : '';
+      // Monta texto detalhado para compartilhar
+      const addressParts = [];
+      if (property.address) addressParts.push(property.address);
+      if (property.location) addressParts.push(property.location);
+      if (property.neighborhood) addressParts.push(property.neighborhood);
+      if (property.city) addressParts.push(property.city);
+      if (property.state) addressParts.push(property.state);
+      const fullAddress = addressParts.filter(Boolean).join(' - ');
+      const characteristics = [];
+      characteristics.push((property.bedrooms !== undefined && property.bedrooms !== '') ? `${property.bedrooms} Quartos` : null);
+      characteristics.push((property.bathrooms !== undefined && property.bathrooms !== '') ? `${property.bathrooms} Banheiros` : null);
+      characteristics.push((property.garage !== undefined && property.garage !== '') ? `${property.garage} Vagas` : null);
+      if (property.area) characteristics.push(`${property.area}m²`);
+      const charText = characteristics.filter(Boolean).join(', ');
+      const shareText = `${shareTitle}${fullAddress ? '\n' + fullAddress : ''}${charText ? '\n' + charText : ''}`;
+
+      const el = id => document.getElementById(id);
+      const whatsappShare = el('share-whatsapp');
+      const fbShare = el('share-facebook');
+      const linkedinShare = el('share-linkedin');
+      const telegramShare = el('share-telegram');
+      const xShare = el('share-x');
+      const emailShare = el('share-email');
+      const pinterestShare = el('share-pinterest');
+      const copyBtn = el('share-copy');
+
+      if (whatsappShare) whatsappShare.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + '\n' + shareUrl)}`;
+      if (fbShare) fbShare.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+      if (linkedinShare) linkedinShare.href = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareTitle)}&summary=${encodeURIComponent(charText)}`;
+      if (telegramShare) telegramShare.href = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
+      if (xShare) xShare.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+      if (emailShare) emailShare.href = `mailto:?subject=${encodeURIComponent(shareTitle)}&body=${encodeURIComponent(shareText + '\n' + shareUrl)}`;
+      if (pinterestShare) pinterestShare.href = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(shareUrl)}&media=${encodeURIComponent(firstImage)}&description=${encodeURIComponent(shareTitle + (charText ? ' - ' + charText : ''))}`;
+
+      [whatsappShare, fbShare, linkedinShare, telegramShare, xShare, pinterestShare].forEach(a => {
+        if (!a) return;
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+        a.onclick = function(e) { 
+          e.preventDefault(); 
+          if (this.href && this.href !== '#') {
+            window.open(this.href, '_blank');
+          }
+        };
+      });
+
+      if (copyBtn) {
+        copyBtn.onclick = function() {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(shareUrl).then(() => {
+              if (window.utils && typeof window.utils.mostrarSucesso === 'function') window.utils.mostrarSucesso('Link copiado'); else alert('Link copiado');
+            }).catch(() => { if (window.utils && window.utils.mostrarErro) window.utils.mostrarErro('Não foi possível copiar o link'); else alert('Não foi possível copiar o link'); });
+          } else {
+            const tmp = document.createElement('input'); document.body.appendChild(tmp); tmp.value = shareUrl; tmp.select(); try { document.execCommand('copy'); if (window.utils && window.utils.mostrarSucesso) window.utils.mostrarSucesso('Link copiado'); else alert('Link copiado'); } catch { if (window.utils && window.utils.mostrarErro) window.utils.mostrarErro('Não foi possível copiar o link'); else alert('Não foi possível copiar o link'); } document.body.removeChild(tmp);
+          }
+        };
+      }
+    } catch (e) {
+      console.warn('Erro ao configurar botões de compartilhamento (todos-imoveis):', e);
+    }
     
     // Configura o botão de contato
     const btnContact = document.getElementById('btnOpenContact');

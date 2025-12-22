@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
  * @returns {Promise<void>}
  */
 async function carregarHeroBanners() {
-  const res = await fetch('api/getBanners.php');
+  const res = await fetch('/api/getBanners.php');
   const banners = await res.json();
   const hero = document.getElementById('carousel-container');
   if (!hero || !Array.isArray(banners) || banners.length === 0) return;
@@ -167,8 +167,24 @@ window.renderizarImoveis = function(imoveis) {
     let quartos = property.bedrooms !== undefined && property.bedrooms !== '' ? property.bedrooms : 'N/A';
     let banheiros = property.bathrooms !== undefined && property.bathrooms !== '' ? property.bathrooms : 'N/A';
     let vagas = property.garage !== undefined && property.garage !== '' ? property.garage : 'N/A';
+    let suites = property.suites !== undefined && property.suites !== null && property.suites !== '' ? property.suites : 'N/A';
 
     const processedStatus = window.utils.processarStatus(property.status);
+
+    // Monta endereço completo para link do Google Maps
+    const addressParts = [];
+    if (property.address) addressParts.push(property.address);
+    if (property.location) addressParts.push(property.location);
+    if (property.neighborhood) addressParts.push(property.neighborhood);
+    if (property.city) addressParts.push(property.city);
+    if (property.state) addressParts.push(property.state);
+    if (property.zip) addressParts.push(property.zip);
+    const fullAddress = addressParts.filter(Boolean).join(', ');
+    const mapsUrl = fullAddress ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(fullAddress) : '';
+    const mapsLinkHtml = fullAddress ? `
+      <a href="javascript:void(0)" rel="noopener" class="d-block text-primary mt-1" onclick="(function(){const w=900,h=600;const left=Math.max(0,Math.round((screen.width-w)/2));const top=Math.max(0,Math.round((screen.height-h)/2));const popup = window.open('${mapsUrl}','rr_map_popup','width='+w+',height='+h+',left='+left+',top='+top+',menubar=no,toolbar=no,resizable=yes,scrollbars=yes'); if(!popup){ window.open('${mapsUrl}','_blank'); } return false; })()">
+        <i class="fas fa-map-marker-alt me-2"></i>Ver no Google Maps
+      </a>` : '';
 
     let ribbon = '';
     let showBadge = true;
@@ -204,8 +220,9 @@ window.renderizarImoveis = function(imoveis) {
         <p class="card-text text-secondary small mb-3">
           <i class="fas fa-map-marker-alt me-2" style="${colors.icon}"></i>
           ${property.location}${property.neighborhood ? ` - ${property.neighborhood}` : ''}
+          ${mapsLinkHtml}
         </p>
-        <div class="row row-cols-2 g-2 text-secondary small mb-3">
+          <div class="row row-cols-2 g-2 text-secondary small mb-3">
           <div class="col d-flex align-items-center">
             <i class="fas fa-bed me-2" style="${colors.icon}"></i>
             <span>${quartos} Quartos</span>
@@ -213,6 +230,10 @@ window.renderizarImoveis = function(imoveis) {
           <div class="col d-flex align-items-center">
             <i class="fas fa-bath me-2" style="${colors.icon}"></i>
             <span>${banheiros} Banheiros</span>
+          </div>
+          <div class="col d-flex align-items-center">
+            <i class="fas fa-door-closed me-2" style="${colors.icon}"></i>
+            <span>${suites} Suítes</span>
           </div>
           <div class="col d-flex align-items-center">
             <i class="fas fa-car me-2" style="${colors.icon}"></i>
@@ -258,11 +279,13 @@ window.renderizarImoveis = function(imoveis) {
  */
 async function carregarImoveis() {
   try {
-    const res = await fetch("api/getProperties.php");
+    const res = await fetch("/api/getProperties.php");
     const properties = await res.json();
   dadosImoveis = properties;
   window.dadosImoveis = dadosImoveis;
   window.dadosImoveisOriginal = [...properties];
+  // Dispara evento para informar que os dados dos imóveis foram carregados
+  try { document.dispatchEvent(new CustomEvent('dadosImoveisLoaded', { detail: { count: dadosImoveis.length } })); } catch (e) { console.warn('Não foi possível dispatchar evento dadosImoveisLoaded', e); }
 
     const container = document.getElementById("property-list");
     if (!container) return;
@@ -397,26 +420,36 @@ window.showPropertyDetails = function(id) {
   const modalHeader = modalEl.querySelector('.modal-header');
   const modalFooter = modalEl.querySelector('.modal-footer');
   
-  // Aplicar cores do cabeçalho e rodapé
-  modalHeader.style = colors.badge;
-  modalFooter.style = colors.badge;
-  
-  // Aplicar cor aos botões
-  const modalButtons = modalEl.querySelectorAll('.btn-primary');
-  modalButtons.forEach(btn => btn.style = colors.button);
-  
-  // Cor para ícones
-  let iconColor = 'modal-icon';
-  
-  // Aplicar estilo para os ícones do modal
-  const style = document.createElement('style');
-  style.textContent = `
-    .modal-icon {
-      ${colors.icon}
-      transition: color 0.3s ease;
+  // Aplicar cores do cabeçalho e rodapé usando cssText para preservar múltiplos estilos
+  if (modalHeader) modalHeader.style.cssText = colors.badge;
+  if (modalFooter) modalFooter.style.cssText = colors.badge;
+
+  // Aplicar cor aos botões do modal
+  const modalButtons = modalEl.querySelectorAll('.btn-primary, .btn-detalhes');
+  modalButtons.forEach(btn => btn.style.cssText = colors.button);
+
+  // Garantir um único bloco de estilo para ícones do modal (evita duplicações)
+  let styleEl = modalEl.querySelector('#propertyModalColors');
+  if (!styleEl) {
+    styleEl = document.createElement('style');
+    styleEl.id = 'propertyModalColors';
+    modalEl.appendChild(styleEl);
+  }
+  styleEl.textContent = `.modal-icon { ${colors.icon} transition: color 0.3s ease; }`;
+
+  // Extrai o valor da cor de colors.icon (ex: "color: #10b981;") e aplica ao texto dos elementos do modal
+  try {
+    const m = /color\s*:\s*([^;]+);?/.exec(colors.icon || '');
+    const colorValue = m && m[1] ? m[1].trim() : '';
+    if (colorValue) {
+      ['modal-bedrooms','modal-bathrooms','modal-garage','modal-condominium','modal-iptu','modal-suites','modal-area','modal-location'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.color = colorValue;
+      });
     }
-  `;
-  modalEl.appendChild(style);
+  } catch (e) {
+    console.warn('Não foi possível aplicar cor de destaque ao texto do modal', e);
+  }
 
   // Garantir que features seja array válido
   let features = window.utils.processarFeatures(property.features);
@@ -511,17 +544,48 @@ if (!window.showImageLightbox) {
   document.getElementById('modal-description').textContent = property.description || "Sem descrição disponível";
   document.getElementById('modal-area').innerHTML = `<i class="fas fa-ruler-combined modal-icon me-2"></i> <span class="fw-semibold text-dark">${property.area}m²</span>`;
   const yearBuiltValue = property.yearBuilt && property.yearBuilt.toString().trim() !== '' ? property.yearBuilt : 'N/A';
-  document.getElementById('modal-yearBuilt').innerHTML = `<i class="fas fa-calendar-alt modal-icon me-2"></i> <span class="fw-semibold text-dark">${yearBuiltValue}</span>`;
+  document.getElementById('modal-yearBuilt').innerHTML = `<span class="fw-semibold">${yearBuiltValue}</span>`;
+
+  // Preencher Condomínio / IPTU / Suítes
+  const condoEl = document.getElementById('modal-condominium');
+  const iptuEl = document.getElementById('modal-iptu');
+  const suitesEl = document.getElementById('modal-suites');
+  if (condoEl) {
+    const val = (property.condominium !== undefined && property.condominium !== null && property.condominium !== '') ? window.utils.formatarPreco(property.condominium, false) : 'N/A';
+    condoEl.textContent = `${val} Condomínio`;
+    if (condoEl.parentElement) condoEl.parentElement.classList.add('d-flex','align-items-center','gap-2','small');
+  }
+  if (iptuEl) {
+    const val = (property.iptu !== undefined && property.iptu !== null && property.iptu !== '') ? window.utils.formatarPreco(property.iptu, false) : 'N/A';
+    iptuEl.textContent = `${val} IPTU`;
+    if (iptuEl.parentElement) iptuEl.parentElement.classList.add('d-flex','align-items-center','gap-2','small');
+  }
+  if (suitesEl) {
+    const val = (property.suites !== undefined && property.suites !== null && property.suites !== '') ? property.suites : 'N/A';
+    suitesEl.textContent = `${val} Suítes`;
+    if (suitesEl.parentElement) suitesEl.parentElement.classList.add('d-flex','align-items-center','gap-2','small');
+  }
 
   // Exibir quartos, banheiros e vagas com ícones coloridos
-  document.getElementById('modal-bedrooms').parentElement.innerHTML = `<i class="fas fa-bed modal-icon"></i> <span id="modal-bedrooms" class="fw-semibold text-dark">${property.bedrooms !== undefined && property.bedrooms !== '' ? property.bedrooms : 'N/A'} Quartos</span>`;
-  document.getElementById('modal-bathrooms').parentElement.innerHTML = `<i class="fas fa-bath modal-icon"></i> <span id="modal-bathrooms" class="fw-semibold text-dark">${property.bathrooms !== undefined && property.bathrooms !== '' ? property.bathrooms : 'N/A'} Banheiros</span>`;
-  document.getElementById('modal-garage').parentElement.innerHTML = `<i class="fas fa-car modal-icon"></i> <span id="modal-garage" class="fw-semibold text-dark">${property.garage !== undefined && property.garage !== '' ? property.garage : 'N/A'} Vagas</span>`;
+  const bedEl = document.getElementById('modal-bedrooms');
+  if (bedEl) {
+    bedEl.textContent = `${property.bedrooms !== undefined && property.bedrooms !== '' ? property.bedrooms : 'N/A'} Quartos`;
+    if (bedEl.parentElement) bedEl.parentElement.classList.add('d-flex','align-items-center','gap-2','small');
+  }
+  const bathEl = document.getElementById('modal-bathrooms');
+  if (bathEl) {
+    bathEl.textContent = `${property.bathrooms !== undefined && property.bathrooms !== '' ? property.bathrooms : 'N/A'} Banheiros`;
+    if (bathEl.parentElement) bathEl.parentElement.classList.add('d-flex','align-items-center','gap-2','small');
+  }
+  const garageEl = document.getElementById('modal-garage');
+  if (garageEl) {
+    garageEl.textContent = `${property.garage !== undefined && property.garage !== '' ? property.garage : 'N/A'} Vagas`;
+    if (garageEl.parentElement) garageEl.parentElement.classList.add('d-flex','align-items-center','gap-2','small');
+  }
 
   // Estilizar área, ano, quartos e banheiros
   document.getElementById('modal-area').parentElement.parentElement.className = 'd-flex justify-content-between bg-blue-50 p-3 rounded mb-4';
   document.getElementById('modal-area').parentElement.className = 'd-flex flex-column';
-  document.getElementById('modal-yearBuilt').parentElement.className = 'd-flex flex-column text-end';
   document.getElementById('modal-bedrooms').parentElement.className = 'd-flex align-items-center gap-2';
   document.getElementById('modal-bathrooms').parentElement.className = 'd-flex align-items-center gap-2';
 
@@ -567,6 +631,100 @@ whatsappBtn.onclick = function(e) {
   window.open(this.href, '_blank');
 };
 
+  // --- Links de compartilhamento social (usados no bloco de botões abaixo do preço) ---
+  try {
+    const shareUrl = (property.url && property.url.length > 0)
+      ? property.url
+      : `${window.location.origin}${window.location.pathname}?property=${property.id}`;
+    const shareTitle = property.title || '';
+    const firstImage = (images && images.length>0) ? images[0] : '';
+    // Monta texto detalhado para compartilhar: título, endereço e características
+    const addressParts = [];
+    if (property.address) addressParts.push(property.address);
+    if (property.location) addressParts.push(property.location);
+    if (property.neighborhood) addressParts.push(property.neighborhood);
+    if (property.city) addressParts.push(property.city);
+    if (property.state) addressParts.push(property.state);
+    const fullAddress = addressParts.filter(Boolean).join(' - ');
+    const characteristics = [];
+    characteristics.push((property.bedrooms !== undefined && property.bedrooms !== '') ? `${property.bedrooms} Quartos` : null);
+    characteristics.push((property.bathrooms !== undefined && property.bathrooms !== '') ? `${property.bathrooms} Banheiros` : null);
+    characteristics.push((property.garage !== undefined && property.garage !== '') ? `${property.garage} Vagas` : null);
+    if (property.area) characteristics.push(`${property.area}m²`);
+    const charText = characteristics.filter(Boolean).join(', ');
+    const shareText = `${shareTitle}${fullAddress ? '\n' + fullAddress : ''}${charText ? '\n' + charText : ''}`;
+
+    const elShare = id => document.getElementById(id);
+
+    const whatsappShare = elShare('share-whatsapp');
+    const fbShare = elShare('share-facebook');
+    const linkedinShare = elShare('share-linkedin');
+    const telegramShare = elShare('share-telegram');
+    const xShare = elShare('share-x');
+    const emailShare = elShare('share-email');
+    const pinterestShare = elShare('share-pinterest');
+    const copyBtn = elShare('share-copy');
+
+    if (whatsappShare) whatsappShare.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + '\n' + shareUrl)}`;
+    if (fbShare) fbShare.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+    if (linkedinShare) linkedinShare.href = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareTitle)}&summary=${encodeURIComponent(charText)}`;
+    if (telegramShare) telegramShare.href = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
+    if (xShare) xShare.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+    if (emailShare) emailShare.href = `mailto:?subject=${encodeURIComponent(shareTitle)}&body=${encodeURIComponent(shareText + '\n' + shareUrl)}`;
+    if (pinterestShare) pinterestShare.href = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(shareUrl)}&media=${encodeURIComponent(firstImage)}&description=${encodeURIComponent(shareTitle)}`;
+
+    // Definir target/rel e comportamento de abertura para todas as âncoras de compartilhamento (exceto mailto)
+    [whatsappShare, fbShare, linkedinShare, telegramShare, xShare, pinterestShare].forEach(a => {
+      if (!a) return;
+      a.setAttribute('target', '_blank');
+      a.setAttribute('rel', 'noopener noreferrer');
+      a.onclick = function(e) {
+        e.preventDefault();
+        if (this.href && this.href !== '#') {
+          window.open(this.href, '_blank');
+        }
+      };
+    });
+    // emailShare deve abrir mailto no mesmo contexto; se existir, garantir href
+    if (emailShare && emailShare.href && emailShare.href.startsWith('mailto:')) {
+      // emailShare já tem o href configurado, apenas garantir que seja válido
+      emailShare.onclick = function(e) {
+        // Permitir comportamento padrão do mailto
+        return true;
+      };
+    }
+
+    if (copyBtn) {
+      copyBtn.onclick = function() {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(shareUrl).then(() => {
+            if (window.utils && typeof window.utils.mostrarSucesso === 'function') {
+              window.utils.mostrarSucesso('Link copiado para a área de transferência');
+            } else {
+              alert('Link copiado para a área de transferência');
+            }
+          }).catch(() => {
+            window.utils && window.utils.mostrarErro ? window.utils.mostrarErro('Não foi possível copiar o link') : alert('Não foi possível copiar o link');
+          });
+        } else {
+          // Fallback
+          const tmp = document.createElement('input');
+          document.body.appendChild(tmp);
+          tmp.value = shareUrl;
+          tmp.select();
+          try { document.execCommand('copy');
+            window.utils && window.utils.mostrarSucesso ? window.utils.mostrarSucesso('Link copiado para a área de transferência') : alert('Link copiado');
+          } catch (e) {
+            window.utils && window.utils.mostrarErro ? window.utils.mostrarErro('Não foi possível copiar o link') : alert('Não foi possível copiar o link');
+          }
+          document.body.removeChild(tmp);
+        }
+      };
+    }
+  } catch (e) {
+    console.warn('Erro ao configurar botões de compartilhamento', e);
+  }
+
   // Preencher imagens do imóvel no modal
   const modalImagesContainer = document.getElementById('modal-images');
   if (modalImagesContainer) {
@@ -586,25 +744,29 @@ document.getElementById('mobile-menu-button').addEventListener('click', function
 });
 
 // Smooth scrolling for anchor links
-
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function (e) {
-    e.preventDefault();
-
     const targetId = this.getAttribute('href');
-    if (targetId === '#') return;
+    if (targetId === '#' || !targetId.startsWith('#')) return;
 
-    const targetElement = document.querySelector(targetId);
-    if (targetElement) {
-      window.scrollTo({
-        top: targetElement.offsetTop - 80,
-        behavior: 'smooth'
-      });
+    // Validar que o targetId é um seletor CSS válido
+    try {
+      const targetElement = document.querySelector(targetId);
+      if (targetElement) {
+        e.preventDefault();
+        window.scrollTo({
+          top: targetElement.offsetTop - 80,
+          behavior: 'smooth'
+        });
 
-      const mobileMenu = document.getElementById('mobile-menu');
-      if (!mobileMenu.classList.contains('hidden')) {
-        mobileMenu.classList.add('hidden');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+          mobileMenu.classList.add('hidden');
+        }
       }
+    } catch (err) {
+      // Se querySelector falhar (seletor inválido), permitir comportamento padrão
+      console.warn('Seletor inválido:', targetId);
     }
   });
 });
@@ -626,6 +788,19 @@ document.getElementById('contact-form').addEventListener('submit', async functio
     return;
   }
 
+  // Validação de e-mail: tenta usar função compartilhada, senão usa regex local
+  let emailValid = false;
+  if (typeof validateEmail === 'function') {
+    try { emailValid = validateEmail(email); } catch (e) { emailValid = false; }
+  } else {
+    const re = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    emailValid = re.test(String(email || '').trim());
+  }
+  if (!emailValid) {
+    window.utils.mostrarErro('E-mail inválido. Verifique o endereço e tente novamente.');
+    return;
+  }
+
   // Envia para a API de leads
   /**
    * Envia o formulário de contato para a API
@@ -638,7 +813,7 @@ document.getElementById('contact-form').addEventListener('submit', async functio
    * @param {string} message - Mensagem completa
    */
   try {
-    const res = await fetch('api/addLead.php', {
+    const res = await fetch('/api/addLead.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

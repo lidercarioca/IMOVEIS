@@ -107,6 +107,7 @@ CREATE TABLE `leads` (
   `email` varchar(255) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `property_id` int(11) DEFAULT NULL,
+  `assigned_user_id` int(11) DEFAULT NULL,
   `message` text DEFAULT NULL,
   `status` enum('new','contacted','negotiating','closed','cancelled') DEFAULT 'new',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -277,6 +278,7 @@ CREATE TABLE `properties` (
   `featured` tinyint(1) DEFAULT 0,
   `yearBuilt` int(11) DEFAULT NULL,
   `zip` varchar(20) DEFAULT NULL,
+  `assigned_user_id` int(11) DEFAULT NULL,
   `images` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

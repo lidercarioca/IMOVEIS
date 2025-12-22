@@ -110,19 +110,32 @@ function backupDatabase($pdo, $dbname) {
         foreach ($tables as $table) {
             error_log("Processando tabela: " . $table);
             
-            // Obtém a estrutura da tabela
-            $stmt = $pdo->query("SHOW CREATE TABLE `$table`");
+            // Sanitiza nome da tabela: apenas alphanuméricas e underscore
+            if (!preg_match('/^[a-zA-Z0-9_]+$/', $table)) {
+                error_log("Nome de tabela inválido (ignorado): " . $table);
+                continue;
+            }
+            
+            // Obtém a estrutura da tabela (usando identifier quoting seguro)
+            $stmt = $pdo->query("SHOW CREATE TABLE `" . str_replace('`', '``', $table) . "`");
             $row = $stmt->fetch(PDO::FETCH_NUM);
-            $output .= "DROP TABLE IF EXISTS `$table`;\n";
+            $output .= "DROP TABLE IF EXISTS `" . str_replace('`', '``', $table) . "`;\n";
             $output .= $row[1] . ";\n\n";
             
             // Obtém os dados da tabela
-            $stmt = $pdo->query("SELECT * FROM `$table`");
+            $stmt = $pdo->query("SELECT * FROM `" . str_replace('`', '``', $table) . "`");
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             if (!empty($rows)) {
                 $columns = array_keys($rows[0]);
-                $output .= "INSERT INTO `$table` (`" . implode('`, `', $columns) . "`) VALUES\n";
+                // Sanitiza nomes de coluna (apenas alphanuméricas e underscore)
+                $columns = array_filter($columns, function($col) {
+                    return preg_match('/^[a-zA-Z0-9_]+$/', $col);
+                });
+                $escapedCols = array_map(function($col) {
+                    return "`" . str_replace('`', '``', $col) . "`";
+                }, $columns);
+                $output .= "INSERT INTO `" . str_replace('`', '``', $table) . "` (" . implode(', ', $escapedCols) . ") VALUES\n";
                 
                 $values = [];
                 foreach ($rows as $row) {
@@ -155,13 +168,18 @@ function backupDatabase($pdo, $dbname) {
 // Função para fazer backup de uma tabela
 function backupTable($pdo, $table) {
     try {
-        // Obtém a estrutura da tabela
-        $stmt = $pdo->query("SHOW CREATE TABLE `$table`");
+        // Sanitiza nome da tabela: apenas alphanuméricas e underscore
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $table)) {
+            throw new Exception("Nome de tabela inválido: $table");
+        }
+        
+        // Obtém a estrutura da tabela (usando identifier quoting seguro)
+        $stmt = $pdo->query("SHOW CREATE TABLE `" . str_replace('`', '``', $table) . "`");
         $row = $stmt->fetch(PDO::FETCH_NUM);
-        $create = "DROP TABLE IF EXISTS `$table`;\n" . $row[1] . ";\n\n";
+        $create = "DROP TABLE IF EXISTS `" . str_replace('`', '``', $table) . "`;\n" . $row[1] . ";\n\n";
         
         // Obtém os dados da tabela
-        $stmt = $pdo->query("SELECT * FROM `$table`");
+        $stmt = $pdo->query("SELECT * FROM `" . str_replace('`', '``', $table) . "`");
         $data = '';
         
         while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -250,6 +268,16 @@ try {
 
     // Realiza backup dos arquivos de mídia
     $mediaBackupFile = $mediaHandler->backup();
+
+    // Log de backup executado (usuário e arquivos)
+    require_once __DIR__ . '/app/utils/logger_functions.php';
+    $loggedFiles = [
+        'database' => $dbBackupFile,
+        'env' => $envBackupFile,
+        'database_config' => 'database.php.backup',
+        'media' => $mediaBackupFile
+    ];
+    log_user_action('backup_run', ['files' => $loggedFiles]);
 
     // Retorna sucesso através da função sendJsonResponse
     sendJsonResponse(true, 'Backup realizado com sucesso', [

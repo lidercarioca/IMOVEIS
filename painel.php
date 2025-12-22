@@ -1,12 +1,7 @@
 <?php
 session_start();
+require_once 'app/security/SecurityHeaders.php';
 require_once 'app/security/CSRF.php';
-
-// Headers de segurança
-header('X-Frame-Options: SAMEORIGIN');
-header('X-Content-Type-Options: nosniff');
-header('Referrer-Policy: no-referrer-when-downgrade');
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://polyfill.io; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; connect-src 'self' https://ka-f.fontawesome.com https://cdnjs.cloudflare.com https://*.jsdelivr.net https://cdn.jsdelivr.net https://polyfill.io;");
 
 // Gera novo token CSRF se não existir
 if (empty($_SESSION['csrf_token'])) {
@@ -18,6 +13,7 @@ checkAuth();
 
 // Verificar permissões baseadas na role do usuário
 $isAdmin = isAdmin();
+$isMainAdmin = ($isAdmin && isset($_SESSION['username']) && $_SESSION['username'] === 'admin'); // Apenas admin principal
 $currentTab = $_GET['tab'] ?? 'properties';
 
 // Lista de abas permitidas para usuários comuns
@@ -114,6 +110,8 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
 
   <!-- Scripts do sistema com carregamento otimizado -->
   <script src="/assets/js/notifications.js" defer></script>
+  <script src="/assets/js/email-notifications.js" defer></script>
+  <script src="/assets/js/gmail-notifications.js" defer></script>
 
   <!-- Tailwind CSS -->
   <link href="/output.css" rel="stylesheet">
@@ -243,6 +241,9 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
 
   <!-- Gerenciador de cores -->
   <script src="assets/js/color-manager.js"></script>
+
+  <!-- Cache invalidator para sincronizar mudanças entre abas e site público -->
+  <script src="assets/js/cache-invalidator.js"></script>
 
   <!-- Font Awesome (ícones) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -798,6 +799,9 @@ async function updateLeadStatus(leadId, status) {
 
     }
   </style>
+  <script src="/assets/js/painel/agendamentos.js"></script>
+  <script src="/assets/js/painel/financeiro.js"></script>
+  <script src="/assets/js/painel/sales-alert.js"></script>
 </head>
 
 <body class="bg-gray-100 preload">
@@ -859,6 +863,13 @@ async function updateLeadStatus(leadId, status) {
                 </a>
               </li>
             <?php endif; ?>
+            <li>
+              <a class="d-flex align-items-center gap-3 py-3 px-4 rounded text-white text-decoration-none transition tab-link"
+                href="#agendamentos">
+                <i class="fas fa-calendar-alt"></i>
+                <span class="sidebar-text">Agendamentos</span>
+              </a>
+            </li>
             <?php if ($isAdmin): ?>
               <li>
                 <a class="d-flex align-items-center gap-3 py-3 px-4 rounded text-white text-decoration-none transition tab-link"
@@ -869,11 +880,28 @@ async function updateLeadStatus(leadId, status) {
               </li>
               <li>
                 <a class="d-flex align-items-center gap-3 py-3 px-4 rounded text-white text-decoration-none transition tab-link"
+                  href="#financeiro">
+                  <i class="fas fa-money-bill-wave"></i>
+                  <span class="sidebar-text">Financeiro</span>
+                </a>
+              </li>
+              <?php if ($isMainAdmin): ?>
+              <li>
+                <a class="d-flex align-items-center gap-3 py-3 px-4 rounded text-white text-decoration-none transition tab-link"
                   href="#backup">
                   <i class="fas fa-database"></i>
                   <span class="sidebar-text">Backup</span>
                 </a>
               </li>
+              <?php endif; ?>
+               <?php if ($isMainAdmin): ?>
+               <li>
+                 <a class="d-flex align-items-center gap-3 py-3 px-4 rounded text-white text-decoration-none transition" href="security-monitoring.php" title="Dashboard de Segurança - Monitore anomalias e ataques">
+                   <i class="fas fa-shield-alt"></i>
+                   <span class="sidebar-text">Segurança</span>
+                 </a>
+               </li>
+               <?php endif; ?>
             <?php endif; ?>
           </ul>
           <!-- Users Tab (apenas para admin) -->
@@ -912,7 +940,7 @@ async function updateLeadStatus(leadId, status) {
             <h1 class="text-xl font-semibold text-gray-800">Painel Administrativo</h1>
           </div>
           <div class="flex items-center space-x-4">
-            <!-- Botão de Notificações -->
+<!-- Botão de Notificações (para admins e usuários) -->
             <div class="relative">
               <button id="notifications-btn" class="relative p-2 rounded-full hover:bg-gray-100 transition">
                 <i class="far fa-bell text-gray-600"></i>
@@ -965,6 +993,7 @@ async function updateLeadStatus(leadId, status) {
         </div>
 
         <!-- Backup Tab -->
+        <?php if ($isMainAdmin): ?>
         <div class="tab-content p-6 hidden" id="backup">
           <h2 class="text-2xl font-bold text-gray-800 mb-6">Backup do Sistema</h2>
           <div class="bg-white rounded-lg shadow-sm p-6">
@@ -1038,9 +1067,171 @@ async function updateLeadStatus(leadId, status) {
             </div>
           </div>
         </div>
+        <?php endif; ?>
       <?php endif; ?>
+      
+      <!-- Agendamentos Tab -->
+      <div class="tab-content p-6 hidden" id="agendamentos">
+        <div class="mb-8">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">Agendamentos de Visitas</h2>
+            <button onclick="abrirModalAgendamento()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition" style="background-color: var(--cor-primaria);">
+              <i class="fas fa-plus mr-2"></i>Novo Agendamento
+            </button>
+          </div>
+          
+          <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="mb-4 flex gap-4">
+              <select id="agendamentos-filtro" class="px-4 py-2 border border-gray-300 rounded-lg">
+                <option value="proximos">Próximos</option>
+                <option value="passados">Passados</option>
+                <option value="todos">Todos</option>
+              </select>
+              <select id="agendamentos-status" class="px-4 py-2 border border-gray-300 rounded-lg">
+                <option value="todos">Todos os Status</option>
+                <option value="confirmado">Confirmado</option>
+                <option value="cancelado">Cancelado</option>
+                <option value="realizado">Realizado</option>
+              </select>
+              <input type="month" id="agendamentos-mes" class="px-4 py-2 border border-gray-300 rounded-lg" value="<?php echo date('Y-m'); ?>">
+            </div>
+            
+            <div id="agendamentos-container" class="space-y-4">
+              <div class="text-center py-8 text-gray-500">Carregando agendamentos...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Financeiro Tab (Admin) -->
+      <?php if ($isAdmin): ?>
+      <div class="tab-content p-6 hidden" id="financeiro">
+        <div class="mb-8">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">Gestor Financeiro</h2>
+            <button onclick="abrirModalFinanceiro()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition" style="background-color: var(--cor-primaria);">
+              <i class="fas fa-plus mr-2"></i>Nova Transação
+            </button>
+          </div>
+          
+          <!-- Resumo Financeiro -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-sm p-6">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="text-gray-500 mb-1">Total de Receitas</p>
+                  <h3 class="text-3xl font-bold text-green-600" id="total-receitas">R$ 0,00</h3>
+                </div>
+                <div class="rounded-full p-3 bg-green-100">
+                  <i class="fas fa-arrow-up text-green-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-sm p-6">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="text-gray-500 mb-1">Total de Despesas</p>
+                  <h3 class="text-3xl font-bold text-red-600" id="total-despesas">R$ 0,00</h3>
+                </div>
+                <div class="rounded-full p-3 bg-red-100">
+                  <i class="fas fa-arrow-down text-red-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-sm p-6">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="text-gray-500 mb-1">Total de Comissões</p>
+                  <h3 class="text-3xl font-bold text-orange-600" id="total-comissoes">R$ 0,00</h3>
+                </div>
+                <div class="rounded-full p-3 bg-orange-100">
+                  <i class="fas fa-percent text-orange-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-sm p-6">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="text-gray-500 mb-1">Lucro Líquido</p>
+                  <h3 class="text-3xl font-bold text-blue-600" id="lucro-liquido">R$ 0,00</h3>
+                </div>
+                <div class="rounded-full p-3 bg-blue-100">
+                  <i class="fas fa-chart-line text-blue-600 text-xl"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Filtros e Transações -->
+          <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="mb-4 flex gap-4 flex-wrap">
+              <select id="financeiro-mes" class="px-4 py-2 border border-gray-300 rounded-lg">
+                <option value="<?php echo date('Y-m'); ?>" selected><?php echo date('m/Y'); ?> (Este mês)</option>
+                <option value="2025-12">Dezembro 2025</option>
+                <option value="2025-11">Novembro 2025</option>
+                <option value="2025-10">Outubro 2025</option>
+                <option value="2025-09">Setembro 2025</option>
+                <option value="2025-08">Agosto 2025</option>
+                <option value="2025-07">Julho 2025</option>
+                <option value="2025-06">Junho 2025</option>
+                <option value="2025-05">Maio 2025</option>
+                <option value="2025-04">Abril 2025</option>
+                <option value="2025-03">Março 2025</option>
+                <option value="2025-02">Fevereiro 2025</option>
+                <option value="2025-01">Janeiro 2025</option>
+              </select>
+              <select id="financeiro-tipo" class="px-4 py-2 border border-gray-300 rounded-lg">
+                <option value="todos">Todos os tipos</option>
+                <option value="receita">Receitas</option>
+                <option value="despesa">Despesas</option>
+                <option value="comissao">Comissões</option>
+              </select>
+              <select id="financeiro-categoria" class="px-4 py-2 border border-gray-300 rounded-lg">
+                <option value="todos">Todas as categorias</option>
+                <option value="Venda">Venda</option>
+                <option value="Aluguel">Aluguel</option>
+                <option value="Comissão">Comissão</option>
+                <option value="Serviço">Serviço</option>
+              </select>
+              <select id="financeiro-status" class="px-4 py-2 border border-gray-300 rounded-lg">
+                <option value="todos">Todos os status</option>
+                <option value="pendente">Pendente</option>
+                <option value="concluído">Concluído</option>
+                <option value="cancelado">Cancelado</option>
+              </select>
+            </div>
+            
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead>
+                  <tr>
+                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
+                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
+                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoria</th>
+                    <th class="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
+                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200" id="financeiro-container">
+                  <tr><td colspan="7" class="px-6 py-4 text-center text-gray-500">Carregando transações...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <?php endif; ?>
+      
       <!-- Dashboard Tab -->
       <div class="tab-content active p-6" id="dashboard">
+        <!-- Container de Avisos de Agendamentos -->
+        <div id="agendamentos-aviso-container" class="mb-8"></div>
+        
         <div class="mb-8">
           <h2 class="text-2xl font-bold text-gray-800 mb-4">Dashboard</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -1082,15 +1273,15 @@ async function updateLeadStatus(leadId, status) {
               <div class="flex justify-between items-start">
                 <div>
                   <p class="text-gray-500 mb-1">Visitas</p>
-                  <h3 class="text-3xl font-bold text-gray-800">1,254</h3>
+                  <h3 class="text-3xl font-bold text-gray-800" id="total-visits">-</h3>
                 </div>
                 <div class="rounded-full p-3" style="background-color: rgba(var(--cor-destaque-rgb), 0.1);">
                   <i class="fas fa-eye" style="color: var(--cor-destaque);"></i>
                 </div>
               </div>
               <div class="flex items-center mt-4">
-                <span class="text-green-500 flex items-center text-sm">
-                  <i class="fas fa-arrow-up mr-1"></i> 5%
+                <span class="text-green-500 flex items-center text-sm" id="visits-change">
+                  <i class="fas fa-arrow-up mr-1"></i> -%
                 </span>
                 <span class="text-gray-500 text-sm ml-2">Desde o mês passado</span>
               </div>
@@ -1109,6 +1300,24 @@ async function updateLeadStatus(leadId, status) {
                 <span class="text-gray-500 text-sm ml-2">Atualizado em tempo real</span>
               </div>
             </div>
+             <?php if ($isMainAdmin): ?>
+             <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-lg shadow-sm p-6 cursor-pointer hover:shadow-md transition-shadow" onclick="window.location.href='security-monitoring.php'">
+               <div class="flex justify-between items-start">
+                 <div>
+                   <p class="text-gray-700 mb-1 font-semibold">Monitoramento de Segurança</p>
+                   <h3 class="text-sm text-gray-600">Anomalias e Ataques</h3>
+                 </div>
+                 <div class="rounded-full p-3 bg-red-200">
+                   <i class="fas fa-shield-alt text-red-600"></i>
+                 </div>
+               </div>
+               <div class="flex items-center mt-4">
+                 <span class="text-red-600 font-semibold text-sm">
+                   <i class="fas fa-arrow-right mr-1"></i> Acessar Dashboard
+                 </span>
+               </div>
+             </div>
+             <?php endif; ?>
           </div>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -1277,7 +1486,7 @@ async function updateLeadStatus(leadId, status) {
               disabled>
               <i class="fas fa-trash-alt mr-2"></i> Excluir Selecionados
             </button>
-            <button
+            <button id="export-leads-csv"
               class="font-medium py-2 px-4 rounded-lg transition duration-300 flex items-center" style="background-color: var(--cor-primaria); color: #fff;">
               <i class="fas fa-download mr-2" style="color: #fff;"> Exportar CSV</i>
 
@@ -1289,25 +1498,26 @@ async function updateLeadStatus(leadId, status) {
             <div class="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
               <div class="relative">
                 <input
+                  id="leads-search"
                   class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-64"
                   placeholder="Buscar leads..." type="text" />
                 <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
               </div>
-              <select
+              <select id="leads-status-filter"
                 class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option>Todos os status</option>
-                <option>Novo</option>
-                <option>Em contato</option>
-                <option>Negociando</option>
-                <option>Fechado</option>
-                <option>Cancelado</option>
+                <option value="all">Todos os status</option>
+                <option value="new">Novo</option>
+                <option value="contacted">Em contato</option>
+                <option value="negotiating">Negociando</option>
+                <option value="closed">Fechado</option>
+                <option value="cancelled">Cancelado</option>
               </select>
-              <select
+              <select id="leads-period-filter"
                 class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option>Todos os períodos</option>
-                <option>Hoje</option>
-                <option>Esta semana</option>
-                <option>Este mês</option>
+                <option value="all">Todos os períodos</option>
+                <option value="today">Hoje</option>
+                <option value="week">Esta semana</option>
+                <option value="month">Este mês</option>
                 <option>Este ano</option>
               </select>
             </div>
@@ -1331,6 +1541,8 @@ async function updateLeadStatus(leadId, status) {
                   <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status</th>
                   <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Atribuir a</th>
+                  <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Ações</th>
                 </tr>
               </thead>
@@ -1341,7 +1553,8 @@ async function updateLeadStatus(leadId, status) {
           </div>
           <div class="mt-8 flex justify-between items-center">
             <p class="text-sm text-gray-600">Mostrando 0 leads</p>
-            <!-- Adicionando o script de validação -->
+            <!-- Scripts de paginação e gerenciamento de leads -->
+            <script src="/assets/js/painel/leads-pagination.js"></script>
             <script src="/assets/js/leads-manager.js"></script>
             <div class="flex space-x-1">
               <button class="px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100 transition">
@@ -1806,141 +2019,49 @@ function loadPropertiesGrid() {
 
         // Função movida para assets/js/painel/painel-main.js
 
-        // Load leads
+        // Load leads com paginação
         /**
- * Carrega a lista de leads do servidor
- * e atualiza a tabela de leads na interface
+ * Carrega leads - função wrapper para compatibilidade
  * @returns {Promise<void>}
  */
 async function loadLeads() {
-          const container = document.getElementById('leads-container');
-          container.innerHTML = '';
-          // Atualiza contador de leads
-          const leadsCountElem = document.querySelector('#leads .text-sm.text-gray-600');
-          try {
-            const res = await fetch('api/getLeads.php');
-            const response = await res.json();
-            if (!response.success) {
-              throw new Error(response.message || 'Erro ao carregar leads');
-            }
-            const leads = response.data;
-            window.leadsData = leads;
-            // Atualiza contador de leads
-            if (leadsCountElem) {
-              leadsCountElem.textContent = `Mostrando ${Array.isArray(leads) ? leads.length : 0} leads`;
-            }
-            if (!Array.isArray(leads) || !leads.length) {
-              container.innerHTML = `<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Nenhum lead cadastrado ainda.</td></tr>`;
-              return;
-            }
-            leads.forEach(lead => {
-              const row = document.createElement('tr');
-              row.dataset.leadId = lead.id; // Adiciona o ID do lead à linha
-              // Mostra só o início da mensagem (primeiros 50 caracteres)
-              let msgPreview = '';
-              if (lead.message) {
-                const cleanMsg = lead.message.replace(/\n/g, ' ');
-                msgPreview = cleanMsg.length > 50 ? cleanMsg.substring(0, 50) + '…' : cleanMsg;
-              }
-              row.innerHTML = `
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="flex items-center">
-              <input type="checkbox" class="mr-3 lead-checkbox" data-lead-id="${lead.id}">
-              <div><div class="text-sm font-medium text-gray-900">${lead.name || ''}</div></div>
-            </div>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm text-gray-900">${lead.email || ''}</div>
-            <div class="text-sm text-gray-500">${lead.phone || ''}</div>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm text-gray-900">${msgPreview}</div>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm text-gray-900">${lead.created_at ? new Date(lead.created_at).toLocaleString('pt-BR') : ''}</div>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="relative inline-block">
-              <div class="lead-status ${getLeadStatusClass(lead.status)}" data-id="${lead.id}" data-value="${lead.status}" onclick="toggleLeadStatus(this)" style="min-width: 120px;">
-                <i class="${getLeadStatusIcon(lead.status)}"></i>
-                <span>${getLeadStatusText(lead.status)}</span>
-              </div>
-              <div class="lead-status-menu hidden absolute left-0 bg-white shadow-lg rounded-lg mt-1 z-50" style="min-width: 160px;">
-              <div class="py-1">
-                <button class="w-full text-left px-4 py-2 hover:bg-gray-100 lead-status-option novo" data-value="new">
-                  <i class="fas fa-star me-2"></i>Novo
-                </button>
-                <button class="w-full text-left px-4 py-2 hover:bg-gray-100 lead-status-option em-contato" data-value="contacted">
-                  <i class="fas fa-phone me-2"></i>Em contato
-                </button>
-                <button class="w-full text-left px-4 py-2 hover:bg-gray-100 lead-status-option convertido" data-value="closed">
-                  <i class="fas fa-check-circle me-2"></i>Convertido
-                </button>
-                <button class="w-full text-left px-4 py-2 hover:bg-gray-100 lead-status-option perdido" data-value="cancelled">
-                  <i class="fas fa-times-circle me-2"></i>Perdido
-                </button>
-              </div>
-            </div>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-            <div class="flex space-x-2">
-                <button class="text-blue-600 hover:text-blue-900 btn-ver-lead" data-id="${lead.id}" title="Ver detalhes"><i class="fas fa-eye"></i></button>
-              <a class="btn-ver-lead" style="color: var(--cor-secundaria);" title="Enviar e-mail" href="mailto:${lead.email}?subject=Contato RR Imóveis&body=Olá ${lead.name}, vi seu interesse: ${msgPreview}"><i class="fas fa-envelope"></i></a>
-              <button class="btn-excluir-lead" style="color: #e53e3e;" data-id="${lead.id}" title="Excluir"><i class="fas fa-trash"></i></button>
-            </div>
-          </td>
-        `;
-              container.appendChild(row);
-            });
-            // Ação de abrir modal de detalhes do lead
-            container.querySelectorAll('.btn-ver-lead').forEach(btn => {
-              btn.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
-                const lead = window.leadsData.find(l => String(l.id) === String(id));
-                if (!lead) return;
-                mostrarModalLead(lead);
-              });
-            });
-            // Ação de exclusão
-            container.querySelectorAll('.btn-excluir-lead').forEach(btn => {
-              btn.addEventListener('click', async function() {
-                if (!confirm('Tem certeza que deseja excluir este lead?')) return;
-                const id = this.getAttribute('data-id');
-                const res = await fetch(`api/deleteLead.php?id=${id}`);
-                const json = await res.json();
-                if (json.success) {
-                  loadLeads();
-                  if (typeof atualizarContadorLeadsDashboard === 'function') atualizarContadorLeadsDashboard();
-                } else {
-                  // ...
-                }
-              });
-            });
-            // Função para mostrar modal de detalhes do lead
-            function mostrarModalLead(lead) {
-              let modal = document.getElementById('leadModal');
-              if (!modal) {
-                modal = document.createElement('div');
-                modal.id = 'leadModal';
-                modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50';
-                modal.innerHTML = `
+          if (typeof window.initLeadsPagination === 'function') {
+            window.initLeadsPagination();
+          }
+        }
+
+        // Função para mostrar modal de detalhes do lead
+        function mostrarModalLead(lead) {
+          let modal = document.getElementById('leadModal');
+          if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'leadModal';
+            modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50';
+            modal.innerHTML = `
       <div class="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative">
         <button class="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-2xl font-bold" id="close-lead-modal">&times;</button>
-        <h3 class="text-xl font-semibold mb-4">Detalhes do Lead</h3>
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-semibold">Detalhes do Lead</h3>
+          <div>
+            <button id="print-lead-btn" class="mr-2 text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700" title="Imprimir"><i class="fas fa-print"></i> Imprimir</button>
+            
+          </div>
+        </div>
         <div id="lead-modal-content"></div>
       </div>
     `;
-                document.body.appendChild(modal);
-              } else {
-                modal.style.display = 'flex';
-              }
-              // Preencher conteúdo
-              const content = modal.querySelector('#lead-modal-content');
-              content.innerHTML = `
+            document.body.appendChild(modal);
+          } else {
+            modal.style.display = 'flex';
+          }
+          // Preencher conteúdo
+          const content = modal.querySelector('#lead-modal-content');
+          content.innerHTML = `
     <p><strong>Nome:</strong> ${lead.name || ''}</p>
     <p><strong>Email:</strong> ${lead.email || ''}</p>
     <p><strong>Telefone:</strong> ${lead.phone || ''}</p>
     <p><strong>Status:</strong> ${getLeadStatusText(lead.status)}</p>
+    <p><strong>Atribuído a:</strong> ${lead.assigned_user_name || 'Nenhum'}</p>
     <p><strong>Mensagem:</strong><br>${lead.message ? lead.message.replace(/\n/g, '<br>') : ''}</p>
     <p><strong>Data de criação:</strong> ${lead.created_at ? new Date(lead.created_at).toLocaleString('pt-BR') : ''}</p>
     <p><strong>Origem:</strong> ${lead.source || '-'}</p>
@@ -1950,84 +2071,99 @@ async function loadLeads() {
       <div id="lead-notes-status" class="text-xs text-gray-500 mt-1" style="display:none;"></div>
     </div>
   `;
-              // Salvar anotações rápidas ao sair do campo
-              const notesTextarea = content.querySelector('#lead-modal-notes');
-              const notesStatus = content.querySelector('#lead-notes-status');
-              if (notesTextarea) {
-                notesTextarea.addEventListener('blur', async function() {
-                  const newNotes = notesTextarea.value;
-                  notesStatus.style.display = 'block';
-                  notesStatus.textContent = 'Salvando...';
-                  try {
-                    const res = await fetch('api/updateLead.php', {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json'
-                      },
-                      body: JSON.stringify({
-                        id: lead.id,
-                        notes: newNotes
-                      })
-                    });
-                    const json = await res.json();
-                    if (json.success) {
-                      notesStatus.textContent = 'Anotações salvas!';
-                      setTimeout(() => {
-                        notesStatus.style.display = 'none';
-                      }, 1500);
-                      // Atualiza o objeto lead em memória (window.leadsData)
-                      if (window.leadsData) {
-                        const idx = window.leadsData.findIndex(l => String(l.id) === String(lead.id));
-                        if (idx !== -1) window.leadsData[idx].notes = newNotes;
-                      }
-                      // Atualiza o objeto lead do modal atual
-                      lead.notes = newNotes;
-                    } else {
-                      notesStatus.textContent = 'Erro ao salvar anotações.';
-                    }
-                  } catch (e) {
-                    notesStatus.textContent = 'Erro ao salvar anotações.';
-                  }
-                });
-              }
-              // Fechar modal
-              modal.querySelector('#close-lead-modal').onclick = function() {
-                modal.style.display = 'none';
-              };
-              // Fechar ao clicar fora
-              modal.onclick = function(e) {
-                if (e.target === modal) modal.style.display = 'none';
-              };
-              modal.style.display = 'flex';
-            }
-            // Ação de atualização de status
-            container.querySelectorAll('.lead-status-select').forEach(sel => {
-              sel.addEventListener('change', async function() {
-                const id = this.getAttribute('data-id');
-                const status = this.value;
+          // Salvar anotações rápidas ao sair do campo
+          const notesTextarea = content.querySelector('#lead-modal-notes');
+          const notesStatus = content.querySelector('#lead-notes-status');
+          if (notesTextarea) {
+            notesTextarea.addEventListener('blur', async function() {
+              const newNotes = notesTextarea.value;
+              notesStatus.style.display = 'block';
+              notesStatus.textContent = 'Salvando...';
+              try {
                 const res = await fetch('api/updateLead.php', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json'
                   },
                   body: JSON.stringify({
-                    id,
-                    status
+                    id: lead.id,
+                    notes: newNotes
                   })
                 });
                 const json = await res.json();
                 if (json.success) {
-                  loadLeads();
-                  if (typeof atualizarContadorLeadsDashboard === 'function') atualizarContadorLeadsDashboard();
+                  notesStatus.textContent = 'Anotações salvas!';
+                  setTimeout(() => {
+                    notesStatus.style.display = 'none';
+                  }, 1500);
+                  // Atualiza o objeto lead em memória (window.leadsData)
+                  if (window.leadsData) {
+                    const idx = window.leadsData.findIndex(l => String(l.id) === String(lead.id));
+                    if (idx !== -1) window.leadsData[idx].notes = newNotes;
+                  }
+                  // Atualiza o objeto lead do modal atual
+                  lead.notes = newNotes;
                 } else {
-                  // ...
+                  notesStatus.textContent = 'Erro ao salvar anotações.';
                 }
-              });
+              } catch (e) {
+                notesStatus.textContent = 'Erro ao salvar anotações.';
+              }
             });
-          } catch (err) {
-            if (leadsCountElem) leadsCountElem.textContent = 'Mostrando 0 leads';
-            container.innerHTML = `<tr><td colspan='6' class='text-center text-red-500'>Erro ao carregar leads.</td></tr>`;
           }
+          // Fechar modal
+          modal.querySelector('#close-lead-modal').onclick = function() {
+            modal.style.display = 'none';
+          };
+          // Função de imprimir o conteúdo do modal
+          const printBtn = modal.querySelector('#print-lead-btn');
+          if (printBtn) {
+            printBtn.onclick = function() {
+              try {
+                // Clone o conteúdo do modal e substitui o textarea por um <pre> com o texto
+                const clone = content.cloneNode(true);
+                const ta = clone.querySelector('#lead-modal-notes');
+                if (ta) {
+                  const val = ta.value || '';
+                  const escapeHtml = function(s) {
+                    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                  };
+                  const pre = document.createElement('pre');
+                  pre.style.whiteSpace = 'pre-wrap';
+                  pre.style.fontFamily = 'inherit';
+                  pre.style.background = 'transparent';
+                  pre.style.border = 'none';
+                  pre.innerHTML = escapeHtml(val);
+                  ta.parentNode.replaceChild(pre, ta);
+                }
+
+                const printContent = clone.innerHTML;
+                const w = window.open('', '_blank');
+                const style = `
+                  <style>
+                    body { font-family: Arial, Helvetica, sans-serif; padding: 20px; color: #111; }
+                    h3 { margin-bottom: 10px; }
+                    p { margin: 6px 0; }
+                    pre { white-space: pre-wrap; font-family: inherit; font-size: 14px; }
+                  </style>
+                `;
+                w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>Detalhes do Lead</title>' + style + '</head><body>');
+                w.document.write('<h3>Detalhes do Lead</h3>');
+                w.document.write(printContent);
+                w.document.write('</body></html>');
+                w.document.close();
+                w.focus();
+                setTimeout(function() { w.print(); w.close(); }, 300);
+              } catch (e) {
+                alert('Erro ao tentar imprimir: ' + e.message);
+              }
+            };
+          }
+          // Fechar ao clicar fora
+          modal.onclick = function(e) {
+            if (e.target === modal) modal.style.display = 'none';
+          };
+          modal.style.display = 'flex';
         }
 
         // Add new property
@@ -2091,7 +2227,7 @@ async function loadLeads() {
 
         // Atualiza o total de imóveis e vendidos/alugados no dashboard
         function updateDashboardCounts() {
-          fetch('api/getProperties.php')
+          fetch('api/getProperties.php?panel=1')
             .then(res => res.json())
             .then(properties => {
               document.getElementById("total-properties").textContent = properties.length;
@@ -2498,12 +2634,20 @@ async function loadLeads() {
             window.carregarImoveisPainel();
           }
 
+          // Carrega o contador de leads do dashboard
+          if (typeof atualizarContadorLeadsDashboard === 'function') {
+            atualizarContadorLeadsDashboard();
+          }
+
           // Adiciona listeners aos botões de tab
           document.querySelectorAll('.tab-button').forEach(button => {
             button.addEventListener('click', function(e) {
               const target = this.getAttribute('href');
               if (target === '#imoveis' && typeof carregarImoveisPainel === 'function') {
                 carregarImoveisPainel();
+              }
+              if (target === '#leads' && typeof loadLeads === 'function') {
+                loadLeads();
               }
             });
           });
@@ -2622,6 +2766,13 @@ async function loadLeads() {
                     Localização
                   </p>
 
+                  <!-- Usuário Atribuído -->
+                  <div id="modal-assigned-user-section" class="alert alert-info py-2 px-3 mb-3" style="display: none;">
+                    <i class="fas fa-user-check me-2"></i>
+                    <span class="fw-semibold">Atribuído a:</span>
+                    <span id="modal-assigned-user-name" class="ms-2"></span>
+                  </div>
+
                   <!-- Bloco de Área e Ano de Construção -->
                   <div class="d-flex gap-5 py-2 px-3 rounded mb-4" style="background-color: #f0f7ff;">
                     <!-- Área -->
@@ -2733,13 +2884,79 @@ async function loadLeads() {
           }
         });
       </script>
+      <!-- Portal export modal and launcher -->
+      <?php if ($isAdmin): ?>
+      <button id="portal-export-launcher" title="Exportar para Portais"
+        style="position:fixed;right:1rem;bottom:1rem;z-index:9999;border-radius:50%;width:56px;height:56px;display:flex;align-items:center;justify-content:center;background:#1e40af;color:#fff;border:none;box-shadow:0 6px 18px rgba(0,0,0,0.15);">
+        <i class="fas fa-bolt"></i>
+      </button>
+      <?php endif; ?>
+
+      <div class="modal fade" id="portalExportModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Exportar propriedades para portal</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <form id="portalExportForm">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Portal</label>
+                    <select class="form-select" name="portal" id="portalSelect">
+                      <option value="zap">ZAP</option>
+                      <option value="olx">OLX</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Formato</label>
+                    <select class="form-select" name="format" id="formatSelect">
+                      <option value="xml">XML</option>
+                      <option value="json">JSON</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Limite de registros</label>
+                    <input class="form-control" type="number" name="limit" id="limitInput" value="500" min="1">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Endpoint de push (opcional)</label>
+                    <input class="form-control" type="text" name="endpoint" id="endpointInput" placeholder="https://api.portal.com.br/feed">
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Chave / Token (opcional)</label>
+                    <input class="form-control" type="text" name="api_key" id="apiKeyInput" placeholder="Token para push / autenticação">
+                  </div>
+                  <div class="col-12">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="1" id="pushCheckbox" name="push">
+                      <label class="form-check-label" for="pushCheckbox">Tentar enviar (push) após gerar feed</label>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <small class="text-muted">Observação: o envio usará o endpoint informado. Caso vazio, apenas será gerado o feed e registrado no log.</small>
+                  </div>
+                </div>
+              </form>
+              <div id="portalExportResult" class="mt-3" style="max-height:240px;overflow:auto;display:none"></div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+              <button type="button" id="portalExportRun" class="btn btn-primary">Executar export</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="/assets/js/panel-portal-export.js" defer></script>
       <script>
         // Atualiza o total de leads no dashboard (card)
         async function atualizarContadorLeadsDashboard() {
           try {
-            const res = await fetch('api/getLeads.php');
+            const res = await fetch('api/getLeads.php?page=1&limit=1');
             const result = await res.json();
-            const total = (result.success && Array.isArray(result.data)) ? result.data.length : 0;
+            const total = (result.success && result.pagination) ? result.pagination.total_records : 0;
             const elem = document.getElementById('total-leads-dashboard');
             if (elem) elem.textContent = total;
           } catch (e) {
@@ -2747,7 +2964,46 @@ async function loadLeads() {
             if (elem) elem.textContent = '0';
           }
         }
+
+        // Carrega estatísticas de visitas do site
+        async function carregarEstatisticasVisitas() {
+          try {
+            const res = await fetch('api/getVisitStats.php?period=30');
+            const result = await res.json();
+            
+            if (result.success) {
+              const elemVisits = document.getElementById('total-visits');
+              const elemChange = document.getElementById('visits-change');
+              
+              if (elemVisits) {
+                elemVisits.textContent = result.data.total_visits.toLocaleString('pt-BR');
+              }
+              
+              if (elemChange && result.data.percent_change) {
+                const change = result.data.percent_change;
+                const icon = change >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
+                const color = change >= 0 ? 'text-green-500' : 'text-red-500';
+                elemChange.innerHTML = `<i class="fas ${icon} mr-1"></i> ${Math.abs(change)}%`;
+                elemChange.className = `${color} flex items-center text-sm`;
+              }
+            }
+          } catch (e) {
+            console.log('Erro ao carregar estatísticas de visitas:', e);
+            const elem = document.getElementById('total-visits');
+            if (elem) elem.textContent = '0';
+          }
+        }
+
+        // Executa ao carregar a página
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', function() {
+            carregarEstatisticasVisitas();
+          });
+        } else {
+          carregarEstatisticasVisitas();
+        }
       </script>
+      <script src="assets/js/agendamentos-aviso.js"></script>
 
 </body>
 

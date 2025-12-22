@@ -1,0 +1,13 @@
+2025-12-15T11:47:26-03:00 [PUT users request] User: admin | Payload: {"id":"9","password":"","name":"demo","email":"demo@demo.com","role":"user"}
+2025-12-15T11:48:01-03:00 [PUT users request] User: admin | Payload: {"id":"9","password":"","name":"demo","email":"demo@ddemo.com","role":"user"}
+2025-12-15T11:48:13-03:00 [PUT users request] User: admin | Payload: {"id":"9","password":"demo","name":"demo","email":"demo@demo.com","role":"user"}
+2025-12-15T11:52:36-03:00 [PUT users request] User: admin | Payload: {"id":"9","password":"","name":"demo","email":"ddemo@demo.com","role":"user"}
+2025-12-15T11:57:08-03:00 [PUT users request] User: admin | Payload: {"id":"9","password":"","name":"demo","email":"ddemo@demo.com","role":"user"}
+2025-12-15T11:57:30-03:00 [PUT users request] User: admin | Payload: {"id":"9","password":"","name":"demo","email":"demo@demo.com","role":"user"}
+2025-12-15T11:58:24-03:00 [PUT users request] User: admin | Payload: {"id":"9","password":"","name":"demo","email":"ozontecknatal@gmail.com","role":"user"}
+2025-12-15T13:28:49-03:00 [PUT users request] User: admin | Payload: {"id":"10","password":"","name":"Vitoria de Lima Souto Jardim","email":"mmmvlsj@gmail.com","role":"admin"}
+2025-12-15T13:29:33-03:00 [PUT users request] User: admin | Payload: {"id":"10","password":"","name":"Vitoria de Lima Souto Jardim","email":"mmmvlsj@gmail.com","role":"user"}
+2025-12-15T14:07:37-03:00 [PUT users request] User: admin | Payload: {"id":"10","password":"","name":"Vitoria de Lima Souto Jardim","email":"mmmvlsj@gmail.com","role":"admin"}
+2025-12-15T15:38:11-03:00 [PUT users request] User: admin | Payload: {"id":"10","password":"","name":"Vitoria de Lima Souto Jardim","email":"mmmvlsj@gmail.com","role":"user"}
+2025-12-16T11:27:26-03:00 [PUT users request] User: admin | Payload: {"id":"10","password":"","name":"Vitoria Jardim","email":"mmmvlsj@gmail.com","role":"user"}
+2025-12-22T13:00:35-03:00 [PUT users request] User: admin | Payload: {"id":"10","password":"***REDACTED***","name":"Vitoria Jardim","email":"lidercarioca2@gmail.com","role":"admin"}
