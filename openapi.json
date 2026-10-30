@@ -1,0 +1,862 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "RR Imóveis API",
+        "description": "API completa para sistema de gestão de imóveis com integração de Google Calendar, webhooks e gerenciamento de comissões",
+        "version": "1.0.0",
+        "contact": {
+            "name": "Suporte RR Imóveis",
+            "email": "support@rrimoveis.local"
+        },
+        "license": {
+            "name": "Proprietary"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://localhost/api/v1",
+            "description": "Desenvolvimento"
+        },
+        {
+            "url": "https://api.rrimoveis.com.br/v1",
+            "description": "Produção"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "description": "Autenticação por sessão (cookie) ou Bearer Token"
+            },
+            "apiKey": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "X-API-Key",
+                "description": "Chave de API para acesso público"
+            }
+        },
+        "schemas": {
+            "Property": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Apartamento 3 quartos em Belo Horizonte"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": ["apartment", "house", "land", "commercial"],
+                        "example": "apartment"
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 450000.0
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "neighborhood": {
+                        "type": "string"
+                    },
+                    "city": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "bedrooms": {
+                        "type": "integer"
+                    },
+                    "bathrooms": {
+                        "type": "integer"
+                    },
+                    "area": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": ["available", "sold", "rented", "paused"],
+                        "example": "available"
+                    },
+                    "assigned_user_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "Lead": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "João Silva"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "joao@email.com"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "(31) 99876-5432"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "new",
+                            "contacted",
+                            "qualified",
+                            "proposal",
+                            "closed",
+                            "cancelled"
+                        ],
+                        "example": "qualified"
+                    },
+                    "source": {
+                        "type": "string",
+                        "example": "WhatsApp"
+                    },
+                    "assigned_user_id": {
+                        "type": "integer"
+                    },
+                    "property_id": {
+                        "type": "integer"
+                    },
+                    "notes": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "Alert": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "alert_type": {
+                        "type": "string",
+                        "enum": ["inactive_lead", "stopped_property", "overpriced", "system"],
+                        "example": "inactive_lead"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "severity": {
+                        "type": "string",
+                        "enum": ["low", "medium", "high", "critical"],
+                        "example": "high"
+                    },
+                    "data": {
+                        "type": "object"
+                    },
+                    "acknowledged_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "Commission": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "sale_id": {
+                        "type": "integer"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "property_id": {
+                        "type": "integer"
+                    },
+                    "sale_value": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "commission_percentage": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 5.0
+                    },
+                    "commission_value": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": ["pending", "approved", "paid", "cancelled"],
+                        "example": "pending"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "WebhookEvent": {
+                "type": "object",
+                "properties": {
+                    "event_id": {
+                        "type": "string",
+                        "example": "evt_1234567890abcdef"
+                    },
+                    "event_type": {
+                        "type": "string",
+                        "enum": [
+                            "lead.created",
+                            "lead.updated",
+                            "lead.converted",
+                            "property.created",
+                            "property.sold",
+                            "commission.created",
+                            "commission.paid",
+                            "alert.triggered"
+                        ],
+                        "example": "lead.created"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "data": {
+                        "type": "object",
+                        "description": "Contexto do evento (lead, propriedade, comissão, etc)"
+                    },
+                    "metadata": {
+                        "type": "object",
+                        "properties": {
+                            "user_id": {
+                                "type": "integer"
+                            },
+                            "request_id": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "paths": {
+        "/auth/login.php": {
+            "post": {
+                "summary": "Login de usuário",
+                "description": "Autentica usuário e retorna tokens JWT (access e refresh)",
+                "tags": ["Autenticação"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["username", "password"],
+                                "properties": {
+                                    "username": { "type": "string", "example": "admin" },
+                                    "password": { "type": "string", "example": "password123" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login bem-sucedido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": { "type": "boolean", "example": true },
+                                        "access_token": {
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                                        },
+                                        "refresh_token": {
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                                        },
+                                        "expires_in": { "type": "integer", "example": 900 },
+                                        "refresh_expires_in": {
+                                            "type": "integer",
+                                            "example": 604800
+                                        },
+                                        "user": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": { "type": "integer", "example": 1 },
+                                                "username": {
+                                                    "type": "string",
+                                                    "example": "admin"
+                                                },
+                                                "role": { "type": "string", "example": "admin" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": { "description": "Dados inválidos" },
+                    "401": { "description": "Credenciais incorretas" },
+                    "429": { "description": "Muitas tentativas de login" }
+                }
+            }
+        },
+        "/auth/refreshToken.php": {
+            "post": {
+                "summary": "Renovar tokens JWT",
+                "description": "Gera novos tokens usando refresh token válido",
+                "tags": ["Autenticação"],
+                "security": [{ "bearerAuth": [] }],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["refresh_token"],
+                                "properties": {
+                                    "refresh_token": {
+                                        "type": "string",
+                                        "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tokens renovados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": { "type": "boolean", "example": true },
+                                        "access_token": { "type": "string" },
+                                        "refresh_token": { "type": "string" },
+                                        "expires_in": { "type": "integer", "example": 900 },
+                                        "refresh_expires_in": {
+                                            "type": "integer",
+                                            "example": 604800
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": { "description": "Refresh token inválido ou expirado" }
+                }
+            }
+        },
+        "/auth/logout.php": {
+            "post": {
+                "summary": "Logout de usuário",
+                "description": "Revoga tokens JWT fornecidos",
+                "tags": ["Autenticação"],
+                "security": [{ "bearerAuth": [] }],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "access_token": {
+                                        "type": "string",
+                                        "description": "Token de acesso (opcional)"
+                                    },
+                                    "refresh_token": {
+                                        "type": "string",
+                                        "description": "Token de refresh (opcional)"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Logout realizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": { "type": "boolean", "example": true },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logout concluído"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": { "description": "Erro ao efetuar logout" }
+                }
+            }
+        },
+        "/leads/getLeads.php": {
+            "get": {
+                "summary": "Listar leads com paginação e filtros",
+                "tags": ["Leads"],
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": { "type": "integer", "default": 1 }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": { "type": "integer", "default": 10 }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "security": [{ "bearerAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Lista de leads",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": { "type": "boolean" },
+                                        "data": {
+                                            "type": "array",
+                                            "items": { "$ref": "#/components/schemas/Lead" }
+                                        },
+                                        "pagination": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": { "type": "integer" },
+                                                "total_pages": { "type": "integer" },
+                                                "total_records": { "type": "integer" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/properties/getProperties.php": {
+            "get": {
+                "summary": "Listar propriedades com filtros",
+                "tags": ["Propriedades"],
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": { "type": "integer", "default": 1 }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "security": [{ "bearerAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Lista de propriedades",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": { "$ref": "#/components/schemas/Property" }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/alertas/getAlerts.php": {
+            "get": {
+                "summary": "Listar alertas",
+                "tags": ["Alertas"],
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "severity",
+                        "in": "query",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "security": [{ "bearerAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Lista de alertas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": { "$ref": "#/components/schemas/Alert" }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/alertas/acknowledgeAlert.php": {
+            "post": {
+                "summary": "Reconhecer um alerta",
+                "tags": ["Alertas"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "alert_id": { "type": "integer" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "bearerAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Alerta reconhecido com sucesso"
+                    }
+                }
+            }
+        },
+        "/financeiro/getCommissions.php": {
+            "get": {
+                "summary": "Listar comissões",
+                "tags": ["Financeiro"],
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "schema": { "type": "integer" }
+                    }
+                ],
+                "security": [{ "bearerAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Lista de comissões",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": { "$ref": "#/components/schemas/Commission" }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/financeiro/approveCommission.php": {
+            "post": {
+                "summary": "Aprovar uma comissão",
+                "tags": ["Financeiro"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "commission_id": { "type": "integer" },
+                                    "approval_notes": { "type": "string" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "bearerAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Comissão aprovada"
+                    }
+                }
+            }
+        },
+        "/agendamentos/getAgendamentos.php": {
+            "get": {
+                "summary": "Listar agendamentos",
+                "tags": ["Agendamentos"],
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "lead_id",
+                        "in": "query",
+                        "schema": { "type": "integer" }
+                    }
+                ],
+                "security": [{ "bearerAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Lista de agendamentos"
+                    }
+                }
+            }
+        },
+        "/pipeline/getItems.php": {
+            "get": {
+                "summary": "Listar itens do pipeline",
+                "tags": ["Pipeline"],
+                "parameters": [
+                    {
+                        "name": "stage",
+                        "in": "query",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "security": [{ "bearerAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Itens do pipeline"
+                    }
+                }
+            }
+        },
+        "/public/properties.php": {
+            "get": {
+                "summary": "Listar propriedades (API Pública)",
+                "tags": ["API Pública"],
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": { "type": "integer", "default": 20 }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "schema": { "type": "integer", "default": 0 }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "security": [{ "apiKey": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Propriedades públicas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": { "$ref": "#/components/schemas/Property" }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "API Key inválida ou ausente"
+                    },
+                    "429": {
+                        "description": "Rate limit excedido"
+                    }
+                }
+            }
+        },
+        "/public/getAPIKeys.php": {
+            "get": {
+                "summary": "Listar chaves de API do usuário",
+                "tags": ["API Pública"],
+                "security": [{ "bearerAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Chaves de API"
+                    }
+                }
+            }
+        },
+        "/public/createAPIKey.php": {
+            "post": {
+                "summary": "Criar nova chave de API",
+                "tags": ["API Pública"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": { "type": "string" },
+                                    "expires_in_days": { "type": "integer" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "bearerAuth": [] }],
+                "responses": {
+                    "201": {
+                        "description": "Chave de API criada"
+                    }
+                }
+            }
+        },
+        "/webhooks/subscribe.php": {
+            "post": {
+                "summary": "Inscrever em eventos de webhook",
+                "tags": ["Webhooks"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "event_type": {
+                                        "type": "string",
+                                        "description": "Tipo de evento (ex: lead.created, property.sold)"
+                                    },
+                                    "url": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "description": "URL para receber os webhooks"
+                                    },
+                                    "active": {
+                                        "type": "boolean",
+                                        "default": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "bearerAuth": [] }],
+                "responses": {
+                    "201": {
+                        "description": "Inscrição criada com sucesso"
+                    }
+                }
+            }
+        },
+        "/webhooks/getSubscriptions.php": {
+            "get": {
+                "summary": "Listar subscrições de webhook",
+                "tags": ["Webhooks"],
+                "security": [{ "bearerAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Lista de subscrições"
+                    }
+                }
+            }
+        },
+        "/webhooks/testWebhook.php": {
+            "post": {
+                "summary": "Testar um webhook",
+                "tags": ["Webhooks"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "subscription_id": { "type": "integer" },
+                                    "event_type": { "type": "string" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "bearerAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Webhook de teste enviado"
+                    }
+                }
+            }
+        }
+    },
+    "x-code-samples": {
+        "javascript": {
+            "getLeads": "// Buscar leads\nconst response = await fetch('/api/v1/leads/getLeads.php?page=1&limit=10', {\n  headers: {'Authorization': 'Bearer ' + token}\n});\nconst data = await response.json();\nconsole.log(data);",
+            "subscribeWebhook": "// Inscrever em evento\nconst response = await fetch('/api/v1/webhooks/subscribe.php', {\n  method: 'POST',\n  headers: {\n    'Authorization': 'Bearer ' + token,\n    'Content-Type': 'application/json'\n  },\n  body: JSON.stringify({\n    event_type: 'lead.created',\n    url: 'https://seu-servidor.com/webhook'\n  })\n});\nconst result = await response.json();\nconsole.log(result);"
+        },
+        "python": {
+            "getLeads": "import requests\n\nheaders = {'Authorization': f'Bearer {token}'}\nresponse = requests.get('http://localhost/api/v1/leads/getLeads.php?page=1&limit=10', headers=headers)\ndata = response.json()\nprint(data)",
+            "subscribeWebhook": "import requests\n\nheaders = {'Authorization': f'Bearer {token}'}\npayload = {\n    'event_type': 'lead.created',\n    'url': 'https://seu-servidor.com/webhook'\n}\nresponse = requests.post('http://localhost/api/v1/webhooks/subscribe.php', json=payload, headers=headers)\nresult = response.json()\nprint(result)"
+        },
+        "php": {
+            "getLeads": "$ch = curl_init('/api/v1/leads/getLeads.php?page=1&limit=10');\ncurl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $token));\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\n$data = json_decode($response, true);\nvar_dump($data);",
+            "subscribeWebhook": "$payload = array(\n    'event_type' => 'lead.created',\n    'url' => 'https://seu-servidor.com/webhook'\n);\n$ch = curl_init('/api/v1/webhooks/subscribe.php');\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));\ncurl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $token));\nvar_dump(json_decode(curl_exec($ch), true));"
+        }
+    }
+}

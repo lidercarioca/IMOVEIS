@@ -1,0 +1,97 @@
+<!-- Real-time Dashboard Integration for painel.php -->
+<!-- Add this to your painel.php where you want real-time updates -->
+
+<div id="dashboard-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- KPI Cards -->
+    <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
+        <h3 class="text-gray-500 text-sm font-semibold">Total de Imóveis</h3>
+        <p class="text-3xl font-bold mt-2" data-kpi="total_properties">-</p>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
+        <h3 class="text-gray-500 text-sm font-semibold">Total de Leads</h3>
+        <p class="text-3xl font-bold mt-2" data-kpi="total_leads">-</p>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500">
+        <h3 class="text-gray-500 text-sm font-semibold">Total de Vendas</h3>
+        <p class="text-3xl font-bold mt-2" data-kpi="total_sales">-</p>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-orange-500">
+        <h3 class="text-gray-500 text-sm font-semibold">Ticket Médio</h3>
+        <p class="text-2xl font-bold mt-2" data-kpi="avg_ticket">-</p>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-red-500">
+        <h3 class="text-gray-500 text-sm font-semibold">Ciclo Médio</h3>
+        <p class="text-2xl font-bold mt-2" data-kpi="cycle_days">-</p>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
+        <h3 class="text-gray-500 text-sm font-semibold">Imóveis Parados</h3>
+        <p class="text-3xl font-bold mt-2" data-kpi="stopped_count">-</p>
+    </div>
+
+    <!-- Top Brokers -->
+    <div class="md:col-span-2 lg:col-span-1 bg-white rounded-lg shadow-md p-6" data-component="brokers">
+        <h3 class="text-lg font-semibold mb-4">Top Brokers</h3>
+        <p class="text-gray-500">Carregando...</p>
+    </div>
+
+    <!-- Recent Leads -->
+    <div class="md:col-span-2 lg:col-span-2 bg-white rounded-lg shadow-md p-6" data-component="recent-leads">
+        <h3 class="text-lg font-semibold mb-4">Leads Recentes</h3>
+        <p class="text-gray-500">Carregando...</p>
+    </div>
+</div>
+
+<!-- Status indicador de conexão -->
+<div id="realtime-status" class="mt-4 text-sm text-gray-500">
+    <span id="connection-indicator" class="inline-block w-2 h-2 bg-gray-300 rounded-full mr-2"></span>
+    Conectando ao dashboard em tempo real...
+</div>
+
+<script src="/assets/js/painel/realtime-dashboard.js"></script>
+
+<script>
+// Monitorar status de conexão
+document.addEventListener('dashboardUpdate', () => {
+    const indicator = document.getElementById('connection-indicator');
+    indicator.className = 'inline-block w-2 h-2 bg-green-500 rounded-full mr-2';
+    document.getElementById('realtime-status').textContent = 'Dashboard em tempo real (conectado)';
+});
+
+// Reconectar quando voltar do background
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && window.realtimeDashboard) {
+        const status = window.realtimeDashboard.getConnectionStatus();
+        if (!status.connected) {
+            document.getElementById('connection-indicator').className = 'inline-block w-2 h-2 bg-yellow-500 rounded-full mr-2';
+            document.getElementById('realtime-status').textContent = 'Reconectando ao dashboard...';
+        }
+    }
+});
+</script>
+
+<style>
+.updated-value {
+    animation: pulse 0.6s ease-in-out;
+    background: linear-gradient(135deg, rgba(0, 123, 255, 0.1) 0%, transparent 100%);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+#realtime-status {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+}
+</style>

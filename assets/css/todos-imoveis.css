@@ -1,0 +1,61 @@
+/* Estilos para os filtros */
+.filter-section {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.filter-label {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.filter-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    color: #374151;
+    background-color: #fff;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--cor-primaria);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+/* Estilos para o modal de detalhes */
+.modal-dialog-custom {
+    max-width: 700px;
+}
+
+.modal-bg-light {
+    background-color: #f0f7ff;
+}
+
+.modal-footer-transition {
+    transition: background-color 0.3s ease;
+}
+
+.modal-button {
+    min-width: 180px;
+}
+
+.modal-contact-btn {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+.modal-header-custom {
+    background-color: var(--cor-primaria);
+    color: white;
+}
+
+.modal-submit-btn {
+    background-color: var(--cor-primaria);
+}

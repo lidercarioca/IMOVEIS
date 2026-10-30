@@ -1,0 +1,10 @@
+{
+    "test_1_class_exists": "PASSOU",
+    "test_2_json_structure": "PASSOU",
+    "test_3_utf8_encoding": "PASSOU",
+    "test_4_zero_fraction": "PASSOU",
+    "test_5_endpoint_exists": "PASSOU",
+    "test_6_php_syntax": "PASSOU",
+    "test_7_headers": "PENDENTE_RUNTIME",
+    "test_8_legacy_response": "PASSOU"
+}

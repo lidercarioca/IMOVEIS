@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação da API Pública - SysImóveis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        nav {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #764ba2;
+        }
+
+        section {
+            background: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        h4 {
+            color: #333;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #c7254e;
+        }
+
+        pre {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            line-height: 1.5;
+        }
+
+        .endpoint {
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            margin-right: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .method.get {
+            background: #61affe;
+        }
+
+        .method.post {
+            background: #49cc90;
+        }
+
+        .method.put {
+            background: #fca130;
+        }
+
+        .method.delete {
+            background: #f93e3e;
+        }
+
+        .parameter {
+            margin: 1rem 0;
+            padding: 0.75rem;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+
+        .parameter strong {
+            color: #667eea;
+        }
+
+        .response {
+            background: #f0f7ff;
+            border: 1px solid #b3d9ff;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+
+        .error {
+            background: #ffe6e6;
+            border: 1px solid #ff8888;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+
+        .success {
+            background: #e6ffe6;
+            border: 1px solid #88ff88;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        table td {
+            border-bottom: 1px solid #ddd;
+            padding: 0.75rem;
+        }
+
+        table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .note {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+
+        .note strong {
+            color: #ff6c00;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            border-top: 1px solid #ddd;
+            margin-top: 3rem;
+        }
+
+        .highlight {
+            background: #fffacd;
+            padding: 0.2rem 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>🔌 API Pública SysImóveis</h1>
+        <p>Documentação Completa para Integração</p>
+    </header>
+
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="#inicio">Início</a></li>
+                <li><a href="#autenticacao">Autenticação</a></li>
+                <li><a href="#endpoints">Endpoints</a></li>
+                <li><a href="#exemplos">Exemplos</a></li>
+                <li><a href="#erros">Erros</a></li>
+                <li><a href="#suporte">Suporte</a></li>
+            </ul>
+        </nav>
+
+        <!-- SEÇÃO: INÍCIO -->
+        <section id="inicio">
+            <h2>🚀 Comece Aqui</h2>
+            <p>A API Pública SysImóveis permite que você integre seus dados de imóveis, leads e integrações com sistemas
+                externos.</p>
+
+            <h3>Base URL</h3>
+            <pre><code>https://seu-dominio/api/v1/public/</code></pre>
+
+            <h3>Informações Gerais</h3>
+            <ul style="margin-left: 2rem; margin-top: 1rem;">
+                <li><strong>Protocolo:</strong> HTTPS (obrigatório em produção)</li>
+                <li><strong>Formato:</strong> JSON</li>
+                <li><strong>Autenticação:</strong> API Key via Header</li>
+                <li><strong>Rate Limit:</strong> 1000 requisições/hora</li>
+                <li><strong>Versionamento:</strong> v1</li>
+            </ul>
+        </section>
+
+        <!-- SEÇÃO: AUTENTICAÇÃO -->
+        <section id="autenticacao">
+            <h2>🔐 Autenticação</h2>
+            <p>Todas as requisições à API devem incluir uma chave de API válida.</p>
+
+            <h3>Como Gerar uma Chave de API</h3>
+            <ol style="margin-left: 2rem; margin-top: 1rem;">
+                <li>Acesse o Painel Administrativo</li>
+                <li>Vá para <strong>Configurações → Chaves de API</strong></li>
+                <li>Clique em <strong>"Gerar Nova Chave de API"</strong></li>
+                <li>Escolha um nome (ex: "Integração CRM")</li>
+                <li>Copie e guarde a chave de forma segura</li>
+            </ol>
+
+            <h3>Como Usar a Chave</h3>
+            <p>Inclua o header <code>X-API-Key</code> em todas as suas requisições:</p>
+
+            <pre><code>curl -X GET https://seu-dominio/api/v1/public/properties \
+  -H "X-API-Key: sua-chave-aqui" \
+  -H "Content-Type: application/json"</code></pre>
+
+            <div class="note">
+                <strong>⚠️ Segurança:</strong> Nunca compartilhe sua API Key publicamente. Se a chave for comprometida,
+                revogue-a imediatamente no painel.
+            </div>
+        </section>
+
+        <!-- SEÇÃO: ENDPOINTS -->
+        <section id="endpoints">
+            <h2>📡 Endpoints Disponíveis</h2>
+
+            <!-- PROPRIEDADES -->
+            <h3>Propriedades / Imóveis</h3>
+
+            <div class="endpoint">
+                <h4><span class="method get">GET</span>/properties</h4>
+                <p>Lista todas as propriedades da empresa</p>
+
+                <h5>Parâmetros de Query:</h5>
+                <div class="parameter">
+                    <strong>page</strong> (int, opcional) - Número da página (padrão: 1)<br>
+                    <strong>limit</strong> (int, opcional) - Itens por página (padrão: 20, máx: 100)<br>
+                    <strong>status</strong> (string, opcional) - Filtrar por status (active, sold, archived)
+                </div>
+
+                <h5>Exemplo de Requisição:</h5>
+                <pre><code>curl -X GET "https://seu-dominio/api/v1/public/properties?page=1&limit=20" \
+  -H "X-API-Key: sua-chave-aqui"</code></pre>
+
+                <h5>Resposta de Sucesso (200):</h5>
+                <div class="success">
+                    <pre><code>{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "title": "Apartamento em Copacabana",
+      "description": "Apartamento 2 quartos com vista para o mar",
+      "price": 500000,
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "area": 80,
+      "address": "Rua A, 123, Rio de Janeiro",
+      "city": "Rio de Janeiro",
+      "state": "RJ",
+      "status": "active",
+      "created_at": "2024-04-20T10:30:00Z",
+      "updated_at": "2024-04-22T15:45:00Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 150,
+    "pages": 8
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <h4><span class="method get">GET</span>/properties/{id}</h4>
+                <p>Obtém detalhes de uma propriedade específica</p>
+
+                <h5>Parâmetros:</h5>
+                <div class="parameter">
+                    <strong>id</strong> (int, obrigatório) - ID da propriedade
+                </div>
+
+                <h5>Exemplo de Requisição:</h5>
+                <pre><code>curl -X GET "https://seu-dominio/api/v1/public/properties/1" \
+  -H "X-API-Key: sua-chave-aqui"</code></pre>
+
+                <h5>Resposta de Sucesso (200):</h5>
+                <div class="success">
+                    <pre><code>{
+  "success": true,
+  "data": {
+    "id": 1,
+    "title": "Apartamento em Copacabana",
+    "description": "Apartamento 2 quartos com vista para o mar",
+    "price": 500000,
+    "bedrooms": 2,
+    "bathrooms": 1,
+    "area": 80,
+    "address": "Rua A, 123, Rio de Janeiro",
+    "city": "Rio de Janeiro",
+    "state": "RJ",
+    "status": "active",
+    "images": ["url1.jpg", "url2.jpg"],
+    "created_at": "2024-04-20T10:30:00Z",
+    "updated_at": "2024-04-22T15:45:00Z"
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- LEADS -->
+            <h3>Leads / Contatos</h3>
+
+            <div class="endpoint">
+                <h4><span class="method get">GET</span>/leads</h4>
+                <p>Lista todos os leads/contatos</p>
+
+                <h5>Parâmetros de Query:</h5>
+                <div class="parameter">
+                    <strong>page</strong> (int, opcional) - Número da página (padrão: 1)<br>
+                    <strong>limit</strong> (int, opcional) - Itens por página (padrão: 20, máx: 100)<br>
+                    <strong>status</strong> (string, opcional) - Filtrar por status (new, contacted, qualified)
+                </div>
+
+                <h5>Exemplo de Requisição:</h5>
+                <pre><code>curl -X GET "https://seu-dominio/api/v1/public/leads?page=1&limit=20" \
+  -H "X-API-Key: sua-chave-aqui"</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h4><span class="method post">POST</span>/leads</h4>
+                <p>Cria um novo lead/contato</p>
+
+                <h5>Body (JSON):</h5>
+                <div class="parameter">
+                    <strong>name</strong> (string, obrigatório) - Nome do lead<br>
+                    <strong>email</strong> (string, obrigatório) - Email<br>
+                    <strong>phone</strong> (string, opcional) - Telefone<br>
+                    <strong>message</strong> (string, opcional) - Mensagem do lead<br>
+                    <strong>source</strong> (string, opcional) - Origem do lead (facebook, website, etc)
+                </div>
+
+                <h5>Exemplo de Requisição:</h5>
+                <pre><code>curl -X POST "https://seu-dominio/api/v1/public/leads" \
+  -H "X-API-Key: sua-chave-aqui" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "João Silva",
+    "email": "joao@example.com",
+    "phone": "(21) 99999-9999",
+    "message": "Interessado no apartamento em Copacabana",
+    "source": "facebook"
+  }'</code></pre>
+
+                <h5>Resposta de Sucesso (201):</h5>
+                <div class="success">
+                    <pre><code>{
+  "success": true,
+  "message": "Lead criado com sucesso",
+  "data": {
+    "id": 123,
+    "name": "João Silva",
+    "email": "joao@example.com",
+    "phone": "(21) 99999-9999",
+    "status": "new",
+    "created_at": "2024-04-22T16:00:00Z"
+  }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO: EXEMPLOS -->
+        <section id="exemplos">
+            <h2>💡 Exemplos de Uso</h2>
+
+            <h3>JavaScript / Node.js</h3>
+            <pre><code>const apiKey = 'sua-chave-aqui';
+const apiUrl = 'https://seu-dominio/api/v1/public';
+
+// Listar propriedades
+fetch(`${apiUrl}/properties?page=1&limit=20`, {
+  method: 'GET',
+  headers: {
+    'X-API-Key': apiKey,
+    'Content-Type': 'application/json'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Erro:', error));
+
+// Criar um lead
+fetch(`${apiUrl}/leads`, {
+  method: 'POST',
+  headers: {
+    'X-API-Key': apiKey,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: 'João Silva',
+    email: 'joao@example.com',
+    phone: '(21) 99999-9999',
+    message: 'Interessado em imóvel',
+    source: 'website'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Erro:', error));
+</code></pre>
+
+            <h3>Python</h3>
+            <pre><code>import requests
+import json
+
+api_key = 'sua-chave-aqui'
+api_url = 'https://seu-dominio/api/v1/public'
+headers = {
+    'X-API-Key': api_key,
+    'Content-Type': 'application/json'
+}
+
+# Listar propriedades
+response = requests.get(f'{api_url}/properties?page=1&limit=20', headers=headers)
+properties = response.json()
+print(json.dumps(properties, indent=2))
+
+# Criar um lead
+lead_data = {
+    'name': 'João Silva',
+    'email': 'joao@example.com',
+    'phone': '(21) 99999-9999',
+    'message': 'Interessado em imóvel',
+    'source': 'website'
+}
+response = requests.post(f'{api_url}/leads', headers=headers, json=lead_data)
+result = response.json()
+print(json.dumps(result, indent=2))
+</code></pre>
+
+            <h3>PHP</h3>
+            <pre><code>$apiKey = 'sua-chave-aqui';
+$apiUrl = 'https://seu-dominio/api/v1/public';
+
+// Listar propriedades
+$options = [
+    'http' => [
+        'method' => 'GET',
+        'header' => "X-API-Key: $apiKey\r\nContent-Type: application/json\r\n"
+    ]
+];
+$context = stream_context_create($options);
+$response = file_get_contents("$apiUrl/properties?page=1&limit=20", false, $context);
+echo json_encode(json_decode($response), JSON_PRETTY_PRINT);
+
+// Criar um lead
+$leadData = [
+    'name' => 'João Silva',
+    'email' => 'joao@example.com',
+    'phone' => '(21) 99999-9999',
+    'message' => 'Interessado em imóvel',
+    'source' => 'website'
+];
+
+$options = [
+    'http' => [
+        'method' => 'POST',
+        'header' => "X-API-Key: $apiKey\r\nContent-Type: application/json\r\n",
+        'content' => json_encode($leadData)
+    ]
+];
+$context = stream_context_create($options);
+$response = file_get_contents("$apiUrl/leads", false, $context);
+echo json_encode(json_decode($response), JSON_PRETTY_PRINT);
+</code></pre>
+        </section>
+
+        <!-- SEÇÃO: ERROS -->
+        <section id="erros">
+            <h2>⚠️ Códigos de Erro</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Significado</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>200</strong></td>
+                        <td>OK</td>
+                        <td>Requisição bem-sucedida</td>
+                    </tr>
+                    <tr>
+                        <td><strong>201</strong></td>
+                        <td>Created</td>
+                        <td>Recurso criado com sucesso</td>
+                    </tr>
+                    <tr>
+                        <td><strong>400</strong></td>
+                        <td>Bad Request</td>
+                        <td>Requisição inválida (parâmetros faltando ou inválidos)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>401</strong></td>
+                        <td>Unauthorized</td>
+                        <td>API Key não fornecida ou inválida</td>
+                    </tr>
+                    <tr>
+                        <td><strong>403</strong></td>
+                        <td>Forbidden</td>
+                        <td>Você não tem permissão para acessar este recurso</td>
+                    </tr>
+                    <tr>
+                        <td><strong>404</strong></td>
+                        <td>Not Found</td>
+                        <td>Recurso não encontrado</td>
+                    </tr>
+                    <tr>
+                        <td><strong>429</strong></td>
+                        <td>Too Many Requests</td>
+                        <td>Limite de requisições excedido</td>
+                    </tr>
+                    <tr>
+                        <td><strong>500</strong></td>
+                        <td>Internal Server Error</td>
+                        <td>Erro no servidor (entre em contato com suporte)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Exemplo de Erro</h3>
+            <div class="error">
+                <h5>Requisição sem API Key:</h5>
+                <pre><code>{
+  "error": "API Key não fornecida",
+  "message": "Header X-API-Key é obrigatório"
+}</code></pre>
+            </div>
+
+            <div class="error">
+                <h5>API Key Inválida:</h5>
+                <pre><code>{
+  "error": "API Key inválida",
+  "message": "A API Key fornecida não é válida ou expirou"
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- SEÇÃO: SUPORTE -->
+        <section id="suporte">
+            <h2>📞 Suporte</h2>
+
+            <h3>Dúvidas Frequentes</h3>
+
+            <h4>Como renovar minha API Key?</h4>
+            <p>Você pode revogar uma chave antiga e gerar uma nova no painel administrativo em <strong>Configurações →
+                    Chaves de API</strong>.</p>
+
+            <h4>Qual é meu rate limit?</h4>
+            <p>O padrão é <strong>1000 requisições por hora</strong>. Se precisar de um limite maior, entre em contato
+                com suporte.</p>
+
+            <h4>Posso usar a API sem API Key?</h4>
+            <p>Não. Todas as requisições obrigatoriamente precisam incluir uma API Key válida no header
+                <code>X-API-Key</code>.</p>
+
+            <h4>Como integrar com Facebook/WhatsApp/Webhook?</h4>
+            <p>Use o endpoint <code>POST /leads</code> para enviar informações de leads capturados em outras
+                plataformas.</p>
+
+            <h3>Contato</h3>
+            <p>Para mais informações, entre em contato com nosso suporte técnico:</p>
+            <ul style="margin-left: 2rem; margin-top: 1rem;">
+                <li><strong>Email:</strong> suporte@sysimoveis.com</li>
+                <li><strong>WhatsApp:</strong> (21) 99999-9999</li>
+                <li><strong>Documentação:</strong> <a href="https://docs.sysimoveis.com"
+                        target="_blank">docs.sysimoveis.com</a></li>
+            </ul>
+
+            <div class="note">
+                <strong>💡 Dica:</strong> Verifique os exemplos acima em JavaScript, Python e PHP para começar a
+                integração imediatamente!
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 SysImóveis. Documentação da API Pública v1.0</p>
+        <p>Última atualização: 22 de Abril de 2024</p>
+    </footer>
+</body>
+
+</html>

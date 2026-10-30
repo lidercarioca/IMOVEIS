@@ -1,0 +1,629 @@
+﻿diff --git a/api/v1/properties/deleteProperty.php b/api/v1/properties/deleteProperty.php
+index 4053265..1a4a758 100644
+--- a/api/v1/properties/deleteProperty.php
++++ b/api/v1/properties/deleteProperty.php
+@@ -144,85 +144,10 @@ if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {
+ 
+ $propertyId = (int) $_POST['id'];
+ 
+-// ===============================
+-// VERIFICA SE IMÓVEL EXISTE
+-// ===============================
+-// Superadmin pode acessar imóveis de qualquer tenant
+-if (isSuperAdmin()) {
+-    $stmtCheck = $pdo->prepare("SELECT id FROM properties WHERE id = ?");
+-    $stmtCheck->execute([$propertyId]);
+-} else {
+-    $stmtCheck = $pdo->prepare("SELECT id FROM properties WHERE id = ? AND tenant_id = ?");
+-    $stmtCheck->execute([$propertyId, $tenantId]);
+-}
+-if (!$stmtCheck->fetch()) {
+-    echo json_encode([
+-        "success" => false,
+-        "message" => "Imóvel não encontrado."
+-    ]);
+-    exit;
+-}
+-
+ try {
+-    // ===============================
+-    // TRANSAÇÃO
+-    // ===============================
+-    $pdo->beginTransaction();
+-
+-    // Obtém dados essenciais do imóvel antes de deletar (tenant_id e assigned_user_id)
+-    if (isSuperAdmin()) {
+-        $stmtGetProp = $pdo->prepare("SELECT tenant_id, assigned_user_id FROM properties WHERE id = ?");
+-        $stmtGetProp->execute([$propertyId]);
+-        $propertyData = $stmtGetProp->fetch(PDO::FETCH_ASSOC);
+-        if (!$propertyData) {
+-            $pdo->rollBack();
+-            echo json_encode([
+-                "success" => false,
+-                "message" => "Imóvel não encontrado."
+-            ]);
+-            exit;
+-        }
+-        $propertyTenantId = $propertyData['tenant_id'];
+-        $propertyAssignedUserId = isset($propertyData['assigned_user_id']) ? $propertyData['assigned_user_id'] : null;
+-    } else {
+-        // Para usuários não-superadmin, tenant é o tenant corrente; ainda assim precisamos do assigned_user_id
+-        $stmtGetProp = $pdo->prepare("SELECT assigned_user_id FROM properties WHERE id = ? AND tenant_id = ?");
+-        $stmtGetProp->execute([$propertyId, $tenantId]);
+-        $propertyData = $stmtGetProp->fetch(PDO::FETCH_ASSOC);
+-        if (!$propertyData) {
+-            $pdo->rollBack();
+-            echo json_encode([
+-                "success" => false,
+-                "message" => "Imóvel não encontrado."
+-            ]);
+-            exit;
+-        }
+-        $propertyTenantId = $tenantId;
+-        $propertyAssignedUserId = isset($propertyData['assigned_user_id']) ? $propertyData['assigned_user_id'] : null;
+-    }
+-
+-    // Remove registros de imagens do banco
+-    $stmtImgsDel = $pdo->prepare(
+-        "DELETE FROM property_images WHERE property_id = ?"
+-    );
+-    $stmtImgsDel->execute([$propertyId]);
+-
+-    // Remove o imóvel
+-    // Superadmin pode deletar imóveis de qualquer tenant
+-    if (isSuperAdmin()) {
+-        $stmt = $pdo->prepare(
+-            "DELETE FROM properties WHERE id = ?"
+-        );
+-        $stmt->execute([$propertyId]);
+-    } else {
+-        $stmt = $pdo->prepare(
+-            "DELETE FROM properties WHERE id = ? AND tenant_id = ?"
+-        );
+-        $stmt->execute([$propertyId, $tenantId]);
+-    }
+-
+-    if ($stmt->rowCount() === 0) {
+-        $pdo->rollBack();
++    $service = new PropertyService($pdo);
++    $deleted = $service->deleteProperty($propertyId, $tenantId, $_SESSION['user_id'] ?? null, isSuperAdmin());
++    if (!$deleted) {
+         echo json_encode([
+             "success" => false,
+             "message" => "Imóvel não encontrado ou já removido."
+@@ -230,26 +155,6 @@ try {
+         exit;
+     }
+ 
+-    $pdo->commit();
+-
+-    // ===============================
+-    // INVALIDAÇÃO DE CACHE (PHASE 10)
+-    // ===============================
+-    try {
+-        $propertyService = new \App\Service\PropertyService($pdo);
+-        // Invalida cache do tenant (admin + público)
+-        if (isset($propertyTenantId) && (int)$propertyTenantId > 0) {
+-            $propertyService->invalidateCache((int)$propertyTenantId);
+-            // Invalida cache específico do usuário, se existir
+-            if (isset($propertyAssignedUserId) && $propertyAssignedUserId !== null && $propertyAssignedUserId !== "") {
+-                $propertyService->invalidateCacheForUser((int)$propertyTenantId, (int)$propertyAssignedUserId);
+-            }
+-        }
+-    } catch (Exception $cacheEx) {
+-        // Não interromper fluxo por falha de cache; logar para análise
+-        error_log("[deleteProperty] Cache invalidation failed: " . $cacheEx->getMessage());
+-    }
+-
+     // ===============================
+     // REMOVE PASTA DE IMAGENS (FORA DA TRANSAÇÃO)
+     // ===============================
+diff --git a/api/v1/properties/getPropertiesSimple.php b/api/v1/properties/getPropertiesSimple.php
+index 3b9d8d1..3618c35 100644
+--- a/api/v1/properties/getPropertiesSimple.php
++++ b/api/v1/properties/getPropertiesSimple.php
+@@ -1,11 +1,13 @@
+ <?php
+ header('Content-Type: application/json');
++require_once dirname(dirname(dirname(__DIR__))) . '/vendor/autoload.php';
+ require_once dirname(dirname(dirname(__DIR__))) . '/config/session_manager.php';
+ require_once dirname(dirname(dirname(__DIR__))) . '/config/database.php';
+ require_once dirname(dirname(dirname(__DIR__))) . '/app/utils/error_logger.php';
+ require_once dirname(dirname(dirname(__DIR__))) . '/app/helpers/tenant_isolation_helpers.php';
+ 
+ use App\Infrastructure\User\UserRepository;
++use App\Service\PropertyService;
+ 
+ try {
+     // Verificar autenticação
+@@ -33,32 +35,12 @@ try {
+     $userRole = strtolower(trim($userRole));
+     $isAdmin = ($userRole === 'admin' || $userRole === 'administrator' || $userRole === 'superadmin');
+ 
+-    // Preparar query COM ISOLAMENTO DE TENANT
+-    // Admins podem ver registros pending; usuários comuns apenas 'active'
+-    if ($isAdmin) {
+-        $sql = "SELECT id, title, price, status, type 
+-            FROM properties 
+-            WHERE tenant_id = ? AND status IN ('active', 'pending')";
+-        $params = [$tenantId];
+-    } else {
+-        $sql = "SELECT id, title, price, status, type 
+-            FROM properties 
+-            WHERE tenant_id = ? AND status = 'active'";
+-        $params = [$tenantId];
+-    }
+-
+-    // Se não é admin, filtrar por usuário atribuído (visibilidade por usuário)
+-    if (!$isAdmin) {
+-        $sql .= " AND assigned_user_id = ?";
+-        $params[] = $userId;
+-    }
+-
+-    $sql .= " ORDER BY title ASC 
+-              LIMIT 200";
+-
+-    $stmt = $pdo->prepare($sql);
+-    $stmt->execute($params);
+-    $properties = $stmt->fetchAll(PDO::FETCH_ASSOC);
++    $service = new PropertyService($pdo);
++    $properties = $service->getPropertiesSimple([
++        'tenantId' => $tenantId,
++        'userId' => $userId,
++        'isAdmin' => $isAdmin,
++    ]);
+ 
+     echo json_encode([
+         'success' => true,
+diff --git a/api/v1/properties/getPropertyById.php b/api/v1/properties/getPropertyById.php
+index 651408c..9f23f1c 100644
+--- a/api/v1/properties/getPropertyById.php
++++ b/api/v1/properties/getPropertyById.php
+@@ -1,9 +1,12 @@
+ <?php
+ header('Content-Type: application/json');
++require_once dirname(dirname(dirname(__DIR__))) . '/vendor/autoload.php';
+ require_once dirname(dirname(dirname(__DIR__))) . '/config/session_manager.php';
+ require_once dirname(dirname(dirname(__DIR__))) . '/config/database.php';
+ require_once dirname(dirname(dirname(__DIR__))) . '/app/helpers/tenant_isolation_helpers.php';
+ 
++use App\Service\PropertyService;
++
+ try {
+     // Validação do ID
+     $id = isset($_GET['id']) ? filter_var($_GET['id'], FILTER_VALIDATE_INT) : false;
+@@ -20,65 +23,19 @@ try {
+         $requireTenantCheck = true;
+     }
+ 
+-    // Busca a propriedade COM VALIDAÇÃO DE TENANT se autenticado
+-    if ($requireTenantCheck) {
+-        $stmt = $pdo->prepare("SELECT * FROM properties WHERE id = :id AND tenant_id = :tenant_id");
+-        $stmt->execute([':id' => $id, ':tenant_id' => $tenantId]);
+-    } else {
+-        $stmt = $pdo->prepare("SELECT * FROM properties WHERE id = :id");
+-        $stmt->execute([':id' => $id]);
+-    }
+-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
++    $service = new PropertyService($pdo);
++    $property = $service->getPropertyByIdForApi($id, [
++        'tenantId' => $tenantId,
++        'isAdmin' => false,
++    ]);
+ 
+-    if (!$row) {
++    if ($property === null) {
+         throw new Exception('Imóvel não encontrado');
+     }
+ 
+-    // Buscar imagens
+-    $imgStmt = $pdo->prepare("SELECT image_url FROM property_images WHERE property_id = :property_id");
+-    $imgStmt->execute([':property_id' => $id]);
+-    $row['images'] = $imgStmt->fetchAll(PDO::FETCH_COLUMN);
+-
+-    // Garantir que os dados numéricos sejam retornados como números
+-    if (isset($row['price'])) {
+-        $row['price'] = floatval($row['price']);
+-    }
+-    if (isset($row['area'])) {
+-        $row['area'] = floatval($row['area']);
+-    }
+-    if (isset($row['condominium'])) {
+-        $row['condominium'] = is_null($row['condominium']) ? null : floatval($row['condominium']);
+-    } else {
+-        $row['condominium'] = null;
+-    }
+-    if (isset($row['iptu'])) {
+-        $row['iptu'] = is_null($row['iptu']) ? null : floatval($row['iptu']);
+-    } else {
+-        $row['iptu'] = null;
+-    }
+-    if (isset($row['suites'])) {
+-        $row['suites'] = is_null($row['suites']) ? null : intval($row['suites']);
+-    } else {
+-        $row['suites'] = null;
+-    }
+-
+-    // Decodificar features se estiver em JSON
+-    if (!empty($row['features'])) {
+-        $decoded = json_decode($row['features'], true);
+-        $row['features'] = is_array($decoded) ? $decoded : [$row['features']];
+-    } else {
+-        $row['features'] = [];
+-    }
+-
+-    // Garantir campos padrão
+-    $defaultFields = ['neighborhood', 'city', 'state', 'zip'];
+-    foreach ($defaultFields as $field) {
+-        if (!isset($row[$field])) $row[$field] = '';
+-    }
+-
+     echo json_encode([
+         'success' => true,
+-        'data' => $row
++        'data' => $property
+     ]);
+ 
+ } catch (PDOException $e) {
+diff --git a/api/v1/properties/uploadImagem.php b/api/v1/properties/uploadImagem.php
+index 882c80f..288bc6f 100644
+--- a/api/v1/properties/uploadImagem.php
++++ b/api/v1/properties/uploadImagem.php
+@@ -1,4 +1,5 @@
+ <?php
++require_once dirname(dirname(dirname(__DIR__))) . '/vendor/autoload.php';
+ require_once dirname(dirname(dirname(__DIR__))) . '/api/check_auth.php';
+ checkApiAuth();
+ 
+@@ -7,6 +8,8 @@ require_once dirname(dirname(dirname(__DIR__))) . '/config/database.php';
+ require_once dirname(dirname(dirname(__DIR__))) . '/app/helpers/tenant_isolation_helpers.php';
+ require_once dirname(dirname(dirname(__DIR__))) . '/app/middleware/api_auth.php';
+ 
++use App\Service\PropertyService;
++
+ checkAuth();
+ checkApiAuth();
+ 
+@@ -32,11 +35,14 @@ try {
+     }
+ 
+     $id = (int) $_POST['id'];
+-    
+-    // Verificar que a propriedade pertence ao tenant do usuário
+-    $stmtVerify = $pdo->prepare("SELECT id FROM properties WHERE id = ? AND tenant_id = ?");
+-    $stmtVerify->execute([$id, $tenantId]);
+-    if (!$stmtVerify->fetch()) {
++
++    $service = new PropertyService($pdo);
++    $property = $service->getProperty($id, [
++        'tenantId' => $tenantId,
++        'isAdmin' => false,
++    ]);
++
++    if ($property === null) {
+         throw new Exception('Propriedade não encontrada ou sem permissão');
+     }
+ 
+@@ -65,13 +71,7 @@ try {
+     // HASHES EXISTENTES (ANTI DUPLICATA)
+     // ===============================
+     $hashesExistentes = [];
+-    $stmt = $pdo->prepare(
+-        "SELECT image_url FROM property_images WHERE property_id = ?"
+-    );
+-    $stmt->execute([$id]);
+-    $existentes = $stmt->fetchAll(PDO::FETCH_COLUMN);
+-
+-    foreach ($existentes as $imgUrl) {
++    foreach ($property['images'] as $imgUrl) {
+         $path = $_SERVER['DOCUMENT_ROOT'] . $imgUrl;
+         if (file_exists($path)) {
+             $hashesExistentes[] = md5_file($path);
+@@ -104,16 +104,14 @@ try {
+         $imageUrl = $uploadUrl . $filename;
+ 
+         if (move_uploaded_file($tmpName, $destPath)) {
+-
+-            $pdo->prepare(
+-                "INSERT INTO property_images (property_id, image_url)
+-                 VALUES (?, ?)"
+-            )->execute([$id, $imageUrl]);
+-
+             $imagensSalvas[] = $imageUrl;
+         }
+     }
+ 
++    if (!empty($imagensSalvas)) {
++        $service->savePropertyImages($id, $imagensSalvas);
++    }
++
+     // finfo é fechado automaticamente pelo garbage collector
+ 
+     echo json_encode([
+diff --git a/src/Database/QueryBuilder.php b/src/Database/QueryBuilder.php
+index 3f3ad94..1471b50 100644
+--- a/src/Database/QueryBuilder.php
++++ b/src/Database/QueryBuilder.php
+@@ -36,6 +36,7 @@ class QueryBuilder
+     private array $where = [];
+     private array $params = [];
+     private string $orderBy = '';
++    private ?int $limit = null;
+ 
+     /**
+      * Define as colunas a serem selecionadas
+@@ -155,6 +156,20 @@ class QueryBuilder
+         return $this;
+     }
+ 
++    /**
++     * Define um limite de resultados
++     *
++     * @param int $limit Número máximo de linhas retornadas
++     * @return self
++     */
++    public function limit(int $limit): self
++    {
++        if ($limit > 0) {
++            $this->limit = $limit;
++        }
++        return $this;
++    }
++
+     /**
+      * Retorna o SQL completo montado
+      *
+@@ -186,7 +201,12 @@ class QueryBuilder
+ 
+         // ORDER BY
+         if ($this->orderBy) {
+-            $sql .= 'ORDER BY ' . $this->orderBy;
++            $sql .= 'ORDER BY ' . $this->orderBy . ' ';
++        }
++
++        // LIMIT
++        if ($this->limit !== null) {
++            $sql .= 'LIMIT ' . $this->limit;
+         }
+ 
+         return trim($sql);
+diff --git a/src/Repository/PropertyRepository.php b/src/Repository/PropertyRepository.php
+index a8f5287..54f0f6e 100644
+--- a/src/Repository/PropertyRepository.php
++++ b/src/Repository/PropertyRepository.php
+@@ -57,7 +57,7 @@ class PropertyRepository
+      * @param array $params Parâmetros já extraídos
+      * @return QueryBuilder QueryBuilder pronto para execução
+      */
+-    private function buildQuery(string $whereClause, array $params): QueryBuilder
++    private function buildQuery(string $whereClause, array $params, string $orderByColumn = 'p.id', string $orderByDirection = 'DESC', ?int $limit = null): QueryBuilder
+     {
+         // Criar novo QueryBuilder para construir a query
+         $qb = new QueryBuilder();
+@@ -80,7 +80,11 @@ class PropertyRepository
+         }
+ 
+         // Adicionar ORDER BY
+-        $qb->orderBy('p.id', 'DESC');
++        $qb->orderBy($orderByColumn, $orderByDirection);
++
++        if ($limit !== null) {
++            $qb->limit($limit);
++        }
+ 
+         return $qb;
+     }
+@@ -104,10 +108,10 @@ class PropertyRepository
+      * @param array $params Parâmetros para prepared statement
+      * @return array Lista de linhas brutas (resultado de fetchAll)
+      */
+-    public function getProperties(string $whereClause, array $params): array
++    public function getProperties(string $whereClause, array $params, string $orderByColumn = 'p.id', string $orderByDirection = 'DESC', ?int $limit = null): array
+     {
+         // Construir QueryBuilder com todas as cláusulas
+-        $qb = $this->buildQuery($whereClause, $params);
++        $qb = $this->buildQuery($whereClause, $params, $orderByColumn, $orderByDirection, $limit);
+         
+         // Obter SQL e parâmetros do QueryBuilder
+         $sql = $qb->getSql();
+@@ -285,10 +289,10 @@ class PropertyRepository
+      * @param bool $isAdmin
+      * @return array|null
+      */
+-    public function findPropertyById(int $id, int $tenantId, bool $isAdmin): ?array
++    public function findPropertyById(int $id, ?int $tenantId, bool $isAdmin): ?array
+     {
+         $sql = 'SELECT p.*, pi.image_url FROM properties p LEFT JOIN property_images pi ON p.id = pi.property_id ';
+-        if ($isAdmin) {
++        if ($isAdmin || $tenantId === null || $tenantId <= 0) {
+             $sql .= 'WHERE p.id = ?';
+             $params = [$id];
+         } else {
+@@ -303,6 +307,66 @@ class PropertyRepository
+         return $rows === false || empty($rows) ? null : $rows;
+     }
+ 
++    /**
++     * Busca propriedade e imagens no formato legacy para endpoints que preservam contrato antigo.
++     *
++     * @param int $id
++     * @param int|null $tenantId
++     * @param bool $isAdmin
++     * @return array|null
++     */
++    public function findPropertyByIdForLegacy(int $id, ?int $tenantId, bool $isAdmin): ?array
++    {
++        if ($isAdmin || $tenantId === null || $tenantId <= 0) {
++            $stmt = $this->pdo->prepare('SELECT * FROM properties WHERE id = ?');
++            $stmt->execute([$id]);
++        } else {
++            $stmt = $this->pdo->prepare('SELECT * FROM properties WHERE id = ? AND tenant_id = ?');
++            $stmt->execute([$id, $tenantId]);
++        }
++
++        $property = $stmt->fetch(PDO::FETCH_ASSOC);
++        if (!$property) {
++            return null;
++        }
++
++        $stmtImages = $this->pdo->prepare('SELECT image_url FROM property_images WHERE property_id = ?');
++        $stmtImages->execute([$id]);
++        $images = $stmtImages->fetchAll(PDO::FETCH_COLUMN);
++        $property['images'] = $images ?: [];
++
++        return $property;
++    }
++
++    /**
++     * Busca propriedades simples para listagem de painel.
++     *
++     * @param int $tenantId
++     * @param int|null $userId
++     * @param bool $isAdmin
++     * @param int $limit
++     * @return array
++     */
++    public function getSimplePropertyList(int $tenantId, ?int $userId, bool $isAdmin, int $limit = 200): array
++    {
++        $qb = $this->getQueryBuilder();
++        $qb->select(['p.id', 'p.title', 'p.price', 'p.status', 'p.type'])
++           ->from('properties p')
++           ->where('p.tenant_id = ?', [$tenantId]);
++
++        if ($isAdmin) {
++            $qb->andWhere("p.status IN ('active', 'pending')");
++        } else {
++            $qb->andWhere('p.status = ?', ['active'])
++               ->andWhere('p.assigned_user_id = ?', [$userId]);
++        }
++
++        $qb->orderBy('p.title', 'ASC')
++           ->limit($limit);
++
++        return $this->execute($qb);
++    }
++
+     /**
+      * Remove todos os registros de imagens associados a uma propriedade.
+      *
+diff --git a/src/Service/PropertyService.php b/src/Service/PropertyService.php
+index 9a71a31..8e98fec 100644
+--- a/src/Service/PropertyService.php
++++ b/src/Service/PropertyService.php
+@@ -368,9 +368,7 @@ class PropertyService
+         $isAdmin = $options['isAdmin'] ?? false;
+         $userId = isset($options['userId']) ? (int)$options['userId'] : null;
+ 
+-        if ($tenantId <= 0) {
+-            throw new \InvalidArgumentException("Opção 'tenantId' é obrigatória");
+-        }
++        $tenantId = $tenantId > 0 ? $tenantId : null;
+ 
+         $rows = $this->repository->findPropertyById($propertyId, $tenantId, $isAdmin);
+         if ($rows === null) {
+@@ -400,6 +398,92 @@ class PropertyService
+         }
+     }
+ 
++    /**
++     * Obtém uma propriedade no formato de contrato legado para getPropertyById.php.
++     *
++     * @param int $propertyId
++     * @param array $options
++     * @return array|null
++     */
++    public function getPropertyByIdForApi(int $propertyId, array $options): ?array
++    {
++        $tenantId = isset($options['tenantId']) ? (int)$options['tenantId'] : 0;
++        $isAdmin = $options['isAdmin'] ?? false;
++
++        $tenantId = $tenantId > 0 ? $tenantId : null;
++        $property = $this->repository->findPropertyByIdForLegacy($propertyId, $tenantId, $isAdmin);
++        if ($property === null) {
++            return null;
++        }
++
++        if (isset($property['price'])) {
++            $property['price'] = floatval($property['price']);
++        }
++        if (isset($property['area'])) {
++            $property['area'] = floatval($property['area']);
++        }
++        if (isset($property['condominium'])) {
++            $property['condominium'] = $property['condominium'] === null ? null : floatval($property['condominium']);
++        } else {
++            $property['condominium'] = null;
++        }
++        if (isset($property['iptu'])) {
++            $property['iptu'] = $property['iptu'] === null ? null : floatval($property['iptu']);
++        } else {
++            $property['iptu'] = null;
++        }
++        if (isset($property['suites'])) {
++            $property['suites'] = $property['suites'] === null ? null : intval($property['suites']);
++        } else {
++            $property['suites'] = null;
++        }
++
++        if (!empty($property['features'])) {
++            $decoded = json_decode($property['features'], true);
++            $property['features'] = is_array($decoded) ? $decoded : [$property['features']];
++        } else {
++            $property['features'] = [];
++        }
++
++        foreach (['neighborhood', 'city', 'state', 'zip'] as $field) {
++            if (!isset($property[$field])) {
++                $property[$field] = '';
++            }
++        }
++
++        return $property;
++    }
++
++    /**
++     * Obtém lista simples de propriedades para o painel, preservando o contrato legado.
++     *
++     * @param array $options
++     * @return array
++     */
++    public function getPropertiesSimple(array $options): array
++    {
++        if (!isset($options['tenantId'])) {
++            throw new \InvalidArgumentException("Opção 'tenantId' é obrigatória");
++        }
++
++        $tenantId = (int)$options['tenantId'];
++        if ($tenantId <= 0) {
++            throw new \InvalidArgumentException("Opção 'tenantId' deve ser um inteiro positivo");
++        }
++
++        $isAdmin = $options['isAdmin'] ?? false;
++        if (!is_bool($isAdmin)) {
++            throw new \InvalidArgumentException("Opção 'isAdmin' deve ser boolean");
++        }
++
++        $userId = isset($options['userId']) ? (int)$options['userId'] : null;
++        if (!$isAdmin && ($userId === null || $userId <= 0)) {
++            throw new \InvalidArgumentException("Opção 'userId' é obrigatória para usuários não-admin");
++        }
++
++        return $this->repository->getSimplePropertyList($tenantId, $userId, $isAdmin, 200);
++    }
++
+     /**
+      * Cria uma nova propriedade e registra auditoria/cache.
+      *
+@@ -532,7 +616,11 @@ class PropertyService
+             throw $e;
+         }
+ 
+-        $this->invalidateCache($tenantId);
++        $tenantToInvalidate = isset($property['tenant_id']) && ((int)$property['tenant_id'] > 0)
++            ? (int)$property['tenant_id']
++            : $tenantId;
++
++        $this->invalidateCache($tenantToInvalidate);
+ 
+         $this->logger->info('Property deleted', [
+             'request_id' => RequestTracker::getId(),

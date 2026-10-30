@@ -1,0 +1,30 @@
+# Permitir requisições HTTP em qualquer método para a API
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /api/v1/
+    
+    # Permitir acesso a arquivos PHP reais em qualquer método
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+    
+    # Se não for arquivo real nem diretório, não fazer rewrite (deixar o arquivo.php ser processado)
+    RewriteRule ^ - [L]
+</IfModule>
+
+# Permitir todas as requisições HTTP
+<LimitExcept GET POST PUT DELETE PATCH OPTIONS HEAD TRACE>
+    Require all denied
+</LimitExcept>
+
+<Limit GET POST PUT DELETE PATCH OPTIONS HEAD>
+    Require all granted
+</Limit>
+
+# Adicionar headers para aceitar requisições de qualquer origem (CORS)
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, Accept"
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Max-Age "86400"
+</IfModule>

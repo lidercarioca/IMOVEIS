@@ -1,0 +1,61 @@
+:root {
+  --cor-primaria: #111827;
+  --cor-primaria-rgb: 17, 24, 39;
+  --cor-primaria-hover: #0f172a;
+  --cor-primaria-hover-rgb: 15, 23, 42;
+  --cor-secundaria: #10b981;
+  --cor-secundaria-rgb: 16, 185, 129;
+  --cor-destaque: #d97706;
+  --cor-destaque-rgb: 217, 119, 6;
+  --fonte-principal: 'Open Sans', sans-serif;
+}
+
+/* Botão principal do sistema */
+.btn-sistema-principal {
+  background-color: var(--cor-primaria) ;
+  color: #fff ;
+  border-radius: 0.7rem ;
+  font-weight: bold ;
+  font-size: 1.1rem ;
+  padding: 0.7rem 2.2rem ;
+  border: none ;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) ;
+  transition: all 0.2s ease-in-out ;
+  display: inline-flex ;
+  align-items: center ;
+  justify-content: center ;
+  text-align: center ;
+  vertical-align: middle ;
+  margin: 0 ;
+  box-sizing: border-box ;
+  text-decoration: none ;
+  cursor: pointer ;
+  line-height: 1.5 ;
+  min-height: 44px ;
+  width: auto ;
+  white-space: nowrap ;
+  -webkit-appearance: none ;
+  appearance: none ;
+}
+
+.btn-sistema-principal:hover {
+  background-color: var(--cor-primaria-hover) ;
+  transform: translateY(-1px) ;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) ;
+}
+
+.btn-sistema-principal:active {
+  transform: translateY(0) ;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) ;
+}
+
+.btn-sistema-principal i,
+.btn-sistema-principal .fa,
+.btn-sistema-principal .fas,
+.btn-sistema-principal .far,
+.btn-sistema-principal .fab {
+  margin-right: 0.5rem ;
+  font-size: 1em ;
+  vertical-align: middle ;
+  line-height: inherit ;
+}

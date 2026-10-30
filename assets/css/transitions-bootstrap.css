@@ -1,0 +1,29 @@
+/* Classes do Sidebar */
+.show-sidebar {
+    transform: translateX(0);
+}
+
+.content-shifted {
+    margin-left: var(--sidebar-width);
+}
+
+/* Notificações */
+.icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+}
+
+/* Animações */
+.translate-middle-x {
+    transform: translateX(-50%);
+}
+
+/* Transições */
+.sidebar,
+.content,
+.alert {
+    transition: all 0.3s ease-in-out;
+}

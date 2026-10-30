@@ -1,0 +1,1781 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR" class="min-vh-100">
+
+<head>
+  <!-- Meta tags essenciais -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- SEO tags -->
+  <title>DJ Imóveis - Seu Imóvel dos Sonhos</title>
+  <meta name="description"
+    content="Encontre seu imóvel ideal com a DJ Imóveis. Casas, apartamentos e imóveis comerciais em ótimas localizações.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="">
+  <script>/* definir canonical absoluto sem query/hash */(function () { try { var c = document.querySelector('link[rel="canonical"]'); if (c) c.href = location.origin + location.pathname; } catch (e) { } })();</script>
+  <meta name="keywords" content="imóveis, comprar casa, alugar apartamento, imobiliária">
+  <meta name="author" content="RR Imóveis">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rrimoveis.com.br/">
+  <meta property="og:title" content="DJ Imóveis - Seu Imóvel dos Sonhos">
+  <meta property="og:description" content="Encontre seu imóvel ideal com a DJ Imóveis">
+  <meta property="og:image" content="/assets/imagens/og-image.jpg">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/imagens/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/imagens/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/imagens/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Script para detectar tenant_id do subdomínio (antes de qualquer outro script) -->
+  <script>
+    (function () {
+      // Se o servidor injetou o tenant_id, usar esse valor
+      // Se não, fazer fallback para detecção local (menos confiável)
+
+      if (typeof window.TENANT_ID_SERVER !== 'undefined' && window.TENANT_ID_SERVER > 0) {
+        window.SUBDOMAIN_TENANT_ID = window.TENANT_ID_SERVER;
+      } else {
+        const hostname = window.location.hostname;
+        const parts = hostname.split('.');
+        const subdomain = parts[0];
+
+        const fallbackMap = {
+          'localhost': 1,
+          'default': 1,
+          'dj': 1,
+          'www': 1,
+          'imoveis-rio': 2,
+          'rio': 2,
+          'rj': 2,
+          'imoveis-sp': 3,
+          'sp': 3,
+          'sao-paulo': 3,
+          'saopaulo': 3,
+          'imoveis-mg': 4,
+          'mg': 4,
+          'minas': 4,
+          'minas-gerais': 4
+        };
+
+        window.SUBDOMAIN_TENANT_ID = fallbackMap[subdomain] || 1;
+      }
+    })();
+  </script>
+
+  <!-- Preload de recursos críticos -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- CSS crítico inline para primeiro render -->
+  <style>
+    /* Variáveis CSS críticas */
+    :root {
+      --cor-primaria: #111827;
+      --cor-secundaria: #10b981;
+      --cor-destaque: #d97706;
+      --cor-primaria-rgb: 17, 24, 39;
+      --cor-secundaria-rgb: 16, 185, 129;
+      --cor-destaque-rgb: 217, 119, 6;
+      --fonte-principal: 'Open Sans', sans-serif;
+    }
+
+    /* Previne flash de conteúdo durante carregamento */
+    .preload * {
+      -webkit-transition: none !important;
+      -moz-transition: none !important;
+      -ms-transition: none !important;
+      -o-transition: none !important;
+      transition: none !important;
+    }
+
+    /* Estilos críticos para primeiro render */
+    .critical-hidden {
+      opacity: 0;
+    }
+
+    .critical-visible {
+      opacity: 1;
+      transition: opacity .3s;
+    }
+
+    /* Estilos críticos da navbar */
+    .navbar-dynamic {
+      background-color: var(--cor-primaria) !important;
+      transition: background-color 0.3s ease;
+    }
+
+    .navbar-dynamic .nav-link {
+      color: white !important;
+    }
+
+    .navbar-dynamic .navbar-toggler {
+      border-color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    .navbar-dynamic .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+    }
+
+    /* Estilos da seção de contato */
+    .contact-section {
+      /*background-color: #111827 !important;*/
+
+    }
+
+
+    /* Previne FOUC (Flash of Unstyled Content) */
+    .property-card {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .property-card.loaded {
+      opacity: 1;
+    }
+  </style>
+
+
+  <!-- Preload de recursos críticos -->
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" as="style"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"
+    onload="this.rel='stylesheet'">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" as="style"
+    crossorigin="anonymous">
+
+  <!-- CSS crítico para logo -->
+  <style>
+    /* Estilos do logo */
+    .company-logo {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      opacity: 1;
+      display: inline-block;
+    }
+
+    /* Logo na navbar (fundo escuro) */
+    .navbar .company-logo {
+      filter: brightness(0) invert(1);
+    }
+
+    .footer-logo {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      opacity: 1;
+      display: inline-block;
+    }
+
+    /* Container do logo com placeholder */
+    .logo-container {
+      width: 40px;
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+  </style>
+
+  <!-- CSS crítico -->
+  <noscript>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  </noscript>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous">
+
+  <!-- CSS do sistema -->
+  <link rel="stylesheet" href="/assets/css/custom-bootstrap.css">
+  <link rel="stylesheet" href="/assets/css/custom.new.css">
+  <link rel="stylesheet" href="/assets/css/button-colors.css">
+  <link rel="stylesheet" href="/assets/css/shared-styles.css">
+  <link rel="stylesheet" href="/assets/css/modal.css">
+  <link rel="stylesheet" href="/assets/css/fixes.css">
+
+  <!-- Otimizador de compartilhamento para redes sociais -->
+  <script src="/assets/js/public/share-optimizer.js"></script>
+
+  <!-- Scripts com carregamento otimizado -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"
+    defer></script>
+
+  <!-- Polyfills condicionais -->
+  <script>
+    if (!('IntersectionObserver' in window)) {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/intersection-observer@0.12.2/intersection-observer.js"><\/script>');
+    }
+  </script>
+
+  <!-- Corrige problemas de scroll bloqueado por modals -->
+  <script src="/assets/js/scroll-fix.js"></script>
+
+  <!-- Gerenciador centralizado de navegação -->
+  <script src="/assets/js/public/navigation-handler.js"></script>
+  <!-- Inserir loader de company settings antes dos consumidores de cores/logo -->
+  <script src="/assets/js/company-settings-loader.js"></script>
+
+  <!-- Scripts otimizados para logo e cores -->
+  <script src="/assets/js/cache-invalidator.js"></script>
+  <script src="/assets/js/public/cache-sync.js"></script>
+  <script src="/assets/js/public/logo-loader.js"></script>
+  <script src="/assets/js/public/navbar-color-sync.js"></script>
+  <script src="/assets/js/public/card-color-sync.js"></script>
+  <script src="/assets/js/favorites.js"></script>
+  <script src="/assets/js/public/property-filter.js"></script>
+  <script src="/assets/js/public/visit-tracker.js"></script>
+
+  <!-- CSS da faixa de status -->
+  <link rel="stylesheet" href="/assets/css/ribbons.css">
+
+  <script>
+    // Função para aplicar fonte e cores
+    async function aplicarFonteECores() {
+      try {
+        // Usa loader centralizado de company settings
+        const json = await window.getCompanySettings();
+
+        if (!json.success || !json.data) {
+          console.error('Erro ao carregar configurações:', json);
+          return;
+        }
+        const data = json.data;
+
+        // Define o tenant_id da empresa que está sendo servida (para formulários)
+        if (data.tenant_id) {
+          window.CURRENT_TENANT_ID = data.tenant_id;
+        }
+
+        // Cores
+        if (data.company_color1) {
+          document.documentElement.style.setProperty('--cor-primaria', data.company_color1);
+        }
+        if (data.company_color2) {
+          document.documentElement.style.setProperty('--cor-secundaria', data.company_color2);
+        }
+        if (data.company_color3) {
+          document.documentElement.style.setProperty('--cor-destaque', data.company_color3);
+        }
+        // Fonte
+        if (data.company_font) {
+          document.documentElement.style.setProperty('--fonte-principal', `'${data.company_font}', sans-serif`);
+          if (!['Poppins', 'Arial', 'sans-serif'].includes(data.company_font)) {
+            // Remove links antigos da fonte customizada
+            document.querySelectorAll('link[data-dynamic-font]').forEach(l => l.remove());
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.setAttribute('data-dynamic-font', '1');
+            link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(data.company_font)}:wght@300;400;500;600;700&display=swap`;
+            document.head.appendChild(link);
+          }
+        }
+        // Aplica as cores em elementos principais
+        const root = document.documentElement;
+        // Atualiza as variáveis CSS
+        root.style.setProperty('--cor-primaria', data.company_color1 || '#2563eb');
+        root.style.setProperty('--cor-secundaria', data.company_color2 || '#10b981');
+        root.style.setProperty('--cor-destaque', data.company_color3 || '#f59e0b');
+
+        // Força atualização do navbar e outros elementos
+        document.querySelectorAll('.navbar-dynamic, .navbar-dynamic-gradient').forEach(el => {
+          el.style.setProperty('--cor-primaria', data.company_color1 || '#2563eb');
+        });
+
+        // Atualiza elementos com classes antigas do Tailwind
+        document.querySelectorAll('.bg-blue-600').forEach(el => el.style.backgroundColor = data.company_color1 || '#2563eb');
+        document.querySelectorAll('.bg-green-600').forEach(el => el.style.backgroundColor = data.company_color2 || '#10b981');
+        document.querySelectorAll('.bg-orange-500').forEach(el => el.style.backgroundColor = data.company_color3 || '#f59e0b');
+        document.querySelectorAll('.text-blue-600').forEach(el => el.style.color = data.company_color1 || '#2563eb');
+        document.querySelectorAll('.text-green-600').forEach(el => el.style.color = data.company_color2 || '#10b981');
+        document.querySelectorAll('.text-orange-500').forEach(el => el.style.color = data.company_color3 || '#f59e0b');
+      } catch (e) { }
+    }
+
+    // Função para garantir que os estilos estejam carregados
+    function checkStylesLoaded() {
+      const style = getComputedStyle(document.documentElement);
+      const primary = style.getPropertyValue('--cor-primaria').trim();
+      const secondary = style.getPropertyValue('--cor-secundaria').trim();
+      const highlight = style.getPropertyValue('--cor-destaque').trim();
+      return primary && secondary && highlight;
+    }
+
+    // Função para mostrar os cards quando os estilos estiverem prontos
+    function showCards() {
+      document.querySelectorAll('.property-card').forEach(card => {
+        card.classList.add('loaded');
+      });
+    }
+
+    // Carregar configurações e verificar estilos
+    document.addEventListener('DOMContentLoaded', function () {
+      aplicarFonteECores();
+
+      // Verifica se os estilos já estão carregados
+      if (checkStylesLoaded()) {
+        showCards();
+      } else {
+        // Se não estiverem, aguarda e verifica novamente
+        const checkInterval = setInterval(() => {
+          if (checkStylesLoaded()) {
+            showCards();
+            clearInterval(checkInterval);
+          }
+        }, 50);
+
+        // Timeout de segurança após 2 segundos
+        setTimeout(() => {
+          showCards();
+          clearInterval(checkInterval);
+        }, 2000);
+      }
+    });
+  </script>
+
+  <style>
+    /* Estilos específicos da página */
+
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    /* ------------------ BASE ------------------ */
+    body {
+      font-family: var(--fonte-principal, 'Poppins', sans-serif);
+      scroll-behavior: smooth;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ------------------ CARROSSEL HERO ------------------ */
+    .hero-section {
+      height: 500px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #carousel-container {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Seção de busca */
+    .search-section {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Garante que o carrossel não sobreponha outras seções */
+    .hero-section::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: rgba(0, 0, 0, 0.1);
+      z-index: 1;
+    }
+
+    #next-slide {
+      right: 10px;
+    }
+
+    /* ------------------ ANIMAÇÕES ------------------ */
+    .fade-in {
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .slide-in {
+      animation: slideIn 0.5s ease forwards;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.05);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .modal {
+      transition: opacity 0.3s ease;
+    }
+
+    /* ------------------ PROPERTY GRID ------------------ */
+
+    .property-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+
+    .property-card {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      padding: 1.5rem;
+      transition: transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .property-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .property-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .property-info {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 0.5rem;
+    }
+
+    .btn-detalhes {
+      display: inline-block;
+      margin-top: 0.75rem;
+      background-color: #007bff;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .btn-detalhes:hover {
+      filter: brightness(0.85);
+      /* escurece em 15% */
+    }
+
+    :root {
+      --cor-primaria: #2563eb;
+      /* cor padrão azul */
+      --cor-secundaria: #10b981;
+      /* verde */
+      --cor-destaque: #f59e0b;
+      /* amarelo */
+      --fonte-principal: var(--fonte-principal, 'Poppins', sans-serif);
+    }
+
+    /* Estilo do navbar dinâmico */
+    .navbar-dynamic {
+      background: var(--cor-primaria) !important;
+    }
+
+    .bg-gray-900 {
+      background-color: var(--cor-primaria) !important;
+    }
+
+    .text-white-hover:hover {
+      color: white !important;
+    }
+
+    /* Versão mais escura para o gradiente e hover */
+    .navbar-dynamic-gradient {
+      background: var(--cor-primaria) !important;
+    }
+
+    .badge-grande {
+      position: absolute !important;
+      top: 1rem !important;
+      /* Corrigido: Adicionada a unidade */
+      left: 1rem !important;
+      /* Novo: Move para a direita */
+      font-size: 1rem !important;
+      padding: 0.3rem 0.5rem !important;
+      display: inline-block !important;
+      font-weight: 600 !important;
+      border-radius: 12px !important;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+      /* Opcional: melhora legibilidade */
+
+    }
+  </style>
+
+
+</head>
+
+<body class="bg-light">
+  <!-- Navbar -->
+  <nav class="navbar-dynamic-gradient text-white shadow sticky-top">
+    <div class="container py-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <a href="/"><img id="company-logo-img" data-alt-template="Logo {company}" alt="Logo RR Imóveis" class="me-2 company-logo" data-no-lazy="1" loading="eager"
+              onerror="this.style.display='none'"></a>
+          <a href="/" class="nav-link fs-4 fw-bold" id="company-name">Carregando...</a>
+        </div>
+        <div class="d-none d-md-flex">
+          <a href="#home" class="nav-link mx-3 text-white hover-light"><i class="fas fa-home me-2"></i>Início</a>
+          <a href="#properties" class="nav-link mx-3 text-white hover-light"
+            onclick="window.showAllProperties(); return false;"><i class="fas fa-building"></i> Imóveis</a>
+          <a href="#about" class="nav-link mx-3 text-white hover-light"><i class="fas fa-book-open"></i> Sobre</a>
+          <a href="#contact" class="nav-link mx-3 text-white hover-light"><i class="fas fa-envelope"></i> Contato</a>
+          <a href="#properties" class="nav-link mx-3 text-white hover-light" title="Meus favoritos"
+            onclick="window.showFavorites(); return false;">Favoritos <i
+              class="fa-solid fa-heart-circle-check icon-danger"></i></a>
+        </div>
+        <div class="d-md-none">
+          <button id="mobile-menu-button" class="btn btn-link text-white border-0" aria-label="Menu">
+            <i class="fas fa-bars fs-4"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="d-md-none collapse navbar-collapse px-4 pb-4">
+      <div class="nav flex-column">
+        <a href="#home" class="nav-link text-white-50 py-2 px-3 rounded hover-light">Início</a>
+        <a href="#properties" class="nav-link text-white-50 py-2 px-3 rounded hover-light"
+          onclick="window.showAllProperties(); return false;">Imóveis</a>
+        <a href="#about" class="nav-link text-white-50 py-2 px-3 rounded hover-light">Sobre</a>
+        <a href="#contact" class="nav-link text-white-50 py-2 px-3 rounded hover-light">Contato</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section with Carousel -->
+  <section id="home" class="position-relative hero-section overflow-hidden">
+    <style>
+      .hero-overlay-text {
+        position: absolute;
+        left: 50%;
+        top: 25%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        text-align: center;
+        width: auto;
+        pointer-events: auto;
+        padding: clamp(1rem, 5vw, 2rem);
+      }
+
+      .hero-overlay-text h1 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        line-height: 1.2;
+        color: white;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 1px rgba(0, 0, 0, 0.8);
+        margin-bottom: 1rem;
+        font-weight: 700;
+      }
+
+      .hero-overlay-text p {
+        font-size: clamp(1rem, 2.5vw, 1.25rem);
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 1px rgba(0, 0, 0, 0.8);
+        font-weight: 500;
+      }
+
+      .hero-buttons {
+        display: flex;
+        flex-direction: row;
+        /* Garante que os botões fiquem em linha */
+        gap: 1rem;
+        /* Espaçamento entre os botões */
+        justify-content: center;
+        /* Centraliza os botões */
+        align-items: center;
+        /* Alinha verticalmente */
+        width: auto;
+      }
+
+      .hero-buttons .btn {
+        min-width: 200px;
+        /* Largura mínima para cada botão */
+      }
+
+      /* Responsividade para mobile */
+      @media (max-width: 576px) {
+        .hero-buttons {
+          flex-direction: column;
+          /* Em mobile, botões ficam um embaixo do outro */
+          width: 100%;
+          max-width: 300px;
+          margin: 0 auto;
+        }
+
+        .hero-buttons .btn {
+          width: 100%;
+          margin-bottom: 0.5rem;
+        }
+      }
+    </style>
+
+    <!-- Carousel wrapper -->
+    <div id="carousel-container" class="w-100 h-100"></div>
+
+    <!-- Overlay Text -->
+    <div class="hero-overlay-text text-center d-flex flex-column justify-content-center align-items-center">
+      <h1 class="fw-bold">Encontre o Imóvel dos Seus Sonhos</h1>
+      <p class="mb-4">As melhores opções de imóveis com as melhores condições do mercado</p>
+    </div>
+
+    <!-- Container dos botões com estilo moderno -->
+    <div class="hero-buttons-container">
+      <a href="#properties" class="btn btn-primary btn-lg d-flex align-items-center gap-2">
+        <i class="fas fa-building"></i>
+        <span>Imóveis em Destaque</span>
+      </a>
+      <a href="#contact" class="btn btn-warning btn-lg d-flex align-items-center gap-2">
+        <i class="fas fa-envelope"></i>
+        <span>Entre em Contato</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Search Section -->
+  <section class="py-3 bg-white shadow search-section">
+    <div class="container-md">
+      <div class="bg-white rounded-4 p-4 shadow-sm">
+        <h2 class="fs-2 fw-semibold text-dark mb-4">Encontre seu imóvel ideal</h2>
+        <div class="row g-3 g-md-4">
+          <div class="col-12 col-md-3">
+            <label for="select-tipo" class="form-label text-secondary small">Tipo de Imóvel</label>
+            <select id="select-tipo" class="form-select form-select-lg" title="Selecione o tipo de imóvel">
+              <option value="">Todos os tipos</option>
+              <option value="house">Casa</option>
+              <option value="apartment">Apartamento</option>
+              <option value="commercial">Comercial</option>
+              <option value="land">Terreno</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="select-localizacao" class="form-label text-secondary small">Localização</label>
+            <select id="select-localizacao" class="form-select form-select-lg" title="Selecione a localização">
+              <option value="">Todas as regiões</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-3">
+            <label for="select-preco" class="form-label text-secondary small">Faixa de Preço</label>
+            <select id="select-preco" title="Selecione a faixa de preço" class="form-select form-select-lg">
+              <option value="">Qualquer preço</option>
+              <option value="0-200000">Até R$ 200.000</option>
+              <option value="200001-500000">R$ 200.000 - R$ 500.000</option>
+              <option value="500001-1000000">R$ 500.000 - R$ 1.000.000</option>
+              <option value="1000001-999999999">Acima de R$ 1.000.000</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-2">
+            <label class="d-none d-md-block form-label text-secondary small">&nbsp;</label>
+            <button id="btn-limpar-filtros" class="btn h-75 w-100 btn-dynamic-secondary rounded" title="Limpar filtros">
+              <i class="fas fa-eraser me-2"></i>Limpar Filtros
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Properties Section -->
+  <section id="properties" class="py-3 bg-light">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold text-dark mb-3">Imóveis em Destaque</h2>
+        <p class="text-secondary intro-text">Confira nossa seleção de propriedades exclusivas com
+          as melhores
+          condições do mercado.</p>
+      </div>
+      <div id="property-list" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+
+        <!-- Limite de 6 cards definido via JavaScript -->
+        <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            const observer = new MutationObserver(function (mutations) {
+              mutations.forEach(function (mutation) {
+                if (mutation.type === 'childList') {
+                  // Ignora a mensagem de "nenhum favorito"
+                  const cards = document.querySelectorAll('#property-list > div:not(.no-favorites-message)');
+                  cards.forEach((card, index) => {
+                    if (index >= 6) {
+                      card.remove();
+                    }
+                  });
+                }
+              });
+            });
+
+            observer.observe(document.getElementById('property-list'), {
+              childList: true
+            });
+          });
+        </script>
+      </div>
+
+      <div class="text-center mt-5">
+        <a href="/views/public/todos-imoveis.html" class="btn btn-dynamic-primary px-4 py-2">
+          Ver Todos os Imóveis <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="py-5 bg-primary bg-opacity-10">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6 mb-4 mb-md-0 pe-md-4">
+          <div class="position-relative rounded-3 overflow-hidden shadow">
+            <img src="/assets/imagens/sobre/familia_imovel.png" data-alt-template="Família {company}" alt="Família RR Imóveis"
+              class="w-100 h-100 object-fit-cover">
+            <div class="position-absolute bottom-0 start-0 w-100 p-4 bg-gradient-dark">
+              <div class="text-white">
+                <h3 id="about-company-name" class="fs-4 fw-bold mb-2">RR Imóveis</h3>
+                <p class="text-white-50">Excelência em negócios imobiliários desde 2005</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <h2 id="about-title" class="display-5 fw-bold text-dark mb-4">Sobre a RR Imóveis</h2>
+          <div id="company-description" class="text-secondary fs-5 mb-4">
+            Carregando descrição da empresa...
+          </div>
+          <div class="row row-cols-2 g-4 mb-4">
+            <div class="col">
+              <div class="d-flex align-items-center">
+                <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3">
+                  <i class="fas fa-home text-primary fs-4"></i>
+                </div>
+                <div>
+                  <h4 class="fw-bold text-dark mb-0">+1500</h4>
+                  <p class="text-secondary mb-0">Imóveis vendidos</p>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="d-flex align-items-center">
+                <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3">
+                  <i class="fas fa-users text-primary fs-4"></i>
+                </div>
+                <div>
+                  <h4 class="fw-bold text-dark mb-0">+3000</h4>
+                  <p class="text-secondary mb-0">Clientes satisfeitos</p>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="d-flex align-items-center">
+                <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3">
+                  <i class="fas fa-map-marked-alt text-primary fs-4"></i>
+                </div>
+                <div>
+                  <h4 class="fw-bold text-dark mb-0">15</h4>
+                  <p class="text-secondary mb-0">Cidades atendidas</p>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="d-flex align-items-center">
+                <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3">
+                  <i class="fas fa-award text-primary fs-4"></i>
+                </div>
+                <div>
+                  <h4 class="fw-bold text-dark mb-0">8</h4>
+                  <p class="text-secondary mb-0">Prêmios do setor</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-dynamic-primary px-4 py-2 d-inline-flex align-items-center">
+            Conheça Nossa História <i class="fas fa-arrow-right ms-2"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold text-dark mb-3">O Que Nossos Clientes Dizem</h2>
+        <p class="text-secondary mx-auto mw-700">Veja os depoimentos de quem já realizou o sonho da casa própria com a
+          <span id="testimonial-company-name">RR Imóveis</span>.</p>
+      </div>
+
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        <!-- Testimonial 1 -->
+        <div class="col">
+          <div class="card bg-light h-100 border-0 shadow-sm">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center mb-4">
+                <div
+                  class="bg-primary bg-opacity-10 rounded-circle p-3 me-3 d-flex align-items-center justify-content-center profile-circle">
+                  <span class="text-primary fw-bold fs-5">M</span>
+                </div>
+                <div>
+                  <h4 class="card-title h5 fw-bold mb-1">Marcos Silva</h4>
+                  <p class="text-muted small mb-0">Cliente desde 2019</p>
+                </div>
+              </div>
+              <p class="card-text text-secondary mb-4">
+                "A <span class="company-name-testimonial">RR Imóveis</span> superou todas as minhas expectativas. O atendimento foi impecável desde o primeiro
+                contato, e
+                encontraram o apartamento perfeito para minha família em tempo recorde."
+              </p>
+              <div class="text-warning">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="col">
+          <div class="card bg-light h-100 border-0 shadow-sm">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center mb-4">
+                <div
+                  class="bg-primary bg-opacity-10 rounded-circle p-3 me-3 d-flex align-items-center justify-content-center profile-circle">
+                  <span class="text-primary fw-bold fs-5">C</span>
+                </div>
+                <div>
+                  <h4 class="card-title h5 fw-bold mb-1">Carla Mendes</h4>
+                  <p class="text-muted small mb-0">Cliente desde 2021</p>
+                </div>
+              </div>
+              <p class="card-text text-secondary mb-4">
+                "Profissionais extremamente competentes e atenciosos. Todo o processo de compra foi tranquilo e
+                transparente. Recomendo a <span class="company-name-testimonial">RR Imóveis</span> para todos que buscam um imóvel."
+              </p>
+              <div class="text-warning">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="col">
+          <div class="card bg-light h-100 border-0 shadow-sm">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center mb-4">
+                <div
+                  class="bg-primary bg-opacity-10 rounded-circle p-3 me-3 d-flex align-items-center justify-content-center profile-circle">
+                  <span class="text-primary fw-bold fs-5">R</span>
+                </div>
+                <div>
+                  <h4 class="card-title h5 fw-bold mb-1">Roberto Almeida</h4>
+                  <p class="text-muted small mb-0">Cliente desde 2020</p>
+                </div>
+              </div>
+              <p class="card-text text-secondary mb-4">
+                "Já é a segunda vez que faço negócio com a <span class="company-name-testimonial">RR Imóveis</span> e continuo impressionado com a qualidade do
+                serviço.
+                Conseguiram vender meu imóvel antigo por um valor acima do esperado."
+              </p>
+              <div class="text-warning">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-5 contact-section">
+    <div class="container">
+      <div class="bg-white rounded-4 shadow overflow-hidden">
+        <div class="row g-0">
+          <div class="col-md-6 p-4 p-md-5">
+            <h2 class="display-6 fw-bold text-dark mb-4">Entre em Contato</h2>
+            <p class="text-secondary mb-4">
+              Preencha o formulário abaixo e nossa equipe entrará em contato o mais breve possível. Estamos ansiosos
+              para ajudá-lo a encontrar o imóvel dos seus sonhos!
+            </p>
+
+            <form id="contact-form" class="mb-4">
+              <div class="mb-3">
+                <label class="form-label" for="name">Nome Completo</label>
+                <input type="text" id="name" class="form-control" placeholder="Seu nome completo">
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="email">E-mail</label>
+                <input type="email" id="email" class="form-control" placeholder="seu.email@exemplo.com">
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="phone">Telefone</label>
+                <input type="tel" id="phone" class="form-control" placeholder="(00) 00000-0000">
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="subject">Assunto</label>
+                <select id="subject" class="form-select">
+                  <option>Compra de imóvel</option>
+                  <option>Venda de imóvel</option>
+                  <option>Aluguel</option>
+                  <option>Avaliação de imóvel</option>
+                  <option>Outros assuntos</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="message">Mensagem</label>
+                <textarea id="message" rows="4" class="form-control"
+                  placeholder="Descreva como podemos ajudá-lo..."></textarea>
+              </div>
+              <div class="mb-3 form-check">
+                <input type="checkbox" id="terms" class="form-check-input">
+                <label for="terms" class="form-check-label text-secondary small">
+                  Concordo com a <a href="#" class="link-primary">Política de Privacidade</a>
+                </label>
+              </div>
+              <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-primary flex-grow-1">
+                  <i class="fas fa-paper-plane me-2"></i>Enviar Mensagem
+                </button>
+                <a id="contato-whatsapp" href="#" target="_blank"
+                  class="btn btn-success d-inline-flex align-items-center">
+                  <i class="fab fa-whatsapp me-2 fs-5"></i> WhatsApp
+                </a>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-6 bg-light p-4 p-md-5 d-flex flex-column justify-content-between">
+            <div>
+              <h3 class="h4 fw-bold text-dark mb-4">Informações de Contato</h3>
+              <div class="info-contato-dinamico mb-4">
+                <div class="fs-5 fw-bold">Carregando informações...</div>
+              </div>
+            </div>
+            <div>
+              <h4 class="h5 fw-bold text-dark mb-3">Siga-nos nas Redes Sociais</h4>
+              <div id="social-links-dinamico">
+                <div class="fs-5 fw-bold">Carregando...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-5">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-md-4 g-3">
+        <!-- Company Info -->
+        <div class="col">
+          <div class="d-flex align-items-center mb-2">
+            <img id="company-logo-footer" data-alt-template="Logo {company}" alt="Logo RR Imóveis" class="me-2" width="32" height="32" data-no-lazy="1" loading="eager"
+              onerror="this.style.display='none'">
+            <span class="fs-5 fw-bold" id="company-name-footer">Carregando...</span>
+          </div>
+          <p class="text-secondary transition text-white-hover small">
+            Sua imobiliária de confiança para encontrar o imóvel dos seus sonhos. Atendimento personalizado e as
+            melhores condições do mercado.
+          </p>
+          <div class="d-flex gap-3">
+            <a href="#" class="text-secondary transition text-white-hover" id="link-facebook-footer"
+              title="Siga-nos no Facebook">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="text-secondary transition text-white-hover" id="link-instagram-footer"
+              title="Siga-nos no Instagram">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="text-secondary transition text-white-hover" id="link-linkedin-footer"
+              title="Siga-nos no LinkedIn">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="#" class="text-secondary transition text-white-hover" id="link-youtube-footer"
+              title="Inscreva-se em nosso canal">
+              <i class="fab fa-youtube"></i>
+            </a>
+          </div>
+        </div>
+        <!-- Quick Links -->
+        <div class="col">
+          <h4 class="h5 fw-bold mb-2">Links Rápidos</h4>
+          <ul class="list-unstyled small">
+            <li class="nav-item mb-2"><a href="#home"
+                class="nav-link px-0 text-secondary transition text-white-hover">Início</a></li>
+            <li class="nav-item mb-2"><a href="#properties"
+                class="nav-link px-0 text-secondary transition text-white-hover"
+                onclick="window.showAllProperties(); return false;">Imóveis</a></li>
+            <li class="nav-item mb-2"><a href="#about"
+                class="nav-link px-0 text-secondary transition text-white-hover">Sobre Nós</a></li>
+            <li class="nav-item mb-2"><a href="#contact"
+                class="nav-link px-0 text-secondary transition text-white-hover">Contato</a></li>
+            <li class="nav-item mb-2"><a href="#"
+                class="nav-link px-0 text-secondary transition text-white-hover">Blog</a></li>
+          </ul>
+        </div>
+        <!-- Services -->
+        <div class="col">
+          <h4 class="h5 fw-bold mb-2">Serviços</h4>
+          <ul class="list-unstyled small">
+            <li class="nav-item mb-2"><a href="#"
+                class="nav-link px-0 text-secondary transition text-white-hover">Compra de Imóveis</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link px-0 text-secondary transition text-white-hover">Venda
+                de Imóveis</a></li>
+            <li class="nav-item mb-2"><a href="#"
+                class="nav-link px-0 text-secondary transition text-white-hover">Consultoria Imobiliária</a></li>
+          </ul>
+        </div>
+        <!-- Newsletter -->
+        <div class="col">
+          <h4 class="h5 fw-bold mb-2">Newsletter</h4>
+          <p class="text-secondary small mb-3">
+            Inscreva-se para receber novidades e ofertas exclusivas.
+          </p>
+          <form class="mb-3">
+            <div class="input-group">
+              <input type="email" class="form-control" placeholder="Seu e-mail">
+              <button type="submit" class="btn btn-primary" title="Inscrever-se na newsletter">
+                <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                <span class="visually-hidden">Inscrever-se na newsletter</span>
+              </button>
+            </div>
+          </form>
+          <p class="text-secondary small mb-3">
+            Ao se inscrever, você concorda com nossa Política de Privacidade.
+          </p>
+        </div>
+      </div>
+      <!-- Footer Bottom -->
+      <div class="border-top border-secondary mt-5 pt-4">
+        <div class="row align-items-center">
+          <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+            <p class="text-secondary small">
+              &copy; 2025 DJ Imóveis. Todos os direitos reservados.
+            </p>
+          </div>
+          <div class="col-md-6">
+            <ul class="nav justify-content-center justify-content-md-end">
+              <li class="nav-item">
+                <a href="#" class="nav-link px-2 text-secondary transition text-white-hover small">Termos de Uso</a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link px-2 text-secondary transition text-white-hover small">Política de
+                  Privacidade</a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link px-2 text-secondary transition text-white-hover small">Cookies</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- Modal do Formulário de Contato -->
+  <div class="modal fade" id="contactFormModal" tabindex="-1" aria-labelledby="contactFormModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <style>
+          .modal-lg {
+            max-width: 800px;
+            width: 90%;
+          }
+
+          .contact-message-property {
+            min-height: 190px;
+            height: 190px;
+            resize: vertical;
+          }
+
+          @media (max-width: 768px) {
+            .modal-lg {
+              width: 95%;
+              margin: 1rem auto;
+            }
+          }
+        </style>
+        <div class="modal-header modal-header-dynamic">
+          <h5 class="modal-title" id="contactFormModalLabel">Entre em Contato</h5>
+          <button type="button" class="btn-close btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <form id="contact-form-modal" novalidate>
+            <div class="mb-3">
+              <label for="contact-name" class="form-label">Nome</label>
+              <input type="text" class="form-control" id="contact-name" required placeholder="Seu nome completo">
+              <div class="invalid-feedback">Por favor, informe seu nome.</div>
+            </div>
+            <div class="mb-3">
+              <label for="contact-email" class="form-label">E-mail</label>
+              <input type="email" class="form-control" id="contact-email" required placeholder="seu@email.com">
+              <div class="invalid-feedback">Por favor, informe um e-mail válido.</div>
+            </div>
+            <div class="mb-3">
+              <label for="contact-phone" class="form-label">Telefone</label>
+              <input type="tel" class="form-control" id="contact-phone" name="contact-phone" required
+                placeholder="(00) 00000-0000" pattern="^\(\d{2}\)\s?\d{5}-\d{4}$" inputmode="numeric">
+              <div class="invalid-feedback">
+                Por favor, informe um telefone válido no formato (00) 00000-0000.
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="contact-message" class="form-label">Mensagem</label>
+              <textarea class="form-control contact-message-property" id="contact-message" rows="4" required></textarea>
+              <div class="invalid-feedback">Por favor, escreva uma mensagem.</div>
+            </div>
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-dynamic-primary">
+                <span class="spinner-border spinner-border-sm d-none me-2" role="status" aria-hidden="true"></span>
+                <i class="fas fa-paper-plane me-2"></i>Enviar Mensagem
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    /* Estilos do container de botões do Hero */
+    /* .hero-buttons-container moved to /assets/css/fixes.css to avoid inline styles */
+
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .hero-btn-primary {
+      background-color: var(--cor-primaria);
+      color: white;
+    }
+
+    .hero-btn-secondary {
+      background-color: var(--cor-destaque);
+      color: white;
+    }
+
+    .hero-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      color: white;
+    }
+
+    .hero-btn i {
+      font-size: 1.1rem;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .hero-buttons-container {
+        flex-direction: column;
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100% - 3rem);
+        max-width: 320px;
+      }
+    }
+
+    #modal-features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    #modal-features li {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem;
+      color: var(--cor-primaria);
+      font-size: 1rem;
+    }
+
+    #modal-features i {
+      width: 24px;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+
+    @media (max-width: 576px) {
+      #modal-features {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Estilos para os botões de compartilhamento */
+    #propertyModal .rounded-circle {
+      transition: all 0.3s ease;
+      border: none;
+      font-size: 1.2rem;
+    }
+
+    #propertyModal .rounded-circle:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    #propertyModal .rounded-circle i {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (max-width: 576px) {
+      #propertyModal .rounded-circle {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 1rem;
+      }
+    }
+
+    /* Cores específicas para cada botão de compartilhamento */
+    #share-linkedin {
+      background-color: #0A66C2;
+      color: white;
+    }
+
+    #share-telegram {
+      background-color: #0088cc;
+      color: white;
+    }
+
+    #share-email {
+      background-color: #EA4335;
+      color: white;
+    }
+
+    #share-pinterest {
+      background-color: #E60023;
+      color: white;
+    }
+
+    /* Tamanho consistente para todos os botões de compartilhamento */
+    .share-button-modal {
+      width: 40px;
+      height: 40px;
+    }
+
+    @media (max-width: 576px) {
+      .share-button-modal {
+        width: 36px !important;
+        height: 36px !important;
+      }
+    }
+
+    .share-button-facebook {
+      background-color: #1877F2;
+      color: white;
+    }
+
+    .share-button-facebook i {
+      color: white;
+    }
+  </style>
+  <!-- Modal de Detalhes do Imóvel -->
+  <div class="modal fade" id="propertyModal" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-custom-width">
+      <div class="modal-content">
+        <div class="modal-header modal-header-dynamic">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-4">
+            <!-- Imagens do imóvel via JS -->
+            <div class="col-12">
+              <div id="modal-images"></div>
+            </div>
+            <!-- Detalhes do imóvel abaixo da imagem -->
+            <div class="col-12">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 id="modal-title" class="modal-title fw-bold">Título do Imóvel</h5>
+                <span id="modal-price" class="fs-5 fw-bold text-primary">R$ 0.000.000</span>
+              </div>
+              <!-- Botões de Compartilhamento em Redes Sociais -->
+              <div class="d-flex gap-2 mb-3 flex-wrap">
+                <a id="share-whatsapp" href="#"
+                  class="btn btn-sm btn-success rounded-circle d-flex align-items-center justify-content-center share-button-modal"
+                  title="Compartilhar no WhatsApp" target="_blank" rel="noopener noreferrer">
+                  <i class="fab fa-whatsapp"></i>
+                </a>
+                <a id="share-facebook" href="#"
+                  class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center share-button-modal share-button-facebook"
+                  title="Compartilhar no Facebook" target="_blank" rel="noopener noreferrer">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+                <a id="share-linkedin" href="#"
+                  class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center share-button-modal"
+                  title="Compartilhar no LinkedIn" target="_blank" rel="noopener noreferrer">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a id="share-telegram" href="#"
+                  class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center share-button-modal"
+                  title="Compartilhar no Telegram" target="_blank" rel="noopener noreferrer">
+                  <i class="fab fa-telegram"></i>
+                </a>
+                <a id="share-x" href="#"
+                  class="btn btn-sm btn-dark rounded-circle d-flex align-items-center justify-content-center share-button-modal"
+                  title="Compartilhar no X (Twitter)" target="_blank" rel="noopener noreferrer">
+                  <i class="fab fa-x-twitter"></i>
+                </a>
+                <a id="share-email" href="#"
+                  class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center share-button-modal"
+                  title="Compartilhar por Email" target="_blank" rel="noopener noreferrer">
+                  <i class="fas fa-envelope"></i>
+                </a>
+                <a id="share-pinterest" href="#"
+                  class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center share-button-modal"
+                  title="Compartilhar no Pinterest" target="_blank" rel="noopener noreferrer">
+                  <i class="fab fa-pinterest"></i>
+                </a>
+                <button id="share-copy" type="button"
+                  class="btn btn-sm btn-secondary rounded-circle d-flex align-items-center justify-content-center share-button-modal"
+                  title="Copiar link">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+              <p id="modal-location" class="text-muted mb-3">
+                <!-- Ícone será inserido dinamicamente pelo JS -->
+              </p>
+              <!-- Bloco de Área e Ano de Construção -->
+              <div class="d-flex justify-content-between py-2 px-3 rounded mb-4 bg-light-blue">
+                <!-- Área -->
+                <div>
+                  <div class="text-muted small"></div>
+                  <div class="d-flex align-items-center gap-2">
+                    <span id="modal-area" class="fw-semibold">75m&sup2;</span>
+                  </div>
+                </div>
+                <!-- Ano de Construção -->
+                <div>
+                  <div class="small">Ano de Construção</div>
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="fas fa-calendar-alt modal-icon"></i>
+                    <span id="modal-yearBuilt" class="fw-semibold">2020</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Linha de estatísticas: Quartos, Banheiros, Suítes, Vagas, Condomínio, IPTU -->
+              <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+                <div class="d-flex align-items-center gap-2 small">
+                  <i class="fas fa-bed modal-icon"></i>
+                  <span id="modal-bedrooms" class="fw-semibold">N/A</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 small">
+                  <i class="fas fa-bath modal-icon"></i>
+                  <span id="modal-bathrooms" class="fw-semibold">N/A</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 small">
+                  <i class="fas fa-door-open modal-icon"></i>
+                  <div class="fw-semibold" id="modal-suites">N/A</div>
+                </div>
+                <div class="d-flex align-items-center gap-2 small">
+                  <i class="fas fa-car modal-icon"></i>
+                  <span id="modal-garage" class="fw-semibold">N/A</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 small">
+                  <i class="fas fa-building modal-icon"></i>
+                  <div class="fw-semibold" id="modal-condominium">N/A</div>
+                </div>
+                <div class="d-flex align-items-center gap-2 small">
+                  <i class="fas fa-receipt modal-icon"></i>
+                  <div class="fw-semibold" id="modal-iptu">N/A</div>
+                </div>
+              </div>
+              <h6 class="fw-semibold mb-2">Descrição do Imóvel</h6>
+              <p id="modal-description" class="mb-3 text-muted small">Descrição do imóvel</p>
+              <div class="mb-3">
+                <h6 class="fw-semibold mb-2">Características</h6>
+                <div class="container-fluid px-0">
+                  <ul id="modal-features" class="row mt-2 ps-0 list-unstyled"></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Rodapé do Modal -->
+          <div
+            class="modal-footer d-flex flex-wrap gap-2 justify-content-between align-items-center bg-white modal-footer-transition">
+
+            <!-- Botão Fechar (ação secundária) -->
+            <button type="button" class="btn btn-outline-secondary px-3 modal-close-btn order-1"
+              data-bs-dismiss="modal">
+              <i class="fas fa-times me-2"></i> Fechar
+            </button>
+
+            <!-- Botão Entrar em Contato (ação secundária) -->
+            <button type="button" id="btnOpenContact" onclick="openContactForm()"
+              class="btn btn-outline-primary px-3 flex-grow-1 order-2 modal-action-btn">
+              <i class="fas fa-envelope me-2"></i> Entrar em Contato
+            </button>
+
+            <!-- Botão WhatsApp (ação principal) -->
+            <a id="modal-whatsapp" href="#" target="_blank"
+              class="btn btn-success px-3 flex-grow-1 order-3 modal-action-btn">
+              <i class="fab fa-whatsapp me-2"></i> Contato via WhatsApp
+            </a>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <script>
+      // Filtros unificados: tipo, bairro e faixa de preço (corrigido para usar window.dadosImoveis e window.renderizarImoveis)
+      document.addEventListener('DOMContentLoaded', function () {
+        function aguardarImoveisCarregados() {
+          if (window.dadosImoveis && Array.isArray(window.dadosImoveis) && typeof window.renderizarImoveis === 'function') {
+            inicializarFiltros();
+          } else {
+            setTimeout(aguardarImoveisCarregados, 100);
+          }
+        }
+
+        function inicializarFiltros() {
+          const selectTipo = document.querySelector('select:not([id])'); // primeiro select (tipo)
+          const selectBairro = document.getElementById('select-localizacao');
+          const selectPreco = document.querySelectorAll('select')[2]; // terceiro select (preço)
+          if (!selectTipo || !selectBairro || !selectPreco) return;
+
+          function normalizar(str) {
+            return (str || '')
+              .toLowerCase()
+              .normalize('NFD')
+              .replace(/\p{Diacritic}/gu, '')
+              .replace(/\s+/g, '');
+          }
+          function aplicarFiltros() {
+            let filtrados = window.dadosImoveis;
+            // Filtro tipo
+            const tipo = selectTipo.value;
+            if (tipo && tipo !== 'Todos os tipos') {
+              const tipoNorm = normalizar(tipo);
+              filtrados = filtrados.filter(i => normalizar(i.type) === tipoNorm);
+            }
+            // Filtro bairro
+            const bairro = selectBairro.value;
+            if (bairro && bairro !== 'Todas as regiões') {
+              filtrados = filtrados.filter(i => i.neighborhood === bairro);
+            }
+            // Filtro preço
+            const faixa = selectPreco.value;
+            filtrados = filtrados.filter(i => {
+              const preco = Number(i.price);
+              if (!faixa || faixa === 'Qualquer preço') return true;
+              if (faixa === 'Até R$ 200.000') return preco <= 200000;
+              if (faixa === 'R$ 200.000 - R$ 500.000') return preco > 200000 && preco <= 500000;
+              if (faixa === 'R$ 500.000 - R$ 1.000.000') return preco > 500000 && preco <= 1000000;
+              if (faixa === 'Acima de R$ 1.000.000') return preco > 1000000;
+              return true;
+            });
+            window.renderizarImoveis(filtrados);
+          }
+
+          selectTipo.addEventListener('change', aplicarFiltros);
+          selectBairro.addEventListener('change', aplicarFiltros);
+          selectPreco.addEventListener('change', aplicarFiltros);
+        }
+        aguardarImoveisCarregados();
+      });
+    </script>
+    <script src="/assets/js/contato-dinamico.js"></script>
+    <script>
+      // Preenche o select de localização com bairros únicos do banco
+      document.addEventListener('DOMContentLoaded', function () {
+        setTimeout(async function () {
+          const select = document.getElementById('select-localizacao');
+          if (!select) {
+            return;
+          }
+          try {
+            // Passa o tenant_id detectado do subdomínio via URL parameter
+            const url = new URL('api/v1/properties/getProperties.php', window.location.origin);
+            url.searchParams.append('tenant_id', window.SUBDOMAIN_TENANT_ID || 1);
+
+            const res = await fetch(url.toString());
+            const json = await res.json();
+            let imoveis = [];
+            if (Array.isArray(json)) {
+              imoveis = json;
+            } else if (json && Array.isArray(json.data)) {
+              imoveis = json.data;
+            } else {
+              return;
+            }
+            // Extrai bairros únicos
+            const bairros = Array.from(new Set(imoveis.map(imovel => imovel.neighborhood).filter(Boolean)));
+            bairros.sort((a, b) => a.localeCompare(b, 'pt-BR'));
+            bairros.forEach(bairro => {
+              const opt = document.createElement('option');
+              opt.value = bairro;
+              opt.textContent = bairro;
+              select.append(opt);
+            });
+          } catch (e) {
+            // Silencioso
+          }
+        }, 200); // Pequeno delay para garantir que o select já existe
+      });
+    </script>
+    <script src="/assets/js/utils/utils.js"></script>
+    <script src="/assets/js/public/properties-api.js"></script>
+    <script src="/assets/js/company.js"></script>
+    <script src="/assets/js/filters.js"></script>
+    <script src="/assets/js/company-description.js"></script>
+    <script src="/assets/js/public/company-name.js"></script>
+    <script src="/assets/js/public/main.js"></script>
+    <script src="/assets/js/phone-mask.js"></script>
+
+    <!-- Verificação de carregamento dos scripts -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // Verifica se os scripts necessários foram carregados
+        const scriptsLoaded = {
+          utils: typeof window.utils !== 'undefined',
+          company: typeof window.company !== 'undefined',
+          filters: typeof window.filters !== 'undefined',
+          mainJs: typeof window.renderizarImoveis !== 'undefined',
+          openContactForm: typeof openContactForm === 'function'
+        };
+      });
+    </script>
+
+    <!-- Validação de Favoritos após todos os scripts carregarem -->
+    <script>
+      window.addEventListener('load', function () {
+        // Validar que favoritesManager está funcional
+        setTimeout(() => {
+          if (typeof window.favoritesManager === 'object') {
+            const buttons = document.querySelectorAll('.favorite-btn');
+
+            // Atualizar uma última vez
+            if (typeof window.favoritesManager.updateAllFavoriteButtons === 'function') {
+              window.favoritesManager.updateAllFavoriteButtons();
+            }
+          } else {
+            console.warn('%c[index.html] ✗ FavoritesManager NÃO disponível', 'color: red;');
+          }
+        }, 500);
+      });
+    </script>
+
+    <!-- Script de inicialização do botão WhatsApp -->
+    <script>
+      /**
+       * Inicializa o botão de contato do WhatsApp com o número da empresa
+       * Busca as configurações da empresa na API e configura o link do WhatsApp
+       * 
+       * @async
+       * @function initializeWhatsAppButton
+       * @returns {Promise<void>}
+       */
+      async function initializeWhatsAppButton() {
+        const btn = document.getElementById('contato-whatsapp');
+
+
+        if (!btn) {
+          console.error('Botão WhatsApp não encontrado');
+          return;
+        }
+
+        try {
+          // Usa loader centralizado de company settings
+          const json = await window.getCompanySettings();
+
+
+          if (!json.success || !json.data || !json.data.company_whatsapp) {
+            console.error('Número do WhatsApp não encontrado nas configurações');
+            btn.style.display = 'none';
+            return;
+          }
+
+          // Remove todos os caracteres não numéricos do número
+          let numero = json.data.company_whatsapp.replace(/\D/g, '');
+
+          // Verifica se é um número válido
+          if (!numero) {
+            console.error('Número do WhatsApp inválido');
+            btn.style.display = 'none';
+            return;
+          }
+
+          // Adiciona o código do país (+55) se não estiver presente
+          if (!numero.startsWith('55')) {
+            numero = '55' + numero;
+          }
+
+          // Armazena o número para uso posterior
+          window.company_whatsapp = numero;
+          btn.style.display = 'flex';
+
+          // Abre o modal de lead em vez de ir direto para WhatsApp
+          btn.onclick = function (e) {
+            e.preventDefault();
+            abrirModalWhatsAppLead({});
+          };
+        } catch (error) {
+          console.error('Erro ao configurar botão do WhatsApp:', error);
+          btn.style.display = 'none';
+        }
+      }
+
+      // Garante que o DOM está carregado antes de inicializar
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeWhatsAppButton);
+      } else {
+        initializeWhatsAppButton();
+      }
+    </script>
+
+    <script>
+      // Carrega a descrição da empresa do banco de dados
+      document.addEventListener('DOMContentLoaded', async function () {
+        const descriptionElement = document.getElementById('company-description');
+
+        if (!descriptionElement) {
+          console.error('Elemento company-description não encontrado');
+          return;
+        }
+
+        try {
+          // Usa loader centralizado de company settings
+          const data = await window.getCompanySettings();
+
+
+          if (!data.success) {
+            throw new Error('API retornou erro: ' + (data.message || 'Erro desconhecido'));
+          }
+
+          if (!data.data) {
+            throw new Error('Dados da empresa não encontrados');
+          }
+
+          const description = data.data.company_description;
+          if (!description) {
+            throw new Error('Descrição da empresa não encontrada nas configurações');
+          }
+
+          // Verifica se o elemento existe antes de tentar atualizar
+          if (descriptionElement) {
+            // Substitui as quebras de linha do banco por tags <p>
+            const paragraphs = description.split('\n').filter(p => p.trim());
+            if (paragraphs.length === 0) {
+              throw new Error('Descrição da empresa está vazia');
+            }
+
+            descriptionElement.innerHTML = paragraphs.map(p =>
+              `<p class="mb-6">${p.trim()}</p>`
+            ).join('');
+
+
+          } else {
+            console.error('Elemento #company-description não encontrado no DOM');
+          }
+        } catch (error) {
+          console.error('Erro ao carregar descrição da empresa:', error);
+
+          // Mostra mensagem de erro mais informativa para o usuário
+          if (descriptionElement) {
+            descriptionElement.innerHTML = `
+            <p class="mb-6 text-red-600">
+              Há mais de 15 anos no mercado, a <span class="company-name-description">RR Imóveis</span> se destaca pela excelência e compromisso com nossos clientes.
+              Nossa missão é encontrar o imóvel perfeito para você e sua família, com atendimento personalizado e as
+              melhores condições do mercado.
+            </p>
+            <p class="mb-6 text-gray-600">
+              Contamos com uma equipe de corretores especializados, prontos para oferecer todo o suporte necessário em
+              cada etapa da negociação, desde a busca pelo imóvel ideal até a finalização do contrato.
+            </p>`;
+          }
+        }
+      });
+    </script>
+
+    <script>
+      // Script removido: o comportamento agora é tratado pelo initializeWhatsAppButton()
+      // que abre o modal de lead em vez de ir direto para WhatsApp
+    </script>
+
+    <script>
+      // Sincroniza cores com outras abas/janelas via BroadcastChannel
+      // (Colors são aplicadas via aplicarFonteECores() no DOMContentLoaded)
+      const colorChannel = new BroadcastChannel('color-sync');
+      colorChannel.onmessage = (event) => {
+        if (event.data && event.data.type === 'color-update') {
+          const root = document.documentElement;
+          if (event.data.primaryColor) {
+            root.style.setProperty('--cor-primaria', event.data.primaryColor);
+            // Força atualização do navbar
+            document.querySelectorAll('.navbar-dynamic, .navbar-dynamic-gradient').forEach(el => {
+              el.style.setProperty('background-color', event.data.primaryColor, 'important');
+            });
+          }
+        }
+      };
+    </script>
+
+    <!-- Scripts da aplicação -->
+    <script src="/assets/js/contact-form-handler.js"></script>
+    <script src="/assets/js/whatsapp-lead-modal.js"></script>
+
+    <!-- Performance: lazy-loading automático para imagens -->
+    <script src="/assets/js/performance-lazyload.js" defer></script>
+
+</body>
+
+</html>

@@ -1,0 +1,155 @@
+# Configurações básicas
+DirectoryIndex index.php index.html
+
+# DEBUG TEMPORÁRIO: ativar exibição de erros para depuração
+php_flag display_startup_errors on
+php_flag display_errors on
+php_flag log_errors on
+php_value error_reporting 32767
+SetEnv ENVIRONMENT development
+
+# Proteger .env e logs
+<Files ".env">
+    Require all denied
+</Files>
+
+<Files ~ "\.(log|sql)$">
+    Require all denied
+</Files>
+
+# Permitir acesso aos arquivos PHP necessários
+<Files "database.php">
+    Require all granted
+</Files>
+
+# Headers básicos de segurança
+Header set X-Content-Type-Options "nosniff"
+Header set X-Frame-Options "SAMEORIGIN"
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    
+    # Content Security Policy - Permissivo para HTTP e HTTPS
+    # Aplicado a TODOS os arquivos (HTML, PHP, etc)
+    Header always set Content-Security-Policy "default-src 'self' https: http: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: http: blob:; style-src 'self' 'unsafe-inline' https: http: data:; font-src 'self' data: https: http:; img-src 'self' data: https: http: blob:; connect-src 'self' https: http: wss: ws:; frame-src 'self' https: http:; media-src 'self' https: http: blob:;"
+    
+    # Prevenir acesso direto a arquivos sensíveis
+    <FilesMatch "\.(php|log|sql)$">
+        Header set X-Robots-Tag "noindex, nofollow"
+    </FilesMatch>
+</IfModule>
+
+# Permitir acesso aos arquivos estáticos com cache
+<FilesMatch "\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$">
+    Require all granted
+    <IfModule mod_headers.c>
+        Header set Cache-Control "max-age=31536000, public"
+    </IfModule>
+</FilesMatch>
+
+# Compressão GZIP
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE font/ttf
+    AddOutputFilterByType DEFLATE font/otf
+    AddOutputFilterByType DEFLATE font/woff
+    AddOutputFilterByType DEFLATE font/woff2
+</IfModule>
+
+# Melhorias adicionais de performance: ETag / Expires e leverage browser caching para recursos estáticos
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 month"
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/x-javascript "access plus 1 month"
+    ExpiresByType application/font-woff "access plus 1 year"
+    ExpiresByType application/font-woff2 "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+</IfModule>
+
+# Remove ETag para reduzir cabeçalhos e permitir cache por proxy
+<IfModule mod_headers.c>
+    Header unset ETag
+</IfModule>
+FileETag None
+
+# Rewrite Rules
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # Redirecionar HTTP para HTTPS (comentado por padrão)
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    
+    # Proteger contra ataques comuns
+    RewriteCond %{REQUEST_METHOD} ^(HEAD|TRACE|DELETE|TRACK|DEBUG) [NC]
+    RewriteRule ^(.*)$ - [F,L]
+    
+    # Bloquear acesso a arquivos ocultos
+    RewriteRule ^\.(.*)$ - [F,L]
+</IfModule>
+
+# Permitir arquivos estáticos
+<FilesMatch "\.(css|js|jpg|jpeg|png|gif|ico)$">
+    Require all granted
+</FilesMatch>
+
+# Compressão GZIP básica
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css application/javascript
+</IfModule>
+
+# Cache básico
+<IfModule mod_headers.c>
+    <FilesMatch "\.(jpg|jpeg|png|gif|ico)$">
+        Header set Cache-Control "max-age=31536000, public"
+    </FilesMatch>
+</IfModule>
+
+# =============================================================================
+# CONFIGURAÇÃO DE ROTEAMENTO DE SUBDOMÍNIOS (MULTI-TENANT)
+# =============================================================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # ⚠️ IMPORTANTE: Permitir acesso direto a TODOS os arquivos PHP
+    # Isso inclui: login.php, painel.php, logout.php, forgot-password.php, etc
+    RewriteRule ^.*\.php$ - [L]
+    
+    # Rota /api/v1/settings (com ou sem barra) deve cair em api/v1/settings/index.php
+    RewriteCond %{REQUEST_URI} ^/api/v1/settings/?$ [NC]
+    RewriteRule ^api/v1/settings/?$ /api/v1/settings/index.php [L,QSA]
+
+    # Permitir acesso direto a diretórios reais
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+    
+    # Permitir acesso direto a arquivos estáticos reais
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]
+    
+    # ======================== ROTA PRINCIPAL ========================
+    # Para tudo o resto (páginas dinâmicas sem arquivo real), 
+    # ir para index-router.php que injecta tenant_id correto
+    RewriteRule ^(.*)$ /index-router.php [QSA,L]
+</IfModule>

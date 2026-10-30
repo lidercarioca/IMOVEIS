@@ -1,0 +1,325 @@
+/* ===========================
+   USERS MODULE STYLES
+   =========================== */
+
+/* Modal Overlay */
+.users-module .modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.users-module .modal.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal Content */
+.users-module .modal-content {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease-out;
+}
+
+/* Modal Header */
+.users-module .modal-header {
+  padding: 24px;
+  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  border-radius: 8px 8px 0 0;
+}
+
+.users-module .modal-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+}
+
+/* Form Styling */
+.users-module .form {
+  padding: 24px;
+}
+
+.users-module .form-group {
+  margin-bottom: 20px;
+}
+
+.users-module .form-group:last-of-type {
+  margin-bottom: 24px;
+}
+
+.users-module .form-group label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.users-module .form-group input,
+.users-module .form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  background-color: #fff;
+  transition: all 0.2s ease;
+}
+
+.users-module .form-group input:focus,
+.users-module .form-group select:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.users-module .form-group input::placeholder {
+  color: #9ca3af;
+}
+
+.users-module .form-group input:disabled {
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Form Actions */
+.users-module .form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.users-module .form-actions button {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+}
+
+.users-module .form-actions .btn-primary {
+  background-color: #6366f1;
+  color: white;
+}
+
+.users-module .form-actions .btn-primary:hover {
+  background-color: #4f46e5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.users-module .form-actions .btn-primary:active {
+  transform: translateY(0);
+}
+
+.users-module .form-actions .btn-secondary {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.users-module .form-actions .btn-secondary:hover {
+  background-color: #d1d5db;
+  transform: translateY(-2px);
+}
+
+.users-module .form-actions .btn-secondary:active {
+  transform: translateY(0);
+}
+
+/* Users Table Container */
+.users-module .users-container {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Users Header */
+.users-module .users-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.users-module .users-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.users-module .users-header .btn-primary {
+  padding: 10px 16px;
+  background-color: #6366f1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.users-module .users-header .btn-primary:hover {
+  background-color: #4f46e5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* Users Table */
+.users-module .users-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.users-module .users-table thead {
+  background-color: #f9fafb;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.users-module .users-table th {
+  padding: 12px;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.users-module .users-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s ease;
+}
+
+.users-module .users-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.users-module .users-table td {
+  padding: 12px;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.users-module .users-table .btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.users-module .users-table .btn-primary {
+  background-color: #6366f1;
+  color: white;
+}
+
+.users-module .users-table .btn-primary:hover {
+  background-color: #4f46e5;
+  transform: translateY(-1px);
+}
+
+.users-module .users-table .btn-danger {
+  background-color: #ef4444;
+  color: white;
+}
+
+.users-module .users-table .btn-danger:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+/* Empty State */
+.users-module .users-empty {
+  text-align: center;
+  padding: 40px;
+  color: #9ca3af;
+  font-size: 1rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .users-module .modal-content {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .users-module .form-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .users-module .form-actions button {
+    width: 100%;
+  }
+
+  .users-module .users-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .users-module .users-header .btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .users-module .users-table {
+    font-size: 0.85rem;
+  }
+
+  .users-module .users-table th,
+  .users-module .users-table td {
+    padding: 10px;
+  }
+}

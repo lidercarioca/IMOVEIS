@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS `idempotency_requests` (
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `tenant_id` INT NOT NULL,
+    `actor_user_id` INT NOT NULL,
+    `http_method` VARCHAR(16) NOT NULL,
+    `resource` VARCHAR(64) NOT NULL,
+    `operation` VARCHAR(32) NOT NULL,
+    `idempotency_key` VARCHAR(255) NOT NULL,
+    `payload_hash` CHAR(64) NOT NULL,
+    `status` VARCHAR(16) NOT NULL DEFAULT 'processing',
+    `http_status` SMALLINT UNSIGNED NULL DEFAULT NULL,
+    `response_body` LONGTEXT NULL,
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `expires_at` DATETIME NOT NULL,
+    `updated_at` DATETIME NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uniq_idempotency_scope` (`tenant_id`, `actor_user_id`, `http_method`, `resource`, `operation`, `idempotency_key`),
+    KEY `idx_idempotency_status_expires` (`tenant_id`, `actor_user_id`, `status`, `expires_at`),
+    KEY `idx_idempotency_expires` (`expires_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

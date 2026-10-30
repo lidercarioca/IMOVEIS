@@ -1,0 +1,59 @@
+/* Classes para substituir estilos inline detectados por ferramentas de QA */
+:root { }
+
+.btn-dynamic-secondary {
+  background-color: var(--cor-secundaria);
+  color: #fff;
+  border: none;
+}
+
+.btn-dynamic-primary {
+  background-color: var(--cor-primaria);
+  color: #fff;
+  border: none;
+}
+
+.btn-dynamic-primary.rounded {
+  border-radius: 0.5rem;
+}
+
+.icon-danger {
+  color: #f91201;
+}
+
+.intro-text {
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Hero buttons container moved to external CSS and -webkit- prefix first */
+.hero-buttons-container {
+  position: absolute;
+  bottom: 35%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  display: flex;
+  gap: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+/* Badge grande adjustments previously inline */
+.badge-grande {
+  position: absolute !important;
+  top: 1rem !important;
+  left: 1rem !important;
+  font-size: 1rem !important;
+  padding: 0.3rem 0.5rem !important;
+  display: inline-block !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}

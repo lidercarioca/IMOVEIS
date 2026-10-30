@@ -1,0 +1,28 @@
+/* Estilos compartilhados para cards de imóveis */
+.card {
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow:
+        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Suaviza transições de cores dinâmicas para evitar flicker ao aplicar cores via JS */
+.navbar-dynamic,
+.navbar-dynamic-gradient,
+footer,
+.site-footer {
+    transition:
+        background-color 220ms ease,
+        color 220ms ease;
+}
+
+.navbar-dynamic,
+.navbar-dynamic-gradient {
+    background: var(--cor-primaria) !important;
+}

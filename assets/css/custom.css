@@ -1,0 +1,111 @@
+/* Estilos personalizados */
+
+/* Grid de propriedades */
+.property-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--bs-gutter-x);
+    padding: var(--bs-gutter-x);
+}
+
+.property-card {
+    background-color: var(--bs-white);
+    border-radius: var(--bs-border-radius-lg);
+    box-shadow: var(--bs-box-shadow);
+    padding: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.property-card:hover {
+    transform: scale(1.02);
+    box-shadow: var(--bs-box-shadow-lg);
+}
+
+.property-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.property-info {
+    font-size: 0.95rem;
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+/* Estilos compartilhados para botões de detalhes */
+.btn-detalhes,
+.ver-detalhes,
+button.ver-detalhes,
+[class*="btn-"].ver-detalhes {
+    display: inline-block;
+    margin-top: 0.75rem;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.btn-detalhes:hover,
+.ver-detalhes:hover,
+.btn-detalhes:focus,
+.ver-detalhes:focus,
+.btn-detalhes:active,
+.ver-detalhes:active {
+    color: white !important;
+    opacity: 0.9;
+}
+.company-logo {
+    height: 32px;
+    width: 32px;
+    object-fit: contain;
+}
+
+.hero-section {
+    height: 500px;
+}
+
+@media (min-width: 768px) {
+    .hero-section {
+        height: 600px;
+    }
+}
+
+.hover-light:hover {
+    color: #f8f9fa !important;
+    opacity: 0.9;
+}
+
+/* Estilos para modais */
+.modal-custom-width {
+    max-width: 700px;
+}
+
+.btn-min-width {
+    min-width: 180px;
+}
+
+.modal-header-dynamic {
+    transition: background-color 0.3s ease;
+}
+
+.bg-light-blue {
+    background-color: #f0f7ff;
+}
+
+/* Estilos de botões personalizados */
+.btn-primary-custom {
+    background-color: var(--cor-primaria);
+    border-color: var(--cor-primaria);
+    color: white;
+}
+
+.btn-primary-custom:hover {
+    opacity: 0.9;
+}
+
+/* Transições */
+.transition {
+    transition: all 0.3s ease;
+}

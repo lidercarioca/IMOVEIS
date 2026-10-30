@@ -1,0 +1,98 @@
+namespace,classe,arquivo,diretorio,origem,psr4_compativel,composer_resolve,observacao
+"App\Controllers",FinanceController,app/controllers/FinanceController.php,app/controllers,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Integrations",WebhookManager,app/integrations/WebhookManager.php,app/integrations,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Models",UserModel,app/legacy/UserModel.php,app/legacy,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Middleware",TenantIsolationMiddleware,app/middleware/TenantIsolationMiddleware.php,app/middleware,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Middleware",TenantMiddleware,app/middleware/TenantMiddleware.php,app/middleware,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Models",AlertConfigModel,app/models/AlertConfigModel.php,app/models,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Models",AlertsModel,app/models/AlertsModel.php,app/models,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Models",BaseModel,app/models/BaseModel.php,app/models,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Models",BillingHistoryModel,app/models/BillingHistoryModel.php,app/models,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Models",CommissionModel,app/models/CommissionModel.php,app/models,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Models",Fallback,app/models/Fallback.php,app/models,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Models",ReportModel,app/models/ReportModel.php,app/models,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Models",TenantModel,app/models/TenantModel.php,app/models,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Models",,app/models/UserModel.deprecated.php,app/models,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Services",AlertGeneratorService,app/services/AlertGeneratorService.php,app/services,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Services",AlertService,app/services/AlertService.php,app/services,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Services",AlertsService,app/services/AlertsService.php,app/services,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Services",FinanceService,app/services/FinanceService.php,app/services,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Services",LeadFollowupService,app/services/LeadFollowupService.php,app/services,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Services",LeadInactivityAlertService,app/services/LeadInactivityAlertService.php,app/services,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Services",LeadInteractionService,app/services/LeadInteractionService.php,app/services,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Services",LeadScoringService,app/services/LeadScoringService.php,app/services,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Services",TenantSubdomainManager,app/services/TenantSubdomainManager.php,app/services,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Utils",ControllerTemplate,app/utils/ControllerTemplate.php,app/utils,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Utils",Logger,app/utils/Logger.php,app/utils,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Utils",ResponseFormatter,app/utils/ResponseFormatter.php,app/utils,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Utils",ServiceFactory,app/utils/ServiceFactory.php,app/utils,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Utils",SubdomainNormalizer,app/utils/SubdomainNormalizer.php,app/utils,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Utils",Validator,app/utils/Validator.php,app/utils,app,NÃO,NOT_FOUND,"Classe fora do PSR-4"
+"App\Application\Integration",FacebookLeadService,src/Application/Integration/FacebookLeadService.php,src/Application/Integration,src,SIM,FOUND,
+"App\Application\Integration",OLXWebhookService,src/Application/Integration/OLXWebhookService.php,src/Application/Integration,src,SIM,FOUND,
+"App\Application\Integration",PortalIntegrationService,src/Application/Integration/PortalIntegrationService.php,src/Application/Integration,src,SIM,FOUND,
+"App\Application\Integration",PortalService,src/Application/Integration/PortalService.php,src/Application/Integration,src,SIM,FOUND,
+"App\Application\Lead",LeadService,src/Application/Lead/LeadService.php,src/Application/Lead,src,SIM,FOUND,
+"App\Application\Tenant",TenantOnboardingService,src/Application/Tenant/TenantOnboardingService.php,src/Application/Tenant,src,SIM,FOUND,
+"App\Application\User",UserService,src/Application/User/UserService.php,src/Application/User,src,SIM,FOUND,
+"App\Audit",AuditLogger,src/Audit/AuditLogger.php,src/Audit,src,SIM,FOUND,
+"App\Auth",AuthContext,src/Auth/AuthContext.php,src/Auth,src,SIM,FOUND,
+"App\Auth",AuthMiddleware,src/Auth/AuthMiddleware.php,src/Auth,src,SIM,FOUND,
+"App\Auth",AuthorizationService,src/Auth/AuthorizationService.php,src/Auth,src,SIM,FOUND,
+"App\Auth",JwtService,src/Auth/JwtService.php,src/Auth,src,SIM,FOUND,
+"App\Auth",Permissions,src/Auth/Permissions.php,src/Auth,src,SIM,FOUND,
+"App\Auth",Roles,src/Auth/Roles.php,src/Auth,src,SIM,FOUND,
+"App\Cache",CacheFactory,src/Cache/CacheFactory.php,src/Cache,src,SIM,FOUND,
+"App\Cache",CacheInterface,src/Cache/CacheInterface.php,src/Cache,src,SIM,NOT_FOUND,
+"App\Cache",CacheManager,src/Cache/CacheManager.php,src/Cache,src,SIM,FOUND,
+"App\Cache",FileCache,src/Cache/FileCache.php,src/Cache,src,SIM,FOUND,
+"App\Cache",RedisCache,src/Cache/RedisCache.php,src/Cache,src,SIM,FOUND,
+"App\Database",QueryBuilder,src/Database/QueryBuilder.php,src/Database,src,SIM,FOUND,
+"App\Domain\DTO",PropertyDTO,src/Domain/DTO/PropertyDTO.php,src/Domain/DTO,src,SIM,FOUND,
+"App\Domain\Lead",Lead,src/Domain/Lead/Lead.php,src/Domain/Lead,src,SIM,FOUND,
+"App\Http",ApiResponse,src/Http/ApiResponse.php,src/Http,src,SIM,FOUND,
+"App\Http",Response,src/Http/Response.php,src/Http,src,SIM,FOUND,
+"App\Infrastructure\Agendamento",AgendamentoRepository,src/Infrastructure/Agendamento/AgendamentoRepository.php,src/Infrastructure/Agendamento,src,SIM,FOUND,
+"App\Infrastructure\Company",CompanySettingsRepository,src/Infrastructure/Company/CompanySettingsRepository.php,src/Infrastructure/Company,src,SIM,FOUND,
+"App\Infrastructure\Finance",CommissionRepository,src/Infrastructure/Finance/CommissionRepository.php,src/Infrastructure/Finance,src,SIM,FOUND,
+"App\Infrastructure\Finance",FinancialTransactionRepository,src/Infrastructure/Finance/FinancialTransactionRepository.php,src/Infrastructure/Finance,src,SIM,FOUND,
+"App\Infrastructure\Lead",LeadFollowupRepository,src/Infrastructure/Lead/LeadFollowupRepository.php,src/Infrastructure/Lead,src,SIM,FOUND,
+"App\Infrastructure\Lead",LeadInactivityAlertRepository,src/Infrastructure/Lead/LeadInactivityAlertRepository.php,src/Infrastructure/Lead,src,SIM,FOUND,
+"App\Infrastructure\Lead",LeadInteractionRepository,src/Infrastructure/Lead/LeadInteractionRepository.php,src/Infrastructure/Lead,src,SIM,FOUND,
+"App\Infrastructure\Lead",LeadRepository,src/Infrastructure/Lead/LeadRepository.php,src/Infrastructure/Lead,src,SIM,FOUND,
+"App\Infrastructure\Lead",LeadScoringRepository,src/Infrastructure/Lead/LeadScoringRepository.php,src/Infrastructure/Lead,src,SIM,FOUND,
+"App\Infrastructure\Notification",NotificationRepository,src/Infrastructure/Notification/NotificationRepository.php,src/Infrastructure/Notification,src,SIM,FOUND,
+"App\Infrastructure\Pipeline",PipelineStageRepository,src/Infrastructure/Pipeline/PipelineStageRepository.php,src/Infrastructure/Pipeline,src,SIM,FOUND,
+"App\Infrastructure\PortalIntegration",PortalIntegrationRepository,src/Infrastructure/PortalIntegration/PortalIntegrationRepository.php,src/Infrastructure/PortalIntegration,src,SIM,FOUND,
+"App\Infrastructure\PortalIntegration",PortalSyncRepository,src/Infrastructure/PortalIntegration/PortalSyncRepository.php,src/Infrastructure/PortalIntegration,src,SIM,FOUND,
+"App\Infrastructure\Tenant",TenantRepository,src/Infrastructure/Tenant/TenantRepository.php,src/Infrastructure/Tenant,src,SIM,FOUND,
+"App\Infrastructure\User",UserRepository,src/Infrastructure/User/UserRepository.php,src/Infrastructure/User,src,SIM,FOUND,
+"App\Infrastructure\Webhook",WebhookRepository,src/Infrastructure/Webhook/WebhookRepository.php,src/Infrastructure/Webhook,src,SIM,FOUND,
+"App\Jobs",JobScheduler,src/Jobs/JobScheduler.php,src/Jobs,src,SIM,FOUND,
+"App\Logging",FileLogger,src/Logging/FileLogger.php,src/Logging,src,SIM,FOUND,
+"App\Logging",LoggerFactory,src/Logging/LoggerFactory.php,src/Logging,src,SIM,FOUND,
+"App\Logging",LoggerInterface,src/Logging/LoggerInterface.php,src/Logging,src,SIM,NOT_FOUND,
+"App\Middleware",AuthMiddleware,src/Middleware/AuthMiddleware.php,src/Middleware,src,SIM,FOUND,
+"App\Middleware",AuthorizationMiddleware,src/Middleware/AuthorizationMiddleware.php,src/Middleware,src,SIM,FOUND,
+"App\Middleware",MiddlewareInterface,src/Middleware/MiddlewareInterface.php,src/Middleware,src,SIM,NOT_FOUND,
+"App\Middleware",RateLimitMiddleware,src/Middleware/RateLimitMiddleware.php,src/Middleware,src,SIM,FOUND,
+"App\Middleware",SecurityHeadersMiddleware,src/Middleware/SecurityHeadersMiddleware.php,src/Middleware,src,SIM,FOUND,
+"App\Monitoring",AlertManager,src/Monitoring/AlertManager.php,src/Monitoring,src,SIM,FOUND,
+"App\Monitoring",MetricsCollector,src/Monitoring/MetricsCollector.php,src/Monitoring,src,SIM,FOUND,
+"App\Monitoring",SystemHealth,src/Monitoring/SystemHealth.php,src/Monitoring,src,SIM,FOUND,
+"App\Observability",RequestTracker,src/Observability/RequestTracker.php,src/Observability,src,SIM,FOUND,
+"App\Repository",PropertyRepository,src/Repository/PropertyRepository.php,src/Repository,src,SIM,FOUND,
+"App\Repository",ReportRepository,src/Repository/ReportRepository.php,src/Repository,src,SIM,FOUND,
+"App\Security",RateLimiter,src/Security/RateLimiter.php,src/Security,src,SIM,FOUND,
+"App\Security",WebhookAuditLogger,src/Security/WebhookAuditLogger.php,src/Security,src,SIM,FOUND,
+"App\Security",WebhookAuthenticator,src/Security/WebhookAuthenticator.php,src/Security,src,SIM,FOUND,
+"App\Service",AgendamentoService,src/Service/AgendamentoService.php,src/Service,src,SIM,FOUND,
+"App\Service",CompanySettingsService,src/Service/CompanySettingsService.php,src/Service,src,SIM,FOUND,
+"App\Service",NotificationService,src/Service/NotificationService.php,src/Service,src,SIM,FOUND,
+"App\Service",PropertyService,src/Service/PropertyService.php,src/Service,src,SIM,FOUND,
+"App\Service",ReportService,src/Service/ReportService.php,src/Service,src,SIM,FOUND,
+"App\Service",TenantInfoService,src/Service/TenantInfoService.php,src/Service,src,SIM,FOUND,
+"App\Service",WebhookService,src/Service/WebhookService.php,src/Service,src,SIM,FOUND,
+"App\Tenant",TenantContext,src/Tenant/TenantContext.php,src/Tenant,src,SIM,FOUND,
+"App\Tenant",TenantResolution,src/Tenant/TenantResolution.php,src/Tenant,src,SIM,FOUND,
+"App\Tenant",TenantResolver,src/Tenant/TenantResolver.php,src/Tenant,src,SIM,FOUND,

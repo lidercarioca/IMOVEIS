@@ -1,0 +1,593 @@
+﻿// Script dedicado para todos-imoveis.html
+// Carrega e renderiza todos os imóveis, e ativa o modal de detalhes
+
+// Aguarda FavoritesManager estar disponível
+async function aguardarFavoritesManager() {
+  let tentativas = 0;
+  const maxTentativas = 100; // 10 segundos (100 * 100ms)
+  
+  while (tentativas < maxTentativas) {
+    if (typeof window.favoritesManager !== 'undefined') {
+      return true;
+    }
+    await new Promise(resolve => setTimeout(resolve, 100));
+    tentativas++;
+  }
+  
+  // Criar um favoritesManager placeholder para evitar erros
+  window.favoritesManager = {
+    favorites: [],
+    isFavorite: (id) => false,
+    updateAllFavoriteButtons: () => {}
+  };
+  return false;
+}
+
+// Aguarda PropertiesAPI estar disponível
+async function aguardarPropertiesAPI() {
+  let tentativas = 0;
+  const maxTentativas = 100;
+  
+  while (tentativas < maxTentativas) {
+    if (typeof window.PropertiesAPI !== 'undefined' && window.PropertiesAPI.fetchProperties) {
+      return true;
+    }
+    await new Promise(resolve => setTimeout(resolve, 100));
+    tentativas++;
+  }
+  
+  console.error('PropertiesAPI não foi carregado corretamente');
+  return false;
+}
+
+// Inicializa o script quando o documento estiver pronto
+document.addEventListener('DOMContentLoaded', async function() {
+  // AGUARDA favoritesManager estar carregado
+  await aguardarFavoritesManager();
+  
+  // AGUARDA PropertiesAPI estar carregado
+  const apiReady = await aguardarPropertiesAPI();
+  if (!apiReady) {
+    console.error('Falha ao carregar PropertiesAPI');
+    return;
+  }
+  
+  // Aguarda DOM e estilos estarem prontos
+  if (document.readyState === 'loading') {
+    await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve));
+  }
+
+  // Função para verificar se as variáveis CSS estão carregadas
+  function checkCSSVariables() {
+    const style = getComputedStyle(document.documentElement);
+    const primary = style.getPropertyValue('--cor-primaria').trim();
+    const secondary = style.getPropertyValue('--cor-secundaria').trim();
+    const highlight = style.getPropertyValue('--cor-destaque').trim();
+    return primary && secondary && highlight;
+  }
+
+  // Aguarda até que as variáveis CSS estejam disponíveis
+  while (!checkCSSVariables()) {
+    await new Promise(resolve => setTimeout(resolve, 50));
+  }
+
+  // Função para buscar imóveis
+  async function buscarImoveis() {
+    // Usa API centralizada
+    if (!window.PropertiesAPI || !window.PropertiesAPI.fetchProperties) {
+      throw new Error('PropertiesAPI não está disponível');
+    }
+    return await window.PropertiesAPI.fetchProperties();
+  }
+
+  // Função para determinar a classe do botão baseado no tipo e status do imóvel
+  function getButtonClass(property) {
+    if (!property) return 'btn-dynamic-primary';
+    
+    // Usa o utilitário centralizado para determinar as cores
+    const colors = window.utils.getPropertyColors(property);
+    const badgeText = colors.badgeText.toLowerCase();
+    
+    // Se for comercial (usa cor destaque)
+    if (colors.badgeText === 'Comercial') {
+      return 'btn-dynamic-destaque';
+    }
+    
+    // Se for aluguel (usa cor secundária)
+    const transaction = (property.transactionType || '').toLowerCase();
+    const isAluguel = ['aluguel', 'alugar', 'rent', 'locacao', 'locação'].some(keyword => 
+      transaction.includes(keyword.toLowerCase())
+    );
+    
+    if (isAluguel) {
+      return 'btn-dynamic-secondary';
+    }
+    
+    // Se não for comercial nem aluguel, é venda (usa cor primária)
+    return 'btn-dynamic-primary';
+  }
+
+  // Função para renderizar cards
+  // Carrega os imóveis inicialmente
+  try {
+    const imoveis = await buscarImoveis();
+    renderizarImoveis(imoveis);
+    
+    // Aguarda um pouco para os ícones serem renderizados
+    await new Promise(resolve => setTimeout(resolve, 50));
+    
+    // Força atualização final dos favoritos
+    if (window.favoritesManager && typeof window.favoritesManager.updateAllFavoriteButtons === 'function') {
+      window.favoritesManager.updateAllFavoriteButtons();
+    }
+  } catch (error) {
+    console.error('Erro ao carregar imóveis:', error);
+  }
+
+  // Função para renderizar os imóveis
+  function renderizarImoveis(imoveis) {
+    const container = document.getElementById('property-list');
+    if (!container) return;
+    container.innerHTML = '';
+    imoveis.forEach(property => {
+
+      // Cria a coluna
+      const colDiv = document.createElement("div");
+      colDiv.className = "col";
+      colDiv.setAttribute('data-property-id', property.id); // NOVO: Adiciona data-property-id ao col
+
+      // Cria o card
+      const card = document.createElement('div');
+      card.className = 'card property h-100 shadow-sm';
+
+      // Processa as imagens
+      const images = typeof property.images === 'string' ? JSON.parse(property.images) : property.images;
+      let imageSrc = images && images.length > 0 ? images[0] : '/assets/imagens/default.jpg';
+      if (imageSrc && !imageSrc.startsWith('/')) imageSrc = '/' + imageSrc.replace(/^\/+/, '');
+      
+      // Usa a função getPropertyColors para definir as cores e textos
+      const colors = window.utils.getPropertyColors(property);
+      const status = window.utils.processarStatus(property.status);
+      let ribbonHTML = '';
+      
+      // Segurança: garante que property.type e colors.badgeText existam
+      const typeClass = property.type ? property.type : 'padrao';
+      const badgeText = colors.badgeText ? colors.badgeText : 'Imóvel';
+
+      if (status === 'vendido' || status === 'alugado') {
+        if (property.type === 'commercial') {
+          ribbonHTML = `<div class="property-ribbon ${typeClass}">${status === 'vendido' ? 'VENDIDO' : 'ALUGADO'}</div>`;
+        } else {
+          const statusClass = status === 'vendido' ? 'vendido' : 'aluguel';
+          ribbonHTML = `<div class="property-ribbon ${statusClass}">${status === 'vendido' ? 'Vendido' : 'ALUGADO'}</div>`;
+        }
+
+      } else {
+        ribbonHTML = '';
+      }
+
+      // Badge só aparece se não tiver ribbon de status especial
+      let showBadge = status !== 'vendido' && status !== 'alugado';
+
+      
+      let tipoLabel = colors.badgeText;
+      let btnDetalhesColor = colors.button;
+      let iconColor = colors.icon;
+      let quartos = property.bedrooms !== undefined && property.bedrooms !== '' ? property.bedrooms : 'N/A';
+      let banheiros = property.bathrooms !== undefined && property.bathrooms !== '' ? property.bathrooms : 'N/A';
+      let vagas = property.garage !== undefined && property.garage !== '' ? property.garage : 'N/A';
+      let suites = property.suites !== undefined && property.suites !== null && property.suites !== '' ? property.suites : 'N/A';
+      
+      //let showBadge = !ribbonHTML; // Se tiver ribbon, não mostra o badge
+      
+      // Monta endereço completo para o link do Google Maps
+      const addressParts = [];
+      if (property.address) addressParts.push(property.address);
+      if (property.location) addressParts.push(property.location);
+      if (property.neighborhood) addressParts.push(property.neighborhood);
+      if (property.city) addressParts.push(property.city);
+      if (property.state) addressParts.push(property.state);
+      if (property.zip) addressParts.push(property.zip);
+      const fullAddress = addressParts.filter(Boolean).join(', ');
+      const mapsUrl = fullAddress ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(fullAddress) : '';
+      const mapsLinkHtml = fullAddress ? `<a href="javascript:void(0)" rel="noopener noreferrer" class="d-flex align-items-center text-primary mt-1" onclick="(function(){const w=900,h=600;const left=Math.max(0,Math.round((screen.width-w)/2));const top=Math.max(0,Math.round((screen.height-h)/2));const popup = window.open('${mapsUrl}','rr_map_popup','width='+w+',height='+h+',left='+left+',top='+top+',menubar=no,toolbar=no,resizable=yes,scrollbars=yes'); if(!popup){ window.open('${mapsUrl}','_blank'); } return false; })()"><i class="fas fa-map-marker-alt me-2"></i>Ver no Google Maps</a>` : '';
+
+      card.innerHTML = `
+        <div class="position-relative">
+          <img src="${imageSrc}" class="card-img-top" style="height: 224px; object-fit: cover;" alt="Imagem do imóvel">
+          ${ribbonHTML}
+          ${showBadge ? `<span class="badge-grande" style="${colors.badge}">${tipoLabel}</span>` : ''}
+          <button type="button" class="btn btn-light position-absolute top-0 end-0 m-3 rounded-circle p-2 favorite-btn" data-property-id="${property.id}" aria-label="Favoritar">
+            <i class="fa-regular fa-heart text-danger"></i>
+          </button>
+        </div>
+        <div class="card-body d-flex flex-column justify-content-between">
+          <h4 class="card-title fs-5 fw-bold text-dark mb-2">${property.title}</h4>
+          <p class="card-text text-secondary small mb-2 d-flex align-items-center">
+            <i class="fas fa-map-marker-alt me-2" style="${iconColor}"></i>
+            ${property.location}${property.neighborhood ? ` - ${property.neighborhood}` : ''}
+          </p>
+          ${mapsLinkHtml}
+          <div class="text-secondary small mb-3">
+            <div class="row">
+              <div class="col-6">
+                <div class="d-flex flex-column">
+                  <div class="d-flex align-items-center mb-2">
+                    <i class="fas fa-bed me-2" style="${iconColor}"></i>
+                    <span>${quartos} Quartos</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-2">
+                    <i class="fas fa-door-closed me-2" style="${iconColor}"></i>
+                    <span>${suites} Suítes</span>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <i class="fas fa-ruler-combined me-2" style="${iconColor}"></i>
+                    <span>${property.area}m&sup2;</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="d-flex flex-column">
+                  <div class="d-flex align-items-center mb-2">
+                    <i class="fas fa-bath me-2" style="${iconColor}"></i>
+                    <span>${banheiros} Banheiros</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-2">
+                    <i class="fas fa-car me-2" style="${iconColor}"></i>
+                    <span>${vagas} Vagas</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <p class="text-primary fs-4 fw-bold d-block">
+            ${window.utils.formatarPreco(property.price, tipoLabel === 'Aluguel', property.type)}
+          </p>
+          </div>
+          <button class="btn btn-detalhes py-2 px-4 rounded-lg w-100 mt-2 ver-detalhes text-white" style="${colors.button}" data-id="${property.id}">
+          <i class="fas fa-search me-2"></i>Ver Detalhes
+          </button>
+        </div>
+      `;
+      // Adiciona listener para o botão de detalhes
+      card.querySelector('.ver-detalhes').addEventListener('click', function() {
+        abrirModalDetalhes(property);
+      });
+      
+      // Adiciona o card ao container
+      colDiv.appendChild(card);
+      container.appendChild(colDiv);
+    });
+
+    // Atualiza o estado dos favoritos após renderizar todos os cards
+    if (window.favoritesManager && typeof window.favoritesManager.updateAllFavoriteButtons === 'function') {
+      window.favoritesManager.updateAllFavoriteButtons();
+      
+      // Também chamar reinitializeFavorites se disponível
+      if (typeof window.favoritesManager.reinitializeFavorites === 'function') {
+        window.favoritesManager.reinitializeFavorites();
+      }
+    }
+  }
+  // Adicione icones as características do ímovel
+const featuresIcons = {
+  'piscina': 'fa-water',
+  'churrasqueira': 'fa-fire',
+  'academia': 'fa-dumbbell',
+  'playground': 'fa-child',
+  'salão de festas': 'fa-glass-cheers',
+  'segurança': 'fa-shield-alt',
+  'elevador': 'fa-arrow-up',
+  'portaria': 'fa-user-shield',
+  'área de lazer': 'fa-umbrella-beach',
+  'quadra': 'fa-basketball-ball',
+  'varanda': 'fa-door-open',
+  'mobiliado': 'fa-couch',
+  'ar condicionado': 'fa-snowflake',
+  'interfone': 'fa-phone',
+  'jardim': 'fa-leaf',
+  'área gourmet': 'fa-utensils',
+  'aceita pet': 'fa-paw'
+};
+
+
+  // Função para abrir o modal de detalhes
+  function abrirModalDetalhes(property) {
+    // (Reutiliza a lógica do showPropertyDetails, mas sem depender de variáveis globais)
+    const colors = window.utils.getPropertyColors(property);
+    let iconColor = colors.icon;
+    // Aplica cores do painel ao modal (header/footer, botões, ícones e textos)
+    const modalEl = document.getElementById('propertyModal');
+    if (modalEl) {
+      const modalHeader = modalEl.querySelector('.modal-header');
+      const modalFooter = modalEl.querySelector('.modal-footer');
+      if (modalHeader) modalHeader.style.cssText = colors.badge;
+      if (modalFooter) modalFooter.style.cssText = colors.badge;
+      const modalButtons = modalEl.querySelectorAll('.btn-primary, .btn-detalhes');
+      modalButtons.forEach(btn => btn.style.cssText = colors.button);
+      let style = modalEl.querySelector('#propertyModalColors');
+      if (!style) {
+        style = document.createElement('style');
+        style.id = 'propertyModalColors';
+        modalEl.appendChild(style);
+      }
+      style.textContent = `\n        .modal-icon {\n          ${colors.icon}\n          transition: color 0.3s ease;\n        }\n      `;
+      try {
+        const m = /color\s*:\s*([^;]+);?/.exec(colors.icon || '');
+        const colorValue = m && m[1] ? m[1].trim() : '';
+        if (colorValue) {
+          ['modal-bedrooms','modal-bathrooms','modal-garage','modal-condominium','modal-iptu','modal-suites','modal-area','modal-location'].forEach(id => {
+            const e = document.getElementById(id);
+            if (e) e.style.color = colorValue;
+          });
+        }
+      } catch (e) {
+        // Silencioso
+      }
+    }
+    let features = window.utils.processarFeatures(property.features);
+    features = features.filter(f => !!f && f.trim() !== '');
+    let featuresHtml = '';
+if (features.length > 0) {
+  features.forEach(f => {
+    const featureKey = f.toLowerCase().trim();
+    const iconClass = featuresIcons[featureKey] || 'fa-check';
+    featuresHtml += `<li class='d-flex align-items-center mb-1 col'>
+      <i class='fas ${iconClass} me-2' style='${iconColor}'></i>${f}
+    </li>`;
+  });
+} else {
+  featuresHtml = '<li class="text-muted">Sem características cadastradas</li>';
+}
+    const el = id => document.getElementById(id);
+    if (el('modal-title')) el('modal-title').textContent = property.title;
+    if (el('modal-price')) {
+      const isRental = (property.transactionType || '').toLowerCase().includes('aluguel');
+      el('modal-price').textContent = window.utils.formatarPreco(property.price, isRental, property.type);
+    }
+    if (el('modal-location')) el('modal-location').innerHTML = `<i class="fas fa-map-marker-alt me-2 ${iconColor}"></i> ${property.location}${property.neighborhood ? ` - ${property.neighborhood}` : ''}`;
+  if (el('modal-location')) el('modal-location').innerHTML = `<i class="fas fa-map-marker-alt me-2" style="${iconColor}"></i> ${property.location}${property.neighborhood ? ` - ${property.neighborhood}` : ''}`;
+    if (el('modal-description')) el('modal-description').textContent = property.description || "Sem descrição disponível";
+  if (el('modal-area')) el('modal-area').innerHTML = `<i class="fas fa-ruler-combined modal-icon me-1"></i> <span class="text-dark">${property.area}m&sup2;</span>`;
+    const yearBuiltValue = property.yearBuilt && property.yearBuilt.toString().trim() !== '' ? property.yearBuilt : 'N/A';
+    if (el('modal-yearBuilt')) el('modal-yearBuilt').textContent = yearBuiltValue;
+    // Preencher Condomínio / IPTU / Suítes (corrige ausência desses campos no modal da página todos-imoveis)
+    const condoEl = el('modal-condominium');
+    const iptuEl = el('modal-iptu');
+    const suitesEl = el('modal-suites');
+    if (condoEl) {
+      const val = (property.condominium !== undefined && property.condominium !== null && property.condominium !== '') ? window.utils.formatarPreco(property.condominium, false) : 'N/A';
+      condoEl.textContent = `${val} Condomínio`;
+      if (condoEl.parentElement) condoEl.parentElement.classList.add('d-flex','align-items-center','gap-2','small');
+    }
+    if (iptuEl) {
+      const val = (property.iptu !== undefined && property.iptu !== null && property.iptu !== '') ? window.utils.formatarPreco(property.iptu, false) : 'N/A';
+      iptuEl.textContent = `${val} IPTU`;
+      if (iptuEl.parentElement) iptuEl.parentElement.classList.add('d-flex','align-items-center','gap-2','small');
+    }
+    if (suitesEl) {
+      const val = (property.suites !== undefined && property.suites !== null && property.suites !== '') ? property.suites : 'N/A';
+      suitesEl.textContent = `${val} Suítes`;
+      if (suitesEl.parentElement) suitesEl.parentElement.classList.add('d-flex','align-items-center','gap-2','small');
+    }
+    if (el('modal-bedrooms')) {
+      const b = el('modal-bedrooms');
+      b.textContent = `${property.bedrooms !== undefined && property.bedrooms !== '' ? property.bedrooms : 'N/A'} Quartos`;
+      if (b.parentElement) b.parentElement.classList.add('d-flex','align-items-center','gap-2','small');
+    }
+    if (el('modal-bathrooms')) {
+      const b = el('modal-bathrooms');
+      b.textContent = `${property.bathrooms !== undefined && property.bathrooms !== '' ? property.bathrooms : 'N/A'} Banheiros`;
+      if (b.parentElement) b.parentElement.classList.add('d-flex','align-items-center','gap-2','small');
+    }
+    if (el('modal-garage')) {
+      const g = el('modal-garage');
+      g.textContent = `${property.garage !== undefined && property.garage !== '' ? property.garage : 'N/A'} Vagas`;
+      if (g.parentElement) g.parentElement.classList.add('d-flex','align-items-center','gap-2','small');
+    }
+    if (el('modal-area') && el('modal-area').parentElement && el('modal-area').parentElement.parentElement)
+      el('modal-area').parentElement.parentElement.className = 'd-flex justify-content-between bg-blue-50 p-3 rounded mb-4';
+    if (el('modal-area') && el('modal-area').parentElement)
+      el('modal-area').parentElement.className = 'd-flex flex-column';
+
+    if (el('modal-bedrooms') && el('modal-bedrooms').parentElement)
+      el('modal-bedrooms').parentElement.className = 'd-flex align-items-center gap-2';
+    if (el('modal-bathrooms') && el('modal-bathrooms').parentElement)
+      el('modal-bathrooms').parentElement.className = 'd-flex align-items-center gap-2';
+    const featuresList = el('modal-features');
+    if (featuresList) {
+      // Mantém a classe para o grid de 2 colunas
+      featuresList.className = 'row row-cols-2 g-2';
+      featuresList.innerHTML = features.length > 0 
+        ? features.map(feature => {
+            const featureKey = feature.toLowerCase().trim();
+            const iconClass = featuresIcons[featureKey] || 'fa-check';
+            return `
+              <li class="col">
+                <div class="d-flex align-items-center">
+                  <i class="fas ${iconClass} me-2" style="${iconColor}"></i>
+                  <span>${feature}</span>
+                </div>
+              </li>`;
+          }).join('')
+        : '<li class="col-12 text-muted">Sem características cadastradas</li>';
+    }
+    // Imagens do imóvel no carrossel
+    let images = typeof property.images === 'string' ? JSON.parse(property.images) : property.images;
+    if (!Array.isArray(images)) images = [];
+    // Corrige todos os caminhos de imagem para serem absolutos
+    images = images.map(img => {
+      if (!img) return '/assets/imagens/default.jpg';
+      if (img.startsWith('/')) return img;
+      return '/' + img.replace(/^\/+/,'');
+    });
+    let carouselId = `propertyCarousel_${property.id}`;
+    let modalImagesContainer = document.getElementById('modal-images');
+    if (modalImagesContainer) {
+      if (images.length > 1) {
+        // Só carrossel, imagens maiores
+        modalImagesContainer.innerHTML = `
+          <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner rounded shadow-sm">
+              ${images.map((img, idx) => `
+                <div class="carousel-item${idx === 0 ? ' active' : ''}">
+                  <img src="${img}" class="d-block w-100 rounded shadow modal-img-clickable" alt="Imagem do imóvel" style="max-height:650px;object-fit:cover;" data-img="${img}">
+                </div>
+              `).join('')}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev" title="Imagem anterior" aria-label="Anterior">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next" title="Próxima imagem" aria-label="Próximo">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Próximo</span>
+            </button>
+          </div>
+        `;
+      } else {
+        // Só imagem única, maior
+        let mainImage = images.length > 0 ? images[0] : '/assets/imagens/default.jpg';
+        modalImagesContainer.innerHTML = `<img src="${mainImage}" class="d-block w-100 rounded shadow mb-3 modal-img-clickable" alt="Imagem principal do imóvel" style="max-height:650px;object-fit:cover;" data-img="${mainImage}">`;
+      }
+      // Lightbox simples para imagem grande
+      if (!document.getElementById('modal-img-lightbox')) {
+        const lightbox = document.createElement('div');
+        lightbox.id = 'modal-img-lightbox';
+        lightbox.style = 'display:none;position:fixed;z-index:2000;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;';
+        lightbox.innerHTML = '<img id="modal-img-lightbox-img" style="max-width:90vw;max-height:90vh;border-radius:12px;box-shadow:0 0 32px #000;">';
+        lightbox.onclick = () => { lightbox.style.display = 'none'; };
+        document.body.appendChild(lightbox);
+      }
+      // Adiciona evento para todas imagens clicáveis
+      setTimeout(() => {
+        document.querySelectorAll('.modal-img-clickable').forEach(imgEl => {
+          imgEl.style.cursor = 'zoom-in';
+          imgEl.onclick = e => {
+            e.stopPropagation();
+            const src = imgEl.getAttribute('data-img');
+            const lightbox = document.getElementById('modal-img-lightbox');
+            const lightboxImg = document.getElementById('modal-img-lightbox-img');
+            if (lightbox && lightboxImg) {
+              lightboxImg.src = src;
+              lightbox.style.display = 'flex';
+            }
+          };
+        });
+      }, 100);
+    }
+    
+    // Botão WhatsApp
+    const whatsappBtn = document.getElementById('modal-whatsapp');
+    
+    whatsappBtn.onclick = function(e) {
+      e.preventDefault();
+      // Abre o modal de formulário em vez de redirecionar direto
+      abrirModalWhatsAppLead(property);
+    };
+    // Armazena a propriedade atual globalmente para o formulário de contato
+    window.currentProperty = property;
+
+    // --- Configura botões de compartilhamento no modal (todos-imoveis) ---
+    try {
+      const shareUrl = (property.url && property.url.length > 0)
+        ? property.url
+        : `${window.location.origin}${window.location.pathname}?property=${property.id}`;
+      const shareTitle = property.title || '';
+      const firstImage = (images && images.length>0) ? images[0] : '';
+      // Monta texto detalhado para compartilhar
+      const addressParts = [];
+      if (property.address) addressParts.push(property.address);
+      if (property.location) addressParts.push(property.location);
+      if (property.neighborhood) addressParts.push(property.neighborhood);
+      if (property.city) addressParts.push(property.city);
+      if (property.state) addressParts.push(property.state);
+      const fullAddress = addressParts.filter(Boolean).join(' - ');
+      const characteristics = [];
+      characteristics.push((property.bedrooms !== undefined && property.bedrooms !== '') ? `${property.bedrooms} Quartos` : null);
+      characteristics.push((property.bathrooms !== undefined && property.bathrooms !== '') ? `${property.bathrooms} Banheiros` : null);
+      characteristics.push((property.garage !== undefined && property.garage !== '') ? `${property.garage} Vagas` : null);
+      if (property.area) characteristics.push(`${property.area}m&sup2;`);
+      const charText = characteristics.filter(Boolean).join(', ');
+      const shareText = `${shareTitle}${fullAddress ? '\n' + fullAddress : ''}${charText ? '\n' + charText : ''}`;
+
+      const el = id => document.getElementById(id);
+      const whatsappShare = el('share-whatsapp');
+      const fbShare = el('share-facebook');
+      const linkedinShare = el('share-linkedin');
+      const telegramShare = el('share-telegram');
+      const xShare = el('share-x');
+      const emailShare = el('share-email');
+      const pinterestShare = el('share-pinterest');
+      const copyBtn = el('share-copy');
+
+      if (whatsappShare) whatsappShare.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + '\n' + shareUrl)}`;
+      if (fbShare) fbShare.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+      if (linkedinShare) linkedinShare.href = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareTitle)}&summary=${encodeURIComponent(charText)}`;
+      if (telegramShare) telegramShare.href = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
+      if (xShare) xShare.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+      if (emailShare) emailShare.href = `mailto:?subject=${encodeURIComponent(shareTitle)}&body=${encodeURIComponent(shareText + '\n' + shareUrl)}`;
+      if (pinterestShare) pinterestShare.href = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(shareUrl)}&media=${encodeURIComponent(firstImage)}&description=${encodeURIComponent(shareTitle + (charText ? ' - ' + charText : ''))}`;
+
+      [whatsappShare, fbShare, linkedinShare, telegramShare, xShare, pinterestShare].forEach(a => {
+        if (!a) return;
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+        a.onclick = function(e) { 
+          e.preventDefault(); 
+          if (this.href && this.href !== '#') {
+            window.open(this.href, '_blank');
+          }
+        };
+      });
+
+      if (copyBtn) {
+        copyBtn.onclick = function() {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(shareUrl).then(() => {
+              if (window.utils && typeof window.utils.mostrarSucesso === 'function') window.utils.mostrarSucesso('Link copiado'); else alert('Link copiado');
+            }).catch(() => { if (window.utils && window.utils.mostrarErro) window.utils.mostrarErro('Não foi possível copiar o link'); else alert('Não foi possível copiar o link'); });
+          } else {
+            const tmp = document.createElement('input'); document.body.appendChild(tmp); tmp.value = shareUrl; tmp.select(); try { document.execCommand('copy'); if (window.utils && window.utils.mostrarSucesso) window.utils.mostrarSucesso('Link copiado'); else alert('Link copiado'); } catch { if (window.utils && window.utils.mostrarErro) window.utils.mostrarErro('Não foi possível copiar o link'); else alert('Não foi possível copiar o link'); } document.body.removeChild(tmp);
+          }
+        };
+      }
+    } catch (e) {
+      // Silencioso
+    }
+    
+    // Configura o botão de contato
+    const btnContact = document.getElementById('btnOpenContact');
+    if (btnContact) {
+      btnContact.onclick = () => {
+        const propertyModal = bootstrap.Modal.getInstance(document.getElementById('propertyModal'));
+        if (propertyModal) {
+          propertyModal.hide();
+        }
+        setTimeout(() => {
+          const contactModal = new bootstrap.Modal(document.getElementById('contactFormModal'));
+          contactModal.show();
+          // Preenche a mensagem com os dados do imóvel
+          const messageField = document.getElementById('contact-message');
+          if (messageField && window.currentProperty) {
+            messageField.value = window.generatePropertyMessage(window.currentProperty);
+          }
+        }, 500);
+      };
+    }
+    
+    // Abrir modal
+    const modal = new bootstrap.Modal(document.getElementById('propertyModal'));
+    modal.show();
+  }
+
+  // Execução principal
+  try {
+    const imoveis = await buscarImoveis();
+    renderizarImoveis(imoveis);
+  } catch (error) {
+    console.error('Erro ao carregar imóveis:', error);
+  }
+});
+

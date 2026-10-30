@@ -1,0 +1,168 @@
+
+# ==================================================
+# SYS IMÓVEIS — GITIGNORE
+# ==================================================
+
+# ------------------------------
+# Variáveis de ambiente e segredos
+# ------------------------------
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+certs/
+
+# Tokens e credenciais OAuth
+/config/google_token.json
+/config/google_calendar_token.json
+google_calendar_token.json
+google_token.json
+oauth-token.json
+*.token.json
+google_credentials.json
+credentials.json
+token.json
+
+# ------------------------------
+# Configurações locais com credenciais
+# ------------------------------
+
+# ------------------------------
+# Dependências
+# ------------------------------
+/vendor/
+/node_modules/
+
+# ------------------------------
+# IDE e editores
+# ------------------------------
+/.idea/
+/.vscode/
+*.swp
+*.swo
+*~
+*.code-workspace
+htdocs.code-workspace
+
+# ------------------------------
+# Sistema operacional
+# ------------------------------
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ------------------------------
+# Logs
+# ------------------------------
+/logs/
+*.log
+debug_*.log
+backup_error.log
+restore_error.log
+
+# ------------------------------
+# Arquivos temporários e cache
+# ------------------------------
+/tmp/
+/temp/
+*.tmp
+*.temp
+*.cache
+.cache/
+
+# ------------------------------
+# Backups e diferenças locais
+# ------------------------------
+**/backups/
+*.bak
+*.backup
+*.old
+*.orig
+*.diff
+*.patch
+
+# ------------------------------
+# Exportações e auditorias locais
+# ------------------------------
+/exports/
+/audit_commission_temp.php
+/audit_complete_venda.php
+/e2e_baseline.*
+/e2e_check_*.php
+/e2e_execute_*.php
+/e2e_find_*.php
+/e2e_search_*.php
+/tmp_show_columns.php
+
+# ------------------------------
+# Testes locais descartáveis
+# ------------------------------
+/test.php
+/test_*.php
+/test_database.php
+/test_connection.php
+
+# ------------------------------
+# Dados e bancos locais
+# ------------------------------
+*.sqlite
+*.sqlite3
+*.db
+*.ibd
+*.frm
+*.ibdata
+*.ibdata1
+*.err
+aria_log.*
+ib_logfile*
+undo00*
+/data/
+/mysql-data/
+
+# ------------------------------
+# Uploads gerados localmente
+# ------------------------------
+/uploads/
+
+# ------------------------------
+# Build e arquivos gerados
+# ------------------------------
+/public/cs
+/output.css
+
+# ------------------------------
+# Configurações locais de ferramentas
+# ------------------------------
+.phpunit.cache/
+.phpunit.result.cache
+coverage/
+.phpunit-watcher.yml
+
+# ------------------------------
+# Arquivos do sistema que não devem
+# ser ignorados automaticamente:
+# ------------------------------
+# NÃO ignorar assets/imagens/ globalmente.
+# NÃO ignorar migrations/.
+# NÃO ignorar tests/.
+# NÃO ignorar docs/.
+# NÃO ignorar src/.
+# NÃO ignorar app/.
+# NÃO ignorar api/.
+
+/config/google_token.json
+
+/config/google_token.json
+
+/]
+
+/$rows]
+
+# Artefato acidental de erro no terminal
+/$rows]

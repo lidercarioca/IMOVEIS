@@ -1,0 +1,25 @@
+/* Utilities */
+.mw-700 {
+  max-width: 700px;
+}
+
+/* Profile circles */
+.profile-circle {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* Modal buttons */
+.modal-btn {
+  min-width: 180px;
+}
+
+/* Modal header */
+.modal-header-dynamic {
+  transition: background-color 0.3s ease;
+}
+
+/* Modal footer */
+.modal-footer-dynamic {
+  transition: background-color 0.3s ease;
+}

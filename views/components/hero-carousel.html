@@ -1,0 +1,59 @@
+<!-- Header/Topbar Component -->
+<!-- Este componente renderiza a barra superior do painel com notificações e mensagens -->
+
+<div class="bg-white shadow-sm sticky top-0 z-20">
+  <div class="flex justify-between items-center px-6 py-3">
+    <div class="flex items-center space-x-4">
+      <h1 class="text-xl font-semibold text-gray-800">Painel Administrativo</h1>
+    </div>
+    
+    <div class="flex items-center space-x-4">
+      <!-- Botão de Notificações -->
+      <div class="relative">
+        <button id="notifications-btn" class="relative p-2 rounded-full hover:bg-gray-100 transition">
+          <i class="far fa-bell text-gray-600"></i>
+          <span id="notifications-badge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+        </button>
+        
+        <!-- Dropdown de Notificações -->
+        <div id="notifications-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg z-50">
+          <div class="p-4 border-b">
+            <h3 class="text-lg font-semibold text-gray-800">Notificações</h3>
+          </div>
+          <div id="notifications-list" class="max-h-96 overflow-y-auto">
+            <!-- Carregado dinamicamente -->
+          </div>
+          <div class="p-4 border-t text-center">
+            <button id="mark-all-notifications-read" class="text-blue-600 hover:text-blue-800 text-sm">Marcar todas como lidas</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Botão de Mensagens -->
+      <div class="relative">
+        <button id="messages-btn" class="relative p-2 rounded-full hover:bg-gray-100 transition">
+          <i class="far fa-envelope text-gray-600"></i>
+          <span id="messages-badge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+        </button>
+        
+        <!-- Dropdown de Mensagens -->
+        <div id="messages-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg z-50">
+          <div class="p-4 border-b">
+            <h3 class="text-lg font-semibold text-gray-800">Mensagens</h3>
+          </div>
+          <div id="messages-list" class="max-h-96 overflow-y-auto">
+            <!-- Carregado dinamicamente -->
+          </div>
+          <div class="p-4 border-t text-center">
+            <button id="mark-all-messages-read" class="text-blue-600 hover:text-blue-800 text-sm">Marcar todas como lidas</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Link para ver site -->
+      <a class="text-blue-600 hover:text-blue-800 transition" href="/" target="_blank" rel="noopener noreferrer" id="view-site-btn">
+        <i class="fas fa-external-link-alt mr-1"></i> Ver Site
+      </a>
+    </div>
+  </div>
+</div>

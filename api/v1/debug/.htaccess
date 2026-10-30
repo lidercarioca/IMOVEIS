@@ -1,0 +1,13 @@
+# Proteger endpoints de debug contra acesso direto
+# Apenas permite acesso via requisições AJAX validadas
+
+# Permitir acesso apenas se for XMLHttpRequest (AJAX)
+<RequireAll>
+    Require expr "%{HTTP:X-Requested-With} == 'XMLHttpRequest'"
+    Require expr "%{REQUEST_METHOD} =~ /^(GET|POST)$/"
+</RequireAll>
+
+# Se não atender aos requisitos acima, negar
+<RequireAll>
+    Require all denied
+</RequireAll>

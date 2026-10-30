@@ -1,0 +1,22 @@
+# Permitir requisições HTTP em qualquer método (GET, POST, PUT, DELETE, PATCH, etc.)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /api/v1/auth/
+    
+    # Permitir acesso a arquivos PHP reais em qualquer método
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+</IfModule>
+
+# Permitir todas as requisições HTTP
+<Limit GET POST PUT DELETE PATCH OPTIONS HEAD>
+    Require all granted
+</Limit>
+
+# Adicionar headers CORS se necessário
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+    Header set Access-Control-Allow-Origin "*"
+</IfModule>

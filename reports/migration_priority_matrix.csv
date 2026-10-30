@@ -1,0 +1,6 @@
+modulo,arquivos_afetados,endpoints_afetados,risco,ordem_recomendada
+Financeiro,13,13,CRITICO,1
+Alertas,13,13,ALTO,2
+Autenticacao,20,20,MEDIO,3
+Billing,7,7,MEDIO,4
+Leads,18,18,MEDIO,5

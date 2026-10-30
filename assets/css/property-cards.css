@@ -1,0 +1,14 @@
+/* Estilos para cards de imóveis */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+/* Mantém a animação suave ao voltar à posição original */
+.card {
+    will-change: transform;
+}

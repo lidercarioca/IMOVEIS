@@ -1,0 +1,454 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Sistema de Imóveis - API Pública",
+    "description": "API REST para integração com o Sistema de Imóveis. Permite gerenciar propriedades, leads, agendamentos e relatórios.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Suporte",
+      "email": "suporte@sistemaimoveis.com"
+    },
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost/api/v1/public",
+      "description": "Development Server"
+    },
+    {
+      "url": "https://api.sistemaimoveis.com/v1/public",
+      "description": "Production Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Property": {
+        "type": "object",
+        "required": ["titulo", "tipo", "endereco", "preco"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID único do imóvel"
+          },
+          "titulo": {
+            "type": "string",
+            "description": "Título/Nome do imóvel"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": ["Apartamento", "Casa", "Terreno", "Comercial", "Sala", "Galpão"],
+            "description": "Tipo de imóvel"
+          },
+          "endereco": {
+            "type": "string",
+            "description": "Endereço completo"
+          },
+          "preco": {
+            "type": "number",
+            "format": "float",
+            "description": "Preço do imóvel"
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição detalhada"
+          },
+          "dormitorios": {
+            "type": "integer",
+            "description": "Quantidade de dormitórios"
+          },
+          "banheiros": {
+            "type": "integer",
+            "description": "Quantidade de banheiros"
+          },
+          "area": {
+            "type": "number",
+            "description": "Área em m²"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["Disponível", "Vendido", "Alugado", "Reservado"],
+            "description": "Status do imóvel"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data de criação"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data de atualização"
+          }
+        }
+      },
+      "Lead": {
+        "type": "object",
+        "required": ["nome", "email"],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "telefone": {
+            "type": "string"
+          },
+          "origem": {
+            "type": "string",
+            "enum": ["Site", "Portal", "WhatsApp", "Redes Sociais", "Indicação"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["Novo", "Em Contato", "Qualificado", "Convertido", "Perdido"]
+          },
+          "interesse": {
+            "type": "string",
+            "description": "Tipo de imóvel de interesse"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Agendamento": {
+        "type": "object",
+        "required": ["imovel_id", "data_hora"],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "imovel_id": {
+            "type": "integer"
+          },
+          "lead_id": {
+            "type": "integer"
+          },
+          "data_hora": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["Confirmado", "Cancelado", "Realizado"]
+          },
+          "observacoes": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/properties": {
+      "get": {
+        "tags": ["Imóveis"],
+        "summary": "Listar imóveis",
+        "description": "Retorna lista de imóveis com paginação",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 20 }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "tipo",
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de imóveis"
+          },
+          "401": {
+            "description": "Não autenticado"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Imóveis"],
+        "summary": "Criar imóvel",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Property" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Imóvel criado com sucesso"
+          },
+          "400": {
+            "description": "Dados inválidos"
+          }
+        }
+      }
+    },
+    "/properties/{id}": {
+      "get": {
+        "tags": ["Imóveis"],
+        "summary": "Obter detalhes de um imóvel",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes do imóvel"
+          },
+          "404": {
+            "description": "Imóvel não encontrado"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Imóveis"],
+        "summary": "Atualizar imóvel",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Property" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Imóvel atualizado"
+          },
+          "404": {
+            "description": "Imóvel não encontrado"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Imóveis"],
+        "summary": "Deletar imóvel",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Imóvel deletado"
+          },
+          "404": {
+            "description": "Imóvel não encontrado"
+          }
+        }
+      }
+    },
+    "/leads": {
+      "get": {
+        "tags": ["Leads"],
+        "summary": "Listar leads",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 20 }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de leads"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Leads"],
+        "summary": "Criar novo lead",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Lead" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Lead criado"
+          }
+        }
+      }
+    },
+    "/agendamentos": {
+      "get": {
+        "tags": ["Agendamentos"],
+        "summary": "Listar agendamentos",
+        "parameters": [
+          {
+            "name": "data_inicio",
+            "in": "query",
+            "schema": { "type": "string", "format": "date" }
+          },
+          {
+            "name": "data_fim",
+            "in": "query",
+            "schema": { "type": "string", "format": "date" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de agendamentos"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Agendamentos"],
+        "summary": "Criar agendamento",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Agendamento" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Agendamento criado"
+          }
+        }
+      }
+    },
+    "/webhooks": {
+      "post": {
+        "tags": ["Webhooks"],
+        "summary": "Registrar webhook",
+        "description": "Registra uma URL para receber eventos críticos",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "eventos": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": ["property.created", "property.updated", "lead.created", "agendamento.confirmado"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Webhook registrado"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Webhooks"],
+        "summary": "Listar webhooks",
+        "responses": {
+          "200": {
+            "description": "Lista de webhooks registrados"
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": ["System"],
+        "summary": "Status da API",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "API está operacional"
+          }
+        }
+      }
+    }
+  }
+}

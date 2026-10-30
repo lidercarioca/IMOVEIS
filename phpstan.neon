@@ -1,0 +1,10 @@
+parameters:
+  phpVersion: 80200
+  level: 8
+  paths:
+    - app
+    - public
+  excludePaths:
+    - tests
+    - vendor
+    - node_modules

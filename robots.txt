@@ -1,0 +1,9 @@
+# robots.txt for your site
+# Replace https://your-domain.com with your real domain before deployment
+
+User-agent: *
+Disallow:
+Allow: /
+
+# Sitemap location (replace with your full sitemap URL)
+Sitemap: https://your-domain.com/sitemap.xml
