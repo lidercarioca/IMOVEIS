@@ -222,10 +222,23 @@ class UserService
             $updateData['active'] = (int)(bool)$data['active'];
         }
 
-        // Apenas Superadmin pode alterar a role.
-        // Para Admin e usuários comuns, o campo é simplesmente ignorado.
-        if ($this->currentUserIsSuperAdmin() && isset($data['role'])) {
-            $updateData['role'] = $data['role'];
+        if (isset($data['role'])) {
+            $requestedRole = strtolower(trim((string) $data['role']));
+            $allowedRoleValues = ['user', 'admin'];
+
+            if ($this->currentUserIsSuperAdmin()) {
+                $allowedRoleValues = ['user', 'admin', 'superadmin'];
+            }
+
+            if (!$this->currentUserIsAdmin()) {
+                throw new RuntimeException('Apenas superadmin pode alterar a role');
+            }
+
+            if (!in_array($requestedRole, $allowedRoleValues, true)) {
+                throw new RuntimeException('Apenas superadmin pode alterar a role');
+            }
+
+            $updateData['role'] = $requestedRole;
         }
 
         unset($data['id']);

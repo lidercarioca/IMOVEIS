@@ -306,6 +306,202 @@ class UserServiceTest extends TestCase
         $service->updateUser(42, 9, ['broker_default_commission_percentage' => 100]);
     }
 
+    public function testSuperadminCanChangeUserRole(): void
+    {
+        $user = [
+            'id' => 42,
+            'tenant_id' => 9,
+            'username' => 'second-user',
+            'name' => 'Original Name',
+            'email' => 'old@example.com',
+            'phone' => null,
+            'role' => 'user',
+            'active' => 1,
+            'created_at' => '2024-01-01 00:00:00',
+            'last_login' => null,
+            'force_password_change' => 0,
+            'password_changed_at' => null,
+        ];
+
+        $updated = $user;
+        $updated['role'] = 'admin';
+
+        $repo = $this->createMock(\App\Infrastructure\User\UserRepository::class);
+        $repo->expects($this->exactly(2))
+            ->method('findById')
+            ->willReturnOnConsecutiveCalls($user, $updated);
+        $repo->expects($this->once())
+            ->method('update')
+            ->with(42, 9, ['role' => 'admin'])
+            ->willReturn(true);
+
+        $context = \App\Auth\AuthContext::getInstance();
+        $context->authenticate(1, 'superadmin');
+
+        $service = new \App\Application\User\UserService($repo);
+        $result = $service->updateUser(42, 9, ['role' => 'admin']);
+
+        $this->assertSame('admin', $result['role']);
+    }
+
+    public function testTenantAdminCanPromoteUserToAdmin(): void
+    {
+        $user = [
+            'id' => 42,
+            'tenant_id' => 9,
+            'username' => 'second-user',
+            'name' => 'Original Name',
+            'email' => 'old@example.com',
+            'phone' => null,
+            'role' => 'user',
+            'active' => 1,
+            'created_at' => '2024-01-01 00:00:00',
+            'last_login' => null,
+            'force_password_change' => 0,
+            'password_changed_at' => null,
+        ];
+
+        $updated = $user;
+        $updated['role'] = 'admin';
+
+        $repo = $this->createMock(\App\Infrastructure\User\UserRepository::class);
+        $repo->expects($this->exactly(2))
+            ->method('findById')
+            ->willReturnOnConsecutiveCalls($user, $updated);
+        $repo->expects($this->once())
+            ->method('update')
+            ->with(42, 9, ['role' => 'admin'])
+            ->willReturn(true);
+
+        $context = \App\Auth\AuthContext::getInstance();
+        $context->authenticate(7, 'admin');
+
+        $service = new \App\Application\User\UserService($repo);
+        $result = $service->updateUser(42, 9, ['role' => 'admin']);
+
+        $this->assertSame('admin', $result['role']);
+    }
+
+    public function testTenantAdminCanDemoteAdminToUser(): void
+    {
+        $user = [
+            'id' => 42,
+            'tenant_id' => 9,
+            'username' => 'admin-user',
+            'name' => 'Admin User',
+            'email' => 'admin@example.com',
+            'phone' => null,
+            'role' => 'admin',
+            'active' => 1,
+            'created_at' => '2024-01-01 00:00:00',
+            'last_login' => null,
+            'force_password_change' => 0,
+            'password_changed_at' => null,
+        ];
+
+        $updated = $user;
+        $updated['role'] = 'user';
+
+        $repo = $this->createMock(\App\Infrastructure\User\UserRepository::class);
+        $repo->expects($this->exactly(2))
+            ->method('findById')
+            ->willReturnOnConsecutiveCalls($user, $updated);
+        $repo->expects($this->once())
+            ->method('update')
+            ->with(42, 9, ['role' => 'user'])
+            ->willReturn(true);
+
+        $context = \App\Auth\AuthContext::getInstance();
+        $context->authenticate(7, 'admin');
+
+        $service = new \App\Application\User\UserService($repo);
+        $result = $service->updateUser(42, 9, ['role' => 'user']);
+
+        $this->assertSame('user', $result['role']);
+    }
+
+    public function testTenantAdminCannotGrantSuperadminRole(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Apenas superadmin pode alterar a role');
+
+        $user = [
+            'id' => 42,
+            'tenant_id' => 9,
+            'username' => 'second-user',
+            'name' => 'Original Name',
+            'email' => 'old@example.com',
+            'phone' => null,
+            'role' => 'user',
+            'active' => 1,
+            'created_at' => '2024-01-01 00:00:00',
+            'last_login' => null,
+            'force_password_change' => 0,
+            'password_changed_at' => null,
+        ];
+
+        $repo = $this->createMock(\App\Infrastructure\User\UserRepository::class);
+        $repo->expects($this->once())
+            ->method('findById')
+            ->willReturn($user);
+
+        $context = \App\Auth\AuthContext::getInstance();
+        $context->authenticate(7, 'admin');
+
+        $service = new \App\Application\User\UserService($repo);
+        $service->updateUser(42, 9, ['role' => 'superadmin']);
+    }
+
+    public function testTenantAdminCannotEditUserFromAnotherTenant(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Usuário não encontrado');
+
+        $repo = $this->createMock(\App\Infrastructure\User\UserRepository::class);
+        $repo->expects($this->once())
+            ->method('findById')
+            ->with(42, 9)
+            ->willReturn(null);
+
+        $context = \App\Auth\AuthContext::getInstance();
+        $context->authenticate(7, 'admin');
+
+        $service = new \App\Application\User\UserService($repo);
+        $service->updateUser(42, 9, ['role' => 'admin']);
+    }
+
+    public function testRegularUserCannotChangeRole(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Apenas superadmin pode alterar a role');
+
+        $user = [
+            'id' => 42,
+            'tenant_id' => 9,
+            'username' => 'second-user',
+            'name' => 'Original Name',
+            'email' => 'old@example.com',
+            'phone' => null,
+            'role' => 'user',
+            'active' => 1,
+            'created_at' => '2024-01-01 00:00:00',
+            'last_login' => null,
+            'force_password_change' => 0,
+            'password_changed_at' => null,
+        ];
+
+        $repo = $this->createMock(\App\Infrastructure\User\UserRepository::class);
+        $repo->expects($this->once())
+            ->method('findById')
+            ->willReturn($user);
+
+        $context = \App\Auth\AuthContext::getInstance();
+        $context->authenticate(42, 'user');
+
+        $service = new \App\Application\User\UserService($repo);
+        $service->updateUser(42, 9, ['role' => 'admin']);
+    }
+
     public function testUpdateUserRejectsNegativeBrokerDefaultCommissionPercentage()
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -464,6 +660,7 @@ class UserServiceTest extends TestCase
     public function testUpdateUserRejectsIsSuperadminOverride()
     {
         $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Campos tenant_id, username e is_superadmin não podem ser alterados');
 
         $user = [
             'id' => 42,
@@ -483,7 +680,10 @@ class UserServiceTest extends TestCase
         $repo = $this->createMock(\App\Infrastructure\User\UserRepository::class);
         $repo->expects($this->once())
             ->method('findById')
+            ->with(42, 9)
             ->willReturn($user);
+        $repo->expects($this->never())
+            ->method('update');
 
         $context = \App\Auth\AuthContext::getInstance();
         $context->authenticate(7, 'admin');
