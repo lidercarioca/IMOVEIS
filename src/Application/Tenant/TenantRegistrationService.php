@@ -2,6 +2,7 @@
 
 namespace App\Application\Tenant;
 
+use App\Infrastructure\Billing\TenantRepository as BillingTenantRepository;
 use App\Infrastructure\Tenant\TenantRepository;
 use App\Services\TenantSubdomainManager;
 use InvalidArgumentException;
@@ -11,11 +12,13 @@ use RuntimeException;
 class TenantRegistrationService
 {
     private TenantRepository $tenantRepository;
+    private BillingTenantRepository $billingTenantRepository;
     private TenantSubdomainManager $subdomainManager;
 
     public function __construct(PDO $pdo, ?TenantRepository $tenantRepository = null, ?TenantSubdomainManager $subdomainManager = null)
     {
         $this->tenantRepository = $tenantRepository ?? new TenantRepository($pdo);
+        $this->billingTenantRepository = new BillingTenantRepository($pdo);
         $this->subdomainManager = $subdomainManager ?? new TenantSubdomainManager($pdo);
     }
 
@@ -56,6 +59,15 @@ class TenantRegistrationService
         $tenantId = $this->tenantRepository->create($tenantData);
         if ($tenantId <= 0) {
             throw new RuntimeException('Falha ao criar tenant');
+        }
+
+        $planCode = (string)($tenantData['plano'] ?? 'trial');
+        if ($planCode === 'trial') {
+            $startedAt = date('Y-m-d H:i:s');
+            $expiresAt = (string)($tenantData['data_expiracao'] ?? date('Y-m-d H:i:s', strtotime('+7 days')));
+            if (!$this->billingTenantRepository->createTrialUsageRecord($tenantId, $planCode, $startedAt, $expiresAt)) {
+                throw new RuntimeException('Falha ao registrar o uso do trial do tenant');
+            }
         }
 
         $accessUrl = $this->subdomainManager->generateSubdomainUrl($tenantId, '/');

@@ -266,16 +266,47 @@ class TenantRepository
         ];
     }
 
+    public function createTrialUsageRecord(int $tenantId, string $planCode = 'trial', ?string $startedAt = null, ?string $expiresAt = null): bool
+    {
+        $tenantId = (int)$tenantId;
+        if ($tenantId <= 0) {
+            return false;
+        }
+
+        $planCode = trim($planCode) !== '' ? $planCode : 'trial';
+        $usedAt = date('Y-m-d H:i:s');
+        $startedValue = $startedAt ?: $usedAt;
+        $expiresValue = $expiresAt ?: date('Y-m-d H:i:s', strtotime('+7 days'));
+
+        try {
+            $stmt = $this->pdo->prepare(
+                'INSERT INTO tenant_trial_usage (tenant_id, plan_code, started_at, expires_at, used_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
+            );
+            return $stmt->execute([$tenantId, $planCode, $startedValue, $expiresValue, $usedAt, $usedAt, $usedAt]);
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
     public function hasTrialHistory(int $tenantId): bool
     {
-        $sql = 'SELECT COUNT(*) FROM pagamentos WHERE tenant_id = ? AND (plano = ? OR status = ?)';
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$tenantId, 'trial', 'pago']);
-        return (bool)$stmt->fetchColumn();
+        try {
+            $sql = 'SELECT COUNT(*) FROM tenant_trial_usage WHERE tenant_id = ? LIMIT 1';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$tenantId]);
+            return (bool)$stmt->fetchColumn();
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 
     public function activateTrial(int $tenantId, int $daysTrial = 7): bool
     {
+        $tenantId = (int)$tenantId;
+        if ($tenantId <= 0) {
+            return false;
+        }
+
         $trialLimit = 2;
         $plan = $this->pdo->prepare('SELECT max_users FROM plans WHERE code = ? LIMIT 1');
         $plan->execute(['trial']);
@@ -286,11 +317,35 @@ class TenantRepository
 
         $expirationDate = date('Y-m-d H:i:s', strtotime('+' . max(0, $daysTrial) . ' days'));
         $updatedAt = date('Y-m-d H:i:s');
-        $stmt = $this->pdo->prepare(
-            "UPDATE tenants SET status = 'active', plano = 'trial', limite_usuarios = ?, data_expiracao = ?, updated_at = ? WHERE id = ?"
-        );
 
-        return $stmt->execute([$trialLimit, $expirationDate, $updatedAt, $tenantId]);
+        try {
+            $this->pdo->beginTransaction();
+
+            if ($this->hasTrialHistory($tenantId)) {
+                throw new \RuntimeException('Trial already used for this tenant');
+            }
+
+            $tenantStmt = $this->pdo->prepare(
+                "UPDATE tenants SET status = 'active', plano = 'trial', limite_usuarios = ?, data_expiracao = ?, updated_at = ? WHERE id = ?"
+            );
+            $tenantUpdated = $tenantStmt->execute([$trialLimit, $expirationDate, $updatedAt, $tenantId]);
+            if (!$tenantUpdated) {
+                throw new \RuntimeException('Failed to update tenant trial state');
+            }
+
+            $trialUsageInserted = $this->createTrialUsageRecord($tenantId, 'trial', $updatedAt, $expirationDate);
+            if (!$trialUsageInserted) {
+                throw new \RuntimeException('Failed to persist trial usage history');
+            }
+
+            $this->pdo->commit();
+            return true;
+        } catch (\Throwable $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            return false;
+        }
     }
 
     /**

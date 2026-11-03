@@ -2,6 +2,7 @@
 
 namespace App\Application\Tenant;
 
+use App\Infrastructure\Billing\TenantRepository as BillingTenantRepository;
 use App\Infrastructure\Tenant\TenantRepository;
 use App\Infrastructure\Company\CompanySettingsRepository;
 use App\Infrastructure\Pipeline\PipelineStageRepository;
@@ -94,6 +95,16 @@ class TenantOnboardingService
 
             if (!$tenantId) {
                 throw new Exception('Falha ao criar tenant');
+            }
+
+            $trialPlanCode = (string)($tenantData['plano'] ?? 'trial');
+            if ($trialPlanCode === 'trial') {
+                $billingTenantRepository = new BillingTenantRepository($this->pdo);
+                $trialStartedAt = date('Y-m-d H:i:s');
+                $trialExpiresAt = (string)($tenantData['data_expiracao'] ?? date('Y-m-d H:i:s', strtotime('+7 days')));
+                if (!$billingTenantRepository->createTrialUsageRecord($tenantId, $trialPlanCode, $trialStartedAt, $trialExpiresAt)) {
+                    throw new Exception('Falha ao registrar o uso inicial do trial do tenant');
+                }
             }
 
             error_log(sprintf('TenantOnboardingService::registerNewTenant tenant created id=%d slug=%s', $tenantId, $slug));

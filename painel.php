@@ -38,18 +38,31 @@ try {
 
 // Calcular se deve mostrar aviso de expiração para a aba de cobrança
 $shouldShowExpiryWarning = false;
+$currentTenantId = (int)\TenantContext::getTenantId();
+$currentTab = $_GET['tab'] ?? 'properties';
+$showBillingMenuItem = false;
+$canAccessBillingTab = false;
+
 try {
-  $currentTenantId = (int)\TenantContext::getTenantId();
   if ($currentTenantId > 0) {
+    $tenantData = $tenantBillingRepo->getTenantData($currentTenantId);
+    $tenantStatusView = strtolower((string)($tenantData['status'] ?? 'inactive'));
+    $isExpired = $tenantBillingRepo->isExpired($currentTenantId);
     $shouldShowExpiryWarning = $tenantBillingRepo->shouldShowExpiryWarning($currentTenantId);
+    $showBillingMenuItem = $tenantStatusView !== 'active' || $isExpired || $shouldShowExpiryWarning;
+
+    $userId = (int)($_SESSION['user_id'] ?? 0);
+    if ($userId > 0 && isAdmin()) {
+      $userRepository = new \App\Infrastructure\User\UserRepository($pdo);
+      $canAccessBillingTab = \TenantContext::isSuperAdmin() || $userRepository->userBelongsToTenant($userId, $currentTenantId);
+    }
   }
 } catch (Exception $e) {
-  error_log('[painel.php] Erro ao calcular aviso de expiração: ' . $e->getMessage());
+  error_log('[painel.php] Erro ao calcular estado de billing: ' . $e->getMessage());
 }
 
 // Se tenant selecionado está inativo, bloquear acesso para não-superadmin
 if (!\TenantContext::isSuperAdmin()) {
-  $currentTenantId = (int)\TenantContext::getTenantId();
   if ($currentTenantId <= 0) {
     http_response_code(403);
     echo '<h1>Acesso negado</h1><p>Tenant não selecionado.</p>';
@@ -61,10 +74,13 @@ if (!\TenantContext::isSuperAdmin()) {
     $verificacao = $tenantBillingRepo->checkTenantActiveStatus($currentTenantId);
 
     if (!$verificacao['ativo']) {
-      // Tenant bloqueado ou expirado
-      $_SESSION['bloqueio_motivo'] = $verificacao['motivo'];
-      header("Location: tenant_bloqueado.php");
-      exit;
+      $isAuthorizedBillingAccess = $currentTab === 'cobranca' && $canAccessBillingTab;
+      if (!$isAuthorizedBillingAccess) {
+        // Tenant bloqueado ou expirado; a exceção só é concedida ao admin autorizado da cobrança.
+        $_SESSION['bloqueio_motivo'] = $verificacao['motivo'];
+        header("Location: tenant_bloqueado.php");
+        exit;
+      }
     }
 
     // Atualizar informações na sessão
@@ -188,7 +204,6 @@ try {
 // Verificar permissões baseadas na role do usuário
 $isAdmin = isAdmin();
 $isMainAdmin = $isAdmin; // Qualquer admin pode acessar backup
-$currentTab = $_GET['tab'] ?? 'properties';
 $pendingLeadId = null;
 
 if ($currentTab === 'leads' && isset($_GET['lead_id'])) {
@@ -1926,7 +1941,7 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
                   <span class="sidebar-text">Webhooks</span>
                 </a>
               </li>
-              <?php if ($isAdmin && $shouldShowExpiryWarning): ?>
+              <?php if ($isAdmin && $showBillingMenuItem): ?>
                 <li>
                   <a class="d-flex align-items-center gap-3 py-3 px-4 rounded text-white text-decoration-none transition tab-link" style="background-color: rgba(255, 193, 7, 0.2); border-left: 3px solid #ffc107;"
                     href="#cobranca">
@@ -2233,8 +2248,8 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
         </div>
       <?php endif; ?>
 
-      <!-- Cobrança Tab (Admin - aparece apenas 3 dias antes do vencimento) -->
-      <?php if ($isAdmin && $shouldShowExpiryWarning): ?>
+      <!-- Cobrança Tab (Admin - aparece quando o billing precisa regularização ou aviso de vencimento) -->
+      <?php if ($isAdmin && $showBillingMenuItem): ?>
         <div class="tab-content p-6 hidden" id="cobranca">
           <?php
           require_once 'app/components/billing_dashboard.php';

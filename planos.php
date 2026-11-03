@@ -444,10 +444,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['plano'])) {
                         <?php
                         $planoExpirado = $tenantBillingRepo->isExpired($tenantId);
                         $currentPlanActive = ($tenantInfo && $tenantInfo['status'] === 'active' && !$planoExpirado);
-                        // Nova regra: permitir renovação do plano atual se o plano expirou OU se o sistema já está emitindo o aviso de vencimento
+                        // Regra específica para TRIAL expirado: não permitir renovação do plano atual
+                        // mesmo quando o tenant estiver no plano `trial` e já tenha passado da expiração.
                         $allowRenewCurrent = false;
                         if ($isCurrent) {
-                            $allowRenewCurrent = $planoExpirado || $tenantBillingRepo->shouldShowExpiryWarning($tenantId);
+                            $isTrialExpired = (($tenantInfo['plano'] ?? '') === 'trial') && $planoExpirado;
+                            $allowRenewCurrent = !$isTrialExpired && ($planoExpirado || $tenantBillingRepo->shouldShowExpiryWarning($tenantId));
                         }
 
                         $isDowngrade = false;

@@ -10,6 +10,28 @@ require_once __DIR__ . '/../config/database.php';
 
 echo "=== Database Migration Runner ===\n";
 
+function isSafeMigrationNoop(string $message): bool
+{
+    $normalized = strtolower($message);
+    $safePatterns = [
+        'already exists',
+        'duplicate entry',
+        'duplicate key name',
+        'duplicate column name',
+        'cannot add duplicate key',
+        'key already exists',
+        'index already exists',
+    ];
+
+    foreach ($safePatterns as $pattern) {
+        if (strpos($normalized, $pattern) !== false) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 try {
     // Verificar conexão com banco
     $stmt = $pdo->query("SELECT 1");
@@ -23,6 +45,8 @@ try {
         'add_event_hash_to_webhook_events.sql',
         'create_webhook_audit_logs.sql',
         '2026_10_23_create_idempotency_requests_table.sql',
+        '2026_11_03_create_tenant_trial_usage_table.sql',
+        '2026_11_03_backfill_tenant_trial_usage.sql',
     ];
 
     foreach ($migrations as $migration) {
@@ -36,9 +60,7 @@ try {
         echo "Executing migration: {$migration}\n";
 
         $sql = file_get_contents($migrationPath);
-
-        // Executar múltiplas statements se houver
-        $statements = array_filter(array_map('trim', explode(';', $sql)));
+        $statements = array_filter(array_map('trim', preg_split('/;\s*(?:\r?\n|$)/', $sql)), static fn($value) => $value !== '');
 
         foreach ($statements as $statement) {
             if (!empty($statement)) {
@@ -46,17 +68,13 @@ try {
                     $pdo->exec($statement);
                     echo "  ✓ Statement executed\n";
                 } catch (Exception $e) {
-                    // Ignorar erros de "table already exists", "Duplicate entry", "Duplicate column name", "Duplicate key name" etc.
-                    if (
-                        strpos($e->getMessage(), 'already exists') === false &&
-                        strpos($e->getMessage(), 'Duplicate entry') === false &&
-                        strpos($e->getMessage(), 'Duplicate column name') === false &&
-                        strpos($e->getMessage(), 'Duplicate key name') === false
-                    ) {
-                        echo "  ✗ Error: " . $e->getMessage() . "\n";
-                    } else {
-                        echo "  - Statement skipped (already exists)\n";
+                    if (isSafeMigrationNoop($e->getMessage())) {
+                        echo "  - Statement skipped (safe idempotent no-op)\n";
+                        continue;
                     }
+
+                    echo "  ✗ Error: " . $e->getMessage() . "\n";
+                    throw $e;
                 }
             }
         }
