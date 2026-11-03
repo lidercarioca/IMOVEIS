@@ -108,37 +108,81 @@ try {
   error_log('Erro carregando branding do tenant: ' . $e->getMessage());
 }
 
-// Construir URL do site público com base no tenant atual
-$viewSiteUrl = '/';
+// Construir URL pública do site com base em domínio autorizado e sem usar slug/query string.
+$viewSiteUrl = '';
+$viewSiteMessage = '';
+
 try {
-  $stmt = $pdo->prepare('SELECT COALESCE(company_subdomain, slug) AS subdomain, slug FROM tenants WHERE id = ? LIMIT 1');
+  $stmt = $pdo->prepare('SELECT id, slug, company_subdomain, status FROM tenants WHERE id = ? LIMIT 1');
   $stmt->execute([$correctTenantId]);
   $tenantData = $stmt->fetch(PDO::FETCH_ASSOC);
 
-  if (!empty($tenantData['slug'])) {
-    $slug = strtolower($tenantData['slug']);
-    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-    $hostname = explode(':', $host)[0];
-
-    if (strpos($hostname, 'localhost') !== false || strpos($hostname, '127.0.0.1') !== false) {
-      // No ambiente local, usar slug na query
-      $viewSiteUrl = 'http://localhost/?slug=' . urlencode($slug);
-    } elseif (strpos($hostname, 'ngrok-free.dev') !== false || strpos($hostname, 'ngrok.io') !== false) {
-      // Em ambiente ngrok, usar a URL do ngrok atual com slug
-      $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
-      $viewSiteUrl = $protocol . $hostname . '/?slug=' . urlencode($slug);
+  if (!$tenantData) {
+    $viewSiteMessage = 'Tenant não encontrado no contexto administrativo atual.';
+  } elseif (strtolower((string)($tenantData['status'] ?? 'inactive')) !== 'active') {
+    $viewSiteMessage = 'Este tenant está inativo. O site público não está disponível.';
+  } else {
+    $subdomain = strtolower(trim((string)($tenantData['company_subdomain'] ?? '')));
+    if ($subdomain === '') {
+      $viewSiteMessage = 'Este tenant não possui subdomínio público configurado.';
     } else {
-      // Em produção, construir com subdomínio
-      $domainParts = explode('.', $hostname);
-      if (count($domainParts) > 2) {
-        array_shift($domainParts);
+      $candidateHosts = [];
+      $configuredValue = getenv('TENANT_SUBDOMAIN_BASE_HOSTS') ?: ($_ENV['TENANT_SUBDOMAIN_BASE_HOSTS'] ?? null);
+
+      if (is_string($configuredValue) && trim($configuredValue) !== '') {
+        foreach (preg_split('/[;\s,]+/', trim((string) $configuredValue), -1, PREG_SPLIT_NO_EMPTY) as $candidateHost) {
+          $normalized = strtolower(trim((string) $candidateHost));
+          if ($normalized !== '' && !in_array($normalized, $candidateHosts, true)) {
+            $candidateHosts[] = $normalized;
+          }
+        }
       }
-      $domain = implode('.', $domainParts);
-      $viewSiteUrl = 'https://' . $slug . '.' . $domain . '/';
+
+      $currentHost = strtolower(trim((string)($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? '')));
+      if ($currentHost !== '') {
+        $currentHost = preg_replace('/:\d+$/', '', $currentHost);
+      }
+
+      $comparisonHost = $currentHost;
+      if ($comparisonHost === '127.0.0.1') {
+        $comparisonHost = 'localhost';
+      }
+
+      $authorizedHost = null;
+      foreach ($candidateHosts as $candidateHost) {
+        $candidateHost = preg_replace('/:\d+$/', '', strtolower(trim((string) $candidateHost)));
+        if ($candidateHost === '' || $candidateHost === 'http' || $candidateHost === 'https') {
+          continue;
+        }
+
+        if ($comparisonHost !== '' && $comparisonHost === $candidateHost) {
+          $authorizedHost = $candidateHost;
+          break;
+        }
+      }
+
+      if ($authorizedHost === null && $comparisonHost !== '' && ($comparisonHost === 'localhost' || str_ends_with($comparisonHost, '.localhost'))) {
+        $authorizedHost = 'localhost';
+      }
+
+      if ($authorizedHost === null || $authorizedHost === '') {
+        $viewSiteMessage = 'Não existe uma base pública autorizada para este ambiente.';
+      } else {
+        $allowedLocalHosts = ['localhost', '127.0.0.1', '::1', '0.0.0.0'];
+        $scheme = in_array($authorizedHost, $allowedLocalHosts, true) ? 'http' : 'https';
+        $hostnamePattern = '/^[a-z0-9.-]+$/i';
+
+        if (!preg_match($hostnamePattern, $subdomain) || !preg_match($hostnamePattern, $authorizedHost)) {
+          $viewSiteMessage = 'Subdomínio público inválido para a base autorizada.';
+        } else {
+          $viewSiteUrl = $scheme . '://' . $subdomain . '.' . $authorizedHost . '/';
+        }
+      }
     }
   }
 } catch (Exception $e) {
   error_log('Erro construindo URL do site público: ' . $e->getMessage());
+  $viewSiteMessage = 'Não foi possível montar a URL pública do tenant selecionado.';
 }
 
 // Verificar permissões baseadas na role do usuário
@@ -2029,7 +2073,15 @@ if (!$isAdmin && !in_array($currentTab, $allowedUserTabs)) {
                 </div>
               </div>
             </div>
-            <a class="text-blue-600 hover:text-blue-800 transition" href="<?php echo htmlspecialchars($viewSiteUrl, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener noreferrer" id="view-site-btn">
+            <?php if (!empty($viewSiteMessage)): ?>
+              <div class="mt-1 text-xs text-red-600" aria-live="polite"><?php echo htmlspecialchars($viewSiteMessage, ENT_QUOTES, 'UTF-8'); ?></div>
+            <?php endif; ?>
+            <a class="<?php echo $viewSiteUrl === '' ? 'text-gray-500 pointer-events-none cursor-not-allowed' : 'text-blue-600 hover:text-blue-800'; ?> transition"
+              href="<?php echo htmlspecialchars($viewSiteUrl !== '' ? $viewSiteUrl : '#', ENT_QUOTES, 'UTF-8'); ?>"
+              target="<?php echo $viewSiteUrl === '' ? '_self' : '_blank'; ?>"
+              rel="noopener noreferrer"
+              id="view-site-btn"
+              <?php if ($viewSiteUrl === ''): ?>onclick="event.preventDefault(); return false;" aria-disabled="true" title="<?php echo htmlspecialchars($viewSiteMessage, ENT_QUOTES, 'UTF-8'); ?>" <?php endif; ?>>
               <i class="fas fa-external-link-alt mr-1"></i> Ver Site
             </a>
           </div>
