@@ -77,7 +77,7 @@ class TenantRepository
     public function findById(int $id): ?array
     {
         $stmt = $this->pdo->prepare(
-            'SELECT id, name, slug, company_subdomain, description, max_users, status, plano, limite_usuarios, data_expiracao, created_at, updated_at
+            'SELECT id, name, slug, company_subdomain, status
             FROM tenants WHERE id = ? LIMIT 1'
         );
         $stmt->execute([$id]);
@@ -95,10 +95,28 @@ class TenantRepository
     public function findBySlug(string $slug): ?array
     {
         $stmt = $this->pdo->prepare(
-            'SELECT id, name, slug, company_subdomain, description, max_users, status, plano, limite_usuarios, data_expiracao, created_at, updated_at
+            'SELECT id, name, slug, company_subdomain, status
             FROM tenants WHERE slug = ? LIMIT 1'
         );
         $stmt->execute([$slug]);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $data ?: null;
+    }
+
+    /**
+     * Buscar tenant por company_subdomain
+     *
+     * @param string $companySubdomain Subdomínio do tenant
+     * @return array|null Dados do tenant ou null se não encontrado
+     */
+    public function findByCompanySubdomain(string $companySubdomain): ?array
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT id, name, slug, company_subdomain, status
+            FROM tenants WHERE company_subdomain = ? LIMIT 1'
+        );
+        $stmt->execute([$companySubdomain]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $data ?: null;
@@ -115,6 +133,21 @@ class TenantRepository
             'SELECT * FROM tenants WHERE status = ? ORDER BY name ASC'
         );
         $stmt->execute(['active']);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Listar tenants conhecidos, ativos e inativos, para suporte a resolução pública.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function listKnownTenants(): array
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT * FROM tenants ORDER BY id ASC'
+        );
+        $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

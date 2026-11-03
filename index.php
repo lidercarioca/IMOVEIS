@@ -16,12 +16,12 @@ use App\Application\Integration\PortalIntegrationService;
 // 2. DETECTAR TENANT_ID - PRIORIDADE: URL parameter (slug/tenant_id) > subdomínio > padrão
 // =============================================================================
 
-$tenant_id_for_injection = 1; // padrão para renderização pública
+$tenant_id_for_injection = null;
 $trackingTenantId = null;
 
-// O TenantContext centraliza a escolha do tenant.
-// Se o core de tenant estiver disponível, delegamos totalmente a ele.
-// Se não estiver, mantemos a lógica legada para compatibilidade.
+// O TenantContext centraliza a escolha do tenant público versus administrativo.
+// Não há fallback implícito para tenant 1: se a resolução pública for inválida,
+// o site público deve responder 404 e não renderizar o HTML do tenant padrão.
 if (file_exists(__DIR__ . '/app/security/TenantContext.php')) {
     require_once __DIR__ . '/app/security/TenantContext.php';
     \TenantContext::initialize();
@@ -30,68 +30,16 @@ if (file_exists(__DIR__ . '/app/security/TenantContext.php')) {
         $tenant_id_for_injection = intval($resolved);
         $trackingTenantId = $tenant_id_for_injection;
     }
-} else {
-    // MÁXIMA PRIORIDADE: URL parameter ?slug=X ou ?tenant_id=X
-    if (isset($_GET['slug']) && !empty($_GET['slug'])) {
-        $slug_param = strtolower($_GET['slug']);
-        try {
-            $stmt = $pdo->prepare('SELECT id FROM tenants WHERE LOWER(slug) = ? AND status = "active" LIMIT 1');
-            $stmt->execute([$slug_param]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($result && $result['id']) {
-                $tenant_id_for_injection = intval($result['id']);
-                $trackingTenantId = $tenant_id_for_injection;
-                error_log("[INDEX.PHP] Tenant detectado via slug parameter: " . $tenant_id_for_injection . " (slug: " . $slug_param . ")");
-            }
-        } catch (Exception $e) {
-            error_log("[INDEX.PHP] Erro ao buscar tenant por slug: " . $e->getMessage());
-        }
-    } elseif (isset($_GET['tenant_id']) && intval($_GET['tenant_id']) > 0) {
-        $tenant_id_for_injection = intval($_GET['tenant_id']);
-        $trackingTenantId = $tenant_id_for_injection;
-        error_log("[INDEX.PHP] Tenant detectado via tenant_id parameter: " . $tenant_id_for_injection);
-    } else {
-        // FALLBACK: Detectar do subdomínio
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        $hostname = explode(':', $host)[0];
-        $parts = explode('.', $hostname);
+}
 
-        if (count($parts) > 1) {
-            $subdomain = strtolower($parts[0]);
-
-            try {
-                $query = $pdo->prepare('SELECT id, slug FROM tenants WHERE status = "active" ORDER BY id ASC');
-                $query->execute();
-                $tenants = $query->fetchAll(PDO::FETCH_ASSOC);
-
-                $subdomain_map = [];
-                foreach ($tenants as $t) {
-                    $slug = strtolower($t['slug']);
-                    $subdomain_map[$slug] = $t['id'];
-
-                    // Adiciona também a forma completa (ex: 'imoveis-rio')
-                    if (strpos($slug, 'imoveis-') === 0) {
-                        // Já adiciona o slug completo acima
-                        // Agora adiciona também a forma reduzida (ex: 'rio' para 'imoveis-rio')
-                        $state_code = str_replace('imoveis-', '', $slug);
-                        $subdomain_map[$state_code] = $t['id'];
-                    } elseif ($slug === 'default') {
-                        // Para tenant padrão, adiciona múltiplos aliases
-                        $subdomain_map['dj'] = $t['id'];
-                        $subdomain_map['www'] = $t['id'];
-                    }
-                }
-
-                if (isset($subdomain_map[$subdomain])) {
-                    $tenant_id_for_injection = $subdomain_map[$subdomain];
-                    $trackingTenantId = $tenant_id_for_injection;
-                    error_log("[INDEX.PHP] Tenant detectado via subdomínio: " . $tenant_id_for_injection);
-                }
-            } catch (Exception $e) {
-                error_log("[INDEX.PHP] Erro ao detectar tenant: " . $e->getMessage());
-            }
-        }
+if ($tenant_id_for_injection === null || intval($tenant_id_for_injection) <= 0) {
+    if (isset($_SESSION['index_tenant_id'])) {
+        unset($_SESSION['index_tenant_id']);
     }
+
+    http_response_code(404);
+    echo '<h1>Tenant não encontrado</h1><p>O domínio ou subdomínio solicitado não está cadastrado para este site público.</p>';
+    exit;
 }
 
 // =============================================================================

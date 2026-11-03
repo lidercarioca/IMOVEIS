@@ -38,136 +38,82 @@ $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 // Remover porta se existir (ex: localhost:8080 → localhost)
 $hostname = explode(':', $host)[0];
 
-// Extrair o subdomínio
-$parts = explode('.', $hostname);
-
-// Determinar o tenant_id baseado no subdomínio
-$tenant_id = 1; // padrão
+// Determinar o tenant_id baseado no hostname/subdomínio.
+// Nenhum override externo por query string, header ou parâmetro pode sobrescrever o tenant público.
+$tenant_id = null;
 $subdomain = null;
 $company_info = null;
-$old_subdomain_redirect = false; // Flag para redirecionamento de URLs antigas
+$old_subdomain_redirect = false;
 
-if (count($parts) > 1) {
-    // Se houver subdomínio
-    $subdomain = strtolower($parts[0]);
+require_once __DIR__ . '/vendor/autoload.php';
 
-    // DINÂMICO: Carregar mapeamento de tenants do banco de dados
-    try {
-        // Query melhorada: buscar tanto company_subdomain (novo) quanto slug (antigo) para compatibilidade
-        // IMPORTANTE: incluir tenants inativos para permitir debug de subdomínio; o middleware restante bloqueia inativos para usuários normais.
-        $query = $pdo->prepare('
-            SELECT 
-                id, 
-                slug, 
-                name, 
-                status,
-                COALESCE(company_subdomain, slug) as company_subdomain
-            FROM tenants 
-            ORDER BY id ASC
-        ');
-        $query->execute();
-        $tenants = $query->fetchAll(PDO::FETCH_ASSOC);
+use App\Tenant\PublicTenantResolver;
 
-        // Criar mapa dinâmico: company_subdomain → tenant_id (novo) + slug → tenant_id (compatibilidade)
-        $subdomain_map = [];
-        $slug_map = [];
-        $redirect_map = []; // Mapear subdomínios antigos para novos (para 301 redirects)
+try {
+    $publicResolver = new PublicTenantResolver($pdo);
+    $publicResolution = $publicResolver->resolve($host);
+    $tenant_id = isset($publicResolution['tenant_id']) ? (int) $publicResolution['tenant_id'] : null;
+    $subdomain = $publicResolution['subdomain'] ?? null;
+    $tenantName = $publicResolution['tenant_name'] ?? 'Tenant';
 
-        foreach ($tenants as $t) {
-            $company_subdomain = strtolower($t['company_subdomain']);
-            $slug = strtolower($t['slug'] ?? '');
-
-            // Mapear company_subdomain (novo padrão)
-            $subdomain_map[$company_subdomain] = $t['id'];
-
-            // Mapear slug antigo como fallback
-            if (!empty($slug) && $slug !== $company_subdomain) {
-                $slug_map[$slug] = $t['id'];
-                // Registrar para reconhecer URLs antigas e fazer redirect se necessário
-                $redirect_map[$slug] = $company_subdomain;
-            }
-
-            // Gerar aliases comuns (primeiras 3 letras, nomes simplificados, etc.)
-            if ($company_subdomain === 'default' || $slug === 'default') {
-                $subdomain_map['dj'] = $t['id'];      // DJ Imóveis
-                $subdomain_map['www'] = $t['id'];
-            } elseif (strpos($company_subdomain, 'imoveis-') === 0) {
-                // Remover "imoveis-" para criar aliases
-                $state_code = str_replace('imoveis-', '', $company_subdomain);
-                $subdomain_map[$state_code] = $t['id']; // rio, sp, mg, etc.
-            }
-        }
-
-        // Se o subdomínio está no mapa company_subdomain, usar seu tenant_id
-        if (isset($subdomain_map[$subdomain])) {
-            $tenant_id = $subdomain_map[$subdomain];
-        }
-        // Verificar se é um subdomínio antigo (slug) que deve ser redirecionado
-        elseif (isset($slug_map[$subdomain])) {
-            $tenant_id = $slug_map[$subdomain];
-            $old_subdomain_redirect = true; // Marcar para redirecionamento
-            error_log("[ROUTER] Subdomínio antigo detectado: '{$subdomain}' → redirecionar para '{$redirect_map[$subdomain]}'");
-        } else {
-            $found = array_key_exists($subdomain, $subdomain_map) || array_key_exists($subdomain, $slug_map);
-            error_log("[ROUTER WARN] subdomain '{$subdomain}' não mapeado; map keys: " . implode(', ', array_keys($subdomain_map)) . " / " . implode(', ', array_keys($slug_map)));
-        }
-    } catch (Exception $e) {
-        // Se houver erro na conexão, usar mapa padrão como fallback
-        error_log("[ROUTER ERROR] Erro ao carregar tenants do BD: " . $e->getMessage());
-        $subdomain_map = [
-            'default' => 1,
-            'imoveis-rio' => 2,
-            'imoveis-sp' => 3,
-            'imoveis-mg' => 4,
-            'dj' => 1,
-            'rio' => 2,
-            'sp' => 3,
-            'saopaulo' => 3,
-            'mg' => 4,
-            'minas' => 4,
-            'www' => 1,
-        ];
-
-        if (isset($subdomain_map[$subdomain])) {
-            $tenant_id = $subdomain_map[$subdomain];
-        }
+    $status = $publicResolution['status'] ?? 'invalid_host';
+    if ($status === 'invalid_host' || $status === 'tenant_not_found') {
+        http_response_code(404);
+        echo '<h1>Tenant não encontrado</h1><p>O domínio ou subdomínio solicitado não está cadastrado para este site público.</p>';
+        exit;
     }
+
+    if ($status === 'tenant_inactive') {
+        http_response_code(503);
+        header('Content-Type: text/html; charset=UTF-8');
+        require __DIR__ . '/views/public/tenant_unavailable.php';
+        exit;
+    }
+
+    if ($status === 'config_error') {
+        http_response_code(503);
+        header('Content-Type: text/html; charset=UTF-8');
+        require __DIR__ . '/views/public/tenant_unavailable.php';
+        exit;
+    }
+
+    if ($tenant_id === null || $tenant_id <= 0) {
+        http_response_code(404);
+        echo '<h1>Tenant não encontrado</h1><p>O domínio ou subdomínio solicitado não está cadastrado para este site público.</p>';
+        exit;
+    }
+} catch (Exception $e) {
+    error_log('[ROUTER ERROR] Falha ao resolver tenant pelo hostname: ' . $e->getMessage());
+    http_response_code(503);
+    $tenantName = 'Tenant';
+    require __DIR__ . '/views/public/tenant_unavailable.php';
+    exit;
 }
 
-// Log para debug (apenas em desenvolvimento)
 if (php_sapi_name() !== 'cli') {
-    error_log("[ROUTER] Host: {$hostname} | Subdomínio: {$subdomain} | Tenant: {$tenant_id} | URI: {$request_uri}");
+    error_log("[ROUTER] Host: {$hostname} | Subdomínio: {$subdomain} | Tenant: " . ($tenant_id !== null ? $tenant_id : 'NULL') . " | URI: {$request_uri}");
 }
 
-// =============================================================================
-// REDIRECIONAMENTO 301: Se for um subdomínio ANTIGO, redirecionar para NOVO
-// =============================================================================
 if ($old_subdomain_redirect && $subdomain && isset($redirect_map[$subdomain])) {
-    // Construir nova URL com o novo subdomínio (company_subdomain)
     $new_subdomain = $redirect_map[$subdomain];
     $new_host = str_replace($subdomain . '.', $new_subdomain . '.', $hostname);
     $new_url = 'https://' . $new_host . $request_uri;
 
-    // Se estiver em desenvolvimento (localhost), não forçar HTTPS
     if (strpos($hostname, 'localhost') !== false || strpos($hostname, '127.0.0.1') !== false) {
         $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
         $new_url = $protocol . '://' . $new_host . $request_uri;
     }
 
-    // Fazer 301 redirect permanente (SEO-friendly)
     header('HTTP/1.1 301 Moved Permanently');
     header('Location: ' . $new_url);
     error_log("[ROUTER REDIRECT] 301 Redirect: {$hostname}{$request_uri} → {$new_host}{$request_uri}");
     exit;
 }
 
-// =============================================================================
-// OVERRIDE: Se houver ?tenant_id=X na URL, esse tem MÁXIMA PRIORIDADE
-// =============================================================================
-if (isset($_GET['tenant_id']) && intval($_GET['tenant_id']) > 0) {
-    $tenant_id_url = intval($_GET['tenant_id']);
-    error_log("[ROUTER] 🔄 Override via URL parameter: tenant_id = {$tenant_id_url} (anterior era {$tenant_id})");
-    $tenant_id = $tenant_id_url;
+if ($tenant_id === null || (int) $tenant_id <= 0) {
+    http_response_code(404);
+    echo '<h1>Tenant não encontrado</h1><p>O domínio ou subdomínio solicitado não está cadastrado para este site público.</p>';
+    exit;
 }
 
 // =============================================================================
@@ -177,7 +123,7 @@ if (isset($_GET['tenant_id']) && intval($_GET['tenant_id']) > 0) {
 // Fornecer o tenant detectado a partir do subdomínio como input para o TenantResolver.
 // NÃO escrever em $_SESSION, $_GET ou $_SERVER['TENANT_ID'] aqui — o TenantResolver
 // é o único responsável por decidir o tenant efetivo e escrever as variáveis de compatibilidade.
-$_SERVER['SUBDOMAIN_TENANT_ID'] = $tenant_id;
+$_SERVER['SUBDOMAIN_TENANT_ID'] = (int)$tenant_id;
 
 // Garantir que o gerenciador de sessão exista, sem sobrescrever valores de sessão
 if (session_status() === PHP_SESSION_NONE) {

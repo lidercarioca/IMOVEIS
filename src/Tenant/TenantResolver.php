@@ -20,6 +20,8 @@ class TenantResolver
     public const SOURCE_HEADER = 'header_x_tenant_id';
     public const SOURCE_SUBDOMAIN = 'subdomain_tenant_id';
     public const SOURCE_FALLBACK = 'fallback_default_tenant';
+    public const SOURCE_PUBLIC_DEFAULT = 'configured_default_tenant';
+    public const SOURCE_PUBLIC_RESOLUTION_FAILED = 'public_resolution_failed';
 
     private AuthContext $authContext;
     private ?UserRepository $userRepository;
@@ -46,6 +48,7 @@ class TenantResolver
         $headerTenantId = $this->normalizeTenantId($headers['x-tenant-id'] ?? $headers['X-Tenant-Id'] ?? $headers['HTTP_X_TENANT_ID'] ?? null);
         $subdomainTenantId = $this->normalizeTenantId($server['SUBDOMAIN_TENANT_ID'] ?? null);
         $isSuperAdmin = $this->evaluateSuperAdmin($session, $userId);
+        $isPublicRequest = $this->isPublicRequest($server);
 
         $metadata = [
             'session_tenant_id' => $sessionTenantId,
@@ -56,7 +59,48 @@ class TenantResolver
             'session_is_superadmin' => !empty($session['is_superadmin']),
             'auth_user_id' => $userId,
             'auth_role' => $role,
+            'is_public_request' => $isPublicRequest,
         ];
+
+        if ($isPublicRequest) {
+            if ($subdomainTenantId !== null) {
+                return new TenantResolution(
+                    $subdomainTenantId,
+                    self::SOURCE_SUBDOMAIN,
+                    0.9,
+                    true,
+                    $isSuperAdmin,
+                    false,
+                    self::SOURCE_SUBDOMAIN,
+                    $metadata
+                );
+            }
+
+            $configuredDefaultTenantId = $this->resolveConfiguredDefaultPublicTenant($server);
+            if ($configuredDefaultTenantId !== null) {
+                return new TenantResolution(
+                    $configuredDefaultTenantId,
+                    self::SOURCE_PUBLIC_DEFAULT,
+                    0.5,
+                    true,
+                    $isSuperAdmin,
+                    false,
+                    self::SOURCE_PUBLIC_DEFAULT,
+                    $metadata
+                );
+            }
+
+            return new TenantResolution(
+                null,
+                self::SOURCE_FALLBACK,
+                0.0,
+                true,
+                $isSuperAdmin,
+                false,
+                self::SOURCE_PUBLIC_RESOLUTION_FAILED,
+                $metadata
+            );
+        }
 
         if ($isAuthenticated) {
             if ($isSuperAdmin) {
@@ -235,13 +279,13 @@ class TenantResolver
         }
 
         return new TenantResolution(
-            1,
+            null,
             self::SOURCE_FALLBACK,
-            0.25,
+            0.0,
             true,
             $isSuperAdmin,
-            true,
-            self::SOURCE_FALLBACK,
+            false,
+            self::SOURCE_PUBLIC_RESOLUTION_FAILED,
             $metadata
         );
     }
@@ -346,6 +390,29 @@ class TenantResolver
         return $sessionUserId === $userId;
     }
 
+    private function isPublicRequest(array $server): bool
+    {
+        $requestPath = $server['REQUEST_URI'] ?? $server['PHP_SELF'] ?? '';
+        $scriptPath = $server['SCRIPT_NAME'] ?? $server['PHP_SELF'] ?? '';
+        $path = parse_url((string) $requestPath, PHP_URL_PATH) ?: $scriptPath;
+
+        if ($path === '') {
+            return false;
+        }
+
+        $normalizedPath = strtolower((string) $path);
+        if (str_contains($normalizedPath, '/api/')) {
+            return false;
+        }
+
+        $basename = strtolower(basename((string) $path));
+        if (in_array($basename, ['index.php', 'index-router.php'], true)) {
+            return true;
+        }
+
+        return $normalizedPath === '/' || $normalizedPath === '';
+    }
+
     private function normalizeTenantId($value): ?int
     {
         if ($value === null || $value === '') {
@@ -354,6 +421,47 @@ class TenantResolver
 
         $tenantId = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
         return $tenantId === false ? null : (int)$tenantId;
+    }
+
+    private function resolveConfiguredDefaultPublicTenant(array $server): ?int
+    {
+        $candidate = null;
+
+        foreach (['DEFAULT_TENANT_ID', 'APP_DEFAULT_TENANT_ID', 'PUBLIC_TENANT_ID'] as $key) {
+            $value = getenv($key) ?: ($_ENV[$key] ?? null) ?: ($server[$key] ?? null);
+            if ($value !== null && $value !== '') {
+                $candidate = $value;
+                break;
+            }
+        }
+
+        if ($candidate === null) {
+            return null;
+        }
+
+        $host = strtolower((string)($server['HTTP_HOST'] ?? $server['SERVER_NAME'] ?? ''));
+        $host = preg_replace('/:\d+$/', '', $host);
+        if ($host === '') {
+            return null;
+        }
+
+        $configUrls = [];
+        foreach (['SITE_URL', 'NGROK_URL', 'APP_URL'] as $configKey) {
+            $url = getenv($configKey) ?: ($_ENV[$configKey] ?? null);
+            if ($url !== null && $url !== '') {
+                $configUrls[] = strtolower((string) parse_url((string) $url, PHP_URL_HOST));
+            }
+        }
+
+        $normalizedHost = strtolower($host);
+        $matchesConfiguredHost = $configUrls !== [] && in_array($normalizedHost, $configUrls, true);
+        $isLocalDefaultHost = in_array($normalizedHost, ['localhost', '127.0.0.1', '::1', '0.0.0.0'], true);
+
+        if (!$matchesConfiguredHost && !$isLocalDefaultHost) {
+            return null;
+        }
+
+        return $this->normalizeTenantId($candidate);
     }
 
     private function extractHeaders(array $server): array

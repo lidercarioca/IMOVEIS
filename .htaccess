@@ -131,6 +131,10 @@ FileETag None
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
+
+    # Forçar a raiz pública para o router antes do DirectoryIndex.
+    # Sem isso, / cai em index.php pelo diretório raiz e a resolução do tenant nunca ocorre.
+    RewriteRule ^/?$ /index-router.php [QSA,L]
     
     # ⚠️ IMPORTANTE: Permitir acesso direto a TODOS os arquivos PHP
     # Isso inclui: login.php, painel.php, logout.php, forgot-password.php, etc

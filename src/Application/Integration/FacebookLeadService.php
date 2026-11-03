@@ -4,6 +4,7 @@ namespace App\Application\Integration;
 
 use App\Infrastructure\Lead\LeadRepository;
 use App\Infrastructure\PortalIntegration\PortalIntegrationRepository;
+use App\Infrastructure\Tenant\TenantRepository;
 use App\Domain\Lead\Lead;
 use PDO;
 use Exception;
@@ -15,12 +16,88 @@ class FacebookLeadService
     private LeadRepository $repository;
     private PDO $pdo;
     private PortalIntegrationRepository $portalIntegrationRepository;
+    private TenantRepository $tenantRepository;
 
     public function __construct(LeadRepository $repository, PDO $pdo)
     {
         $this->repository = $repository;
         $this->pdo = $pdo;
         $this->portalIntegrationRepository = new PortalIntegrationRepository($this->pdo);
+        $this->tenantRepository = new TenantRepository($this->pdo);
+    }
+
+    /**
+     * Valida que o tenant existe, está ativo e que a integração Facebook Leads correspondente
+     * está habilitada antes do processamento do webhook.
+     *
+     * @param int $tenantId
+     * @return array{tenant_id:int, credentials:array}
+     */
+    public function authorizeWebhookTenant(int $tenantId, bool $requireAppSecret = false): array
+    {
+        $tenant = $this->tenantRepository->findById($tenantId);
+        if (!$tenant) {
+            throw new \RuntimeException('tenant do webhook Facebook não existe.');
+        }
+
+        $status = strtolower(trim((string)($tenant['status'] ?? 'inactive')));
+        if ($status !== 'active') {
+            throw new \RuntimeException('tenant do webhook Facebook está inativo.');
+        }
+
+        $integration = $this->getFacebookIntegration($tenantId);
+        if (!$integration) {
+            throw new \RuntimeException('integração Facebook Leads não configurada para este tenant.');
+        }
+
+        if (!(bool)($integration['enabled'] ?? false)) {
+            throw new \RuntimeException('integração Facebook Leads está desabilitada; habilitada requerida.');
+        }
+
+        $credentials = is_array($integration['credentials']) ? $integration['credentials'] : [];
+        if ($requireAppSecret && (!isset($credentials['app_secret']) || trim((string)$credentials['app_secret']) === '')) {
+            throw new \RuntimeException('app_secret ausente ou vazia para a integração Facebook Leads.');
+        }
+
+        return [
+            'tenant_id' => $tenantId,
+            'credentials' => $credentials,
+        ];
+    }
+
+    /**
+     * Valida o payload do webhook Facebook em POST, incluindo assinatura HMAC,
+     * tenant autenticado e segredo esperado para a integração.
+     */
+    /**
+     * Orquestra a autenticação HMAC do webhook e a persistência do lead somente após validação.
+     */
+    public function processAuthenticatedWebhookLead(int $tenantId, string $rawPayload, string $signatureHeader, string $leadgenId): array
+    {
+        $validated = $this->authorizeWebhookTenant($tenantId, true);
+        $tenantId = (int)($validated['tenant_id'] ?? $tenantId);
+        $signatureHeader = trim((string)$signatureHeader);
+        if ($signatureHeader === '') {
+            throw new \RuntimeException('X-Hub-Signature-256 ausente.');
+        }
+
+        $appSecret = (string)($validated['credentials']['app_secret'] ?? '');
+        if (trim($appSecret) === '') {
+            throw new \RuntimeException('app_secret ausente ou vazia para a integração Facebook Leads.');
+        }
+
+        if (!$this->validateWebhookSignature($rawPayload, $signatureHeader, $appSecret)) {
+            throw new \RuntimeException('assinatura do webhook Facebook inválida.');
+        }
+
+        $accessToken = trim((string)($validated['credentials']['access_token'] ?? ''));
+        if ($accessToken === '') {
+            throw new \RuntimeException('Access Token do Facebook não configurado');
+        }
+
+        $graphVersion = trim((string)($validated['credentials']['graph_api_version'] ?? 'v16.0')) ?: 'v16.0';
+
+        return $this->processValidatedFacebookLead($tenantId, $leadgenId, $accessToken, $appSecret, $graphVersion);
     }
 
     /**
@@ -52,12 +129,15 @@ class FacebookLeadService
      */
     public function validateWebhookSignature(string $rawPayload, string $signatureHeader, string $appSecret): bool
     {
-        if (empty($appSecret)) {
+        $normalizedAppSecret = trim((string)$appSecret);
+        $normalizedSignatureHeader = trim((string)$signatureHeader);
+
+        if ($normalizedAppSecret === '' || $normalizedSignatureHeader === '') {
             return false;
         }
 
         $expectedSignature = 'sha256=' . hash_hmac('sha256', $rawPayload, $appSecret);
-        return hash_equals($signatureHeader, $expectedSignature);
+        return hash_equals($normalizedSignatureHeader, $expectedSignature);
     }
 
     /**
@@ -252,17 +332,28 @@ class FacebookLeadService
      * @return array Resultado do processamento com lead_id, is_new_lead, email, phone, name
      * @throws Exception Se houver erro em qualquer etapa
      */
-    public function processFacebookLeadEntry(
+    private function processValidatedFacebookLead(
         int $tenantId,
         string $leadgenId,
         string $accessToken,
-        ?string $appSecret,
+        string $appSecret,
         string $graphVersion
     ): array {
-        // Busca dados no Graph API
+        if ($tenantId <= 0) {
+            throw new \RuntimeException('tenant do webhook Facebook não autenticado.');
+        }
+
+        $authorizedTenant = $this->authorizeWebhookTenant($tenantId, true);
+        if ((int)($authorizedTenant['tenant_id'] ?? 0) !== $tenantId) {
+            throw new \RuntimeException('tenant do webhook Facebook não autenticado.');
+        }
+
+        if (trim((string)$appSecret) === '') {
+            throw new \RuntimeException('app_secret ausente ou vazia para a integração Facebook Leads.');
+        }
+
         $leadData = $this->fetchLeadDataFromGraph($leadgenId, $accessToken, $appSecret, $graphVersion);
 
-        // Extrai e valida campos
         $extracted = $this->extractAndValidateLeadFields($leadData);
         $name = trim($extracted['name']);
         $email = trim($extracted['email']);
@@ -273,21 +364,17 @@ class FacebookLeadService
             throw new Exception('Dados do lead incompletos. Verifique se o formulário do Facebook está retornando name, email, phone e message.');
         }
 
-        // Valida e sanitiza usando InputValidator
         $name = \InputValidator::getString($name, 'Nome', true, 100);
         $email = \InputValidator::getEmail($email, 'Email', true);
         $phone = \InputValidator::getString($phone, 'Telefone', true, 30);
         $message = \InputValidator::getText($message, 'Mensagem', true, 5000);
 
-        // Define timestamps
         $now = date('Y-m-d H:i:s');
         $source = 'facebook_leads';
 
-        // Busca lead existente (duplicity check)
         $existingLead = $this->repository->findExistingLeadForContact($tenantId, $email, $phone);
 
         if ($existingLead) {
-            // Atualiza lead existente
             $leadId = $existingLead->id;
             $updateData = [
                 'name' => $name,
@@ -300,7 +387,6 @@ class FacebookLeadService
             $this->repository->updateLead($leadId, $tenantId, $updateData);
             $isNewLead = false;
         } else {
-            // Cria novo lead
             $lead = new Lead([
                 'tenant_id' => $tenantId,
                 'name' => $name,
@@ -324,6 +410,7 @@ class FacebookLeadService
             'email' => $email,
             'phone' => $phone,
             'name' => $name,
+            'tenant_id' => $tenantId,
         ];
     }
 }

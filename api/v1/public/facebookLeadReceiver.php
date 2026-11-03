@@ -39,9 +39,6 @@ function getRequestPayload(): array
 
 try {
     $tenantId = isset($_GET['tenant_id']) ? intval($_GET['tenant_id']) : 0;
-    if ($tenantId <= 0 && function_exists('getRequestTenantId')) {
-        $tenantId = (int)getRequestTenantId();
-    }
     if ($tenantId <= 0) {
         sendJson(['success' => false, 'error' => 'tenant_id é obrigatório'], 400);
     }
@@ -52,6 +49,7 @@ try {
     $repository = new \App\Infrastructure\Lead\LeadRepository($pdo);
     $facebookService = new \App\Application\Integration\FacebookLeadService($repository, $pdo);
 
+    $method = $_SERVER['REQUEST_METHOD'];
     $integration = $facebookService->getFacebookIntegration($tenantId);
     if (!$integration) {
         sendJson(['success' => false, 'error' => 'Integração Facebook Leads não configurada para este tenant'], 404);
@@ -63,7 +61,6 @@ try {
     $credentials = is_array($integration['credentials']) ? $integration['credentials'] : [];
     $verifyToken = trim((string)($credentials['webhook_verify_token'] ?? getenv('FACEBOOK_LEADS_VERIFY_TOKEN') ?: ''));
 
-    $method = $_SERVER['REQUEST_METHOD'];
     if ($method === 'GET') {
         // Handle webhook verification (GET request)
         $hubMode = $_GET['hub.mode'] ?? $_GET['hub_mode'] ?? '';
@@ -72,6 +69,11 @@ try {
 
         if ($hubMode !== 'subscribe' || $hubChallenge === '' || $hubVerifyToken === '') {
             sendJson(['success' => false, 'error' => 'Parâmetros de verificação inválidos'], 400);
+        }
+
+        $tenant = $facebookService->authorizeWebhookTenant($tenantId, false);
+        if ($tenant['tenant_id'] !== $tenantId) {
+            sendJson(['success' => false, 'error' => 'Tenant da integração não autenticado'], 403);
         }
 
         if ($verifyToken === '' || !hash_equals($verifyToken, $hubVerifyToken)) {
@@ -87,21 +89,8 @@ try {
     if ($method === 'POST') {
         // Handle webhook delivery (POST request)
         $rawPayload = file_get_contents('php://input');
-        $appSecret = trim((string)($credentials['app_secret'] ?? ''));
+        $signatureHeader = trim((string)($_SERVER['HTTP_X_HUB_SIGNATURE_256'] ?? ''));
 
-        // Validate webhook signature if app_secret is configured
-        if ($appSecret !== '') {
-            $signatureHeader = $_SERVER['HTTP_X_HUB_SIGNATURE_256'] ?? '';
-            if ($signatureHeader === '') {
-                sendJson(['success' => false, 'error' => 'X-Hub-Signature-256 header missing'], 403);
-            }
-
-            if (!$facebookService->validateWebhookSignature($rawPayload, $signatureHeader, $appSecret)) {
-                sendJson(['success' => false, 'error' => 'Invalid webhook signature'], 403);
-            }
-        }
-
-        // Parse payload
         $payload = json_decode($rawPayload, true);
         if (!is_array($payload)) {
             $payload = [];
@@ -111,15 +100,6 @@ try {
             sendJson(['success' => false, 'error' => 'Payload inválido ou ausente'], 400);
         }
 
-        // Get credentials for Graph API
-        $accessToken = trim((string)($credentials['access_token'] ?? ''));
-        if ($accessToken === '') {
-            sendJson(['success' => false, 'error' => 'Access Token do Facebook não configurado'], 400);
-        }
-
-        $graphVersion = trim((string)($credentials['graph_api_version'] ?? 'v16.0')) ?: 'v16.0';
-
-        // Process each lead entry
         $results = [];
         foreach ($payload['entry'] as $entry) {
             if (!is_array($entry) || empty($entry['changes']) || !is_array($entry['changes'])) {
@@ -139,12 +119,11 @@ try {
                 }
 
                 try {
-                    $processed = $facebookService->processFacebookLeadEntry(
+                    $processed = $facebookService->processAuthenticatedWebhookLead(
                         $tenantId,
-                        $leadgenId,
-                        $accessToken,
-                        $appSecret ?: null,
-                        $graphVersion
+                        $rawPayload ?: '',
+                        $signatureHeader,
+                        $leadgenId
                     );
                     $results[] = array_merge($processed, ['leadgen_id' => $leadgenId]);
                 } catch (Exception $e) {

@@ -70,15 +70,18 @@ class TenantContext
             $selectedTenantId
         );
 
-        // Espelhar o tenant resolvido na sessão e em $_SERVER para compatibilidade
+        // Espelhar o tenant resolvido em $_SERVER para compatibilidade.
+        // Em requisições públicas, o tenant do domínio/subdomínio deve prevalecer e
+        // NÃO deve regravar a sessão administrativa do painel em $_SESSION['tenant_id'].
         if ($resolution->getTenantId() !== null) {
             $_SERVER['TENANT_ID'] = $resolution->getTenantId();
-            if (session_status() === PHP_SESSION_ACTIVE) {
+
+            if (session_status() === PHP_SESSION_ACTIVE && !self::isPublicRequestContext()) {
                 $_SESSION['tenant_id'] = $resolution->getTenantId();
             }
         } else {
-            // Garantir que não haja valor obsoleto na sessão
-            if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['tenant_id'])) {
+            // Garantir que não haja valor obsoleto na sessão para rotas não públicas.
+            if (session_status() === PHP_SESSION_ACTIVE && !self::isPublicRequestContext() && isset($_SESSION['tenant_id'])) {
                 unset($_SESSION['tenant_id']);
             }
         }
@@ -241,6 +244,29 @@ class TenantContext
         }
 
         return true;
+    }
+
+    private static function isPublicRequestContext(): bool
+    {
+        $requestPath = $_SERVER['REQUEST_URI'] ?? $_SERVER['PHP_SELF'] ?? '';
+        $scriptPath = $_SERVER['SCRIPT_NAME'] ?? $_SERVER['PHP_SELF'] ?? '';
+        $path = parse_url((string) $requestPath, PHP_URL_PATH) ?: $scriptPath;
+
+        if ($path === '') {
+            return false;
+        }
+
+        $normalizedPath = strtolower((string) $path);
+        if (str_contains($normalizedPath, '/api/')) {
+            return false;
+        }
+
+        $basename = strtolower(basename((string) $path));
+        if (in_array($basename, ['index.php', 'index-router.php'], true)) {
+            return true;
+        }
+
+        return $normalizedPath === '/';
     }
 
     private static function isHttpRequestContext(): bool

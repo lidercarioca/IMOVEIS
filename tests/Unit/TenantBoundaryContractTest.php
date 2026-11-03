@@ -102,6 +102,103 @@ class TenantBoundaryContractTest extends TestCase
         $this->assertSame(10, $resolution->getTenantId());
     }
 
+    public function testPublicSubdomainWinsOverAuthenticatedSessionTenant(): void
+    {
+        AuthContext::getInstance()->authenticate(1, 'user', 'token-1');
+        $_SESSION['tenant_id'] = 10;
+        $_SESSION['selected_tenant_id'] = 10;
+
+        $resolver = new TenantResolver(AuthContext::getInstance(), $this->repository);
+        $resolution = $resolver->resolve([
+            'session' => $_SESSION,
+            'query' => ['tenant_id' => 999],
+            'server' => [
+                'REQUEST_URI' => '/',
+                'SCRIPT_NAME' => '/index.php',
+                'HTTP_HOST' => 'tenant-b.localhost',
+                'SUBDOMAIN_TENANT_ID' => 20,
+            ],
+            'headers' => [],
+        ]);
+
+        $this->assertSame(20, $resolution->getTenantId());
+        $this->assertSame(TenantResolver::SOURCE_SUBDOMAIN, $resolution->getResolvedBy());
+        $this->assertTrue($resolution->isPublic());
+    }
+
+    public function testAdminRoutePreservesAuthenticatedTenantInsteadOfPublicHost(): void
+    {
+        AuthContext::getInstance()->authenticate(1, 'user', 'token-1');
+        $_SESSION['tenant_id'] = 10;
+        $_SESSION['selected_tenant_id'] = 10;
+
+        $resolver = new TenantResolver(AuthContext::getInstance(), $this->repository);
+        $resolution = $resolver->resolve([
+            'session' => $_SESSION,
+            'query' => [],
+            'server' => [
+                'REQUEST_URI' => '/painel.php',
+                'SCRIPT_NAME' => '/painel.php',
+                'HTTP_HOST' => 'tenant-b.localhost',
+                'SUBDOMAIN_TENANT_ID' => 20,
+            ],
+            'headers' => [],
+        ]);
+
+        $this->assertSame(10, $resolution->getTenantId());
+        $this->assertNotSame(TenantResolver::SOURCE_SUBDOMAIN, $resolution->getResolvedBy());
+    }
+
+    public function testPublicRouteWithoutMappedDomainDoesNotReuseSessionTenant(): void
+    {
+        AuthContext::getInstance()->authenticate(1, 'user', 'token-1');
+        $_SESSION['tenant_id'] = 10;
+        $_SESSION['selected_tenant_id'] = 10;
+
+        $resolver = new TenantResolver(AuthContext::getInstance(), $this->repository);
+        $resolution = $resolver->resolve([
+            'session' => $_SESSION,
+            'query' => [],
+            'server' => [
+                'REQUEST_URI' => '/',
+                'SCRIPT_NAME' => '/index.php',
+                'HTTP_HOST' => 'localhost',
+            ],
+            'headers' => [],
+        ]);
+
+        $this->assertNull($resolution->getTenantId());
+        $this->assertTrue($resolution->isPublic());
+        $this->assertSame('public_resolution_failed', $resolution->getResolvedBy());
+        $this->assertFalse($resolution->isFallback());
+    }
+
+    public function testPublicRequestDoesNotOverwriteSessionTenantState(): void
+    {
+        $_SESSION['user_id'] = 1;
+        $_SESSION['role'] = 'user';
+        $_SESSION['tenant_id'] = 10;
+        $_SESSION['selected_tenant_id'] = 10;
+        AuthContext::getInstance()->authenticate(1, 'user', 'token-1');
+
+        $_SERVER['REQUEST_URI'] = '/';
+        $_SERVER['SCRIPT_NAME'] = '/index.php';
+        $_SERVER['HTTP_HOST'] = 'tenant-b.localhost';
+        $_SERVER['SUBDOMAIN_TENANT_ID'] = 20;
+
+        $resolver = new TenantResolver(AuthContext::getInstance(), $this->repository);
+        $resolution = $resolver->resolve([
+            'session' => $_SESSION,
+            'query' => ['tenant_id' => 999],
+            'server' => $_SERVER,
+            'headers' => [],
+        ]);
+
+        $this->assertSame(20, $resolution->getTenantId());
+        $this->assertSame(10, $_SESSION['tenant_id']);
+        $this->assertSame(10, $_SESSION['selected_tenant_id']);
+    }
+
     public function testAuthenticatedUserWithoutValidTenantIsNotGivenTenantOne(): void
     {
         AuthContext::getInstance()->authenticate(999, 'user', 'token-invalid');
