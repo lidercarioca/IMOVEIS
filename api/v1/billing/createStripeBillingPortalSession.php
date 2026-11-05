@@ -61,7 +61,7 @@ if (empty($stripeConfig['secret_key']) || empty($stripeConfig['site_url'])) {
 $tenantId = TenantContext::getTenantId();
 if (!$tenantId) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Tenant não identificado.']);
+    echo json_encode(['success' => false, 'message' => 'Empresa não identificada.']);
     exit;
 }
 
@@ -69,7 +69,7 @@ $tenant = $tenantRepo->getTenantData($tenantId);
 $customerId = !empty($tenant['stripe_customer_id']) ? (string)$tenant['stripe_customer_id'] : null;
 if (!$customerId) {
     http_response_code(404);
-    echo json_encode(['success' => false, 'message' => 'Cliente Stripe não encontrado para este tenant. Verifique se há uma assinatura ativa.']);
+    echo json_encode(['success' => false, 'message' => 'Cliente Stripe não encontrado para esta empresa. Verifique se há uma assinatura ativa.']);
     exit;
 }
 

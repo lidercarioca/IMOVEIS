@@ -33,17 +33,17 @@ class BillingNotificationService
     {
         $tenant = $this->tenantRepository->getTenantById($tenantId);
         if (!$tenant) {
-            return $this->buildResult(false, 'Tenant não encontrado', 'stripe_payment_failed', $tenantId);
+            return $this->buildResult(false, 'Empresa não encontrada', 'stripe_payment_failed', $tenantId);
         }
 
         $admin = $this->resolveTenantAdmin($tenantId);
         if (!$admin || empty($admin['email'])) {
-            return $this->buildResult(false, 'Administrador do tenant não encontrado', 'stripe_payment_failed', $tenantId);
+            return $this->buildResult(false, 'Administrador da empresa não encontrado', 'stripe_payment_failed', $tenantId);
         }
 
         $subject = 'Falha de pagamento da assinatura - Ação necessária';
         $bodyText = "Olá {$admin['name']},\n\n";
-        $bodyText .= "Detectamos uma falha no pagamento da sua assinatura para o tenant '{$tenant['name']}'.\n";
+        $bodyText .= "Detectamos uma falha no pagamento da sua assinatura para a empresa '{$tenant['name']}'.\n";
 
         if ($amount !== null) {
             $bodyText .= "Valor da fatura: R$ " . $this->formatCurrency($amount) . "\n";
@@ -58,7 +58,7 @@ class BillingNotificationService
 
         $bodyHtml = '<h2>Falha no pagamento da assinatura</h2>';
         $bodyHtml .= '<p>Olá <strong>' . htmlspecialchars($admin['name'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</strong>,</p>';
-        $bodyHtml .= '<p>Detectamos uma falha no pagamento da sua assinatura para o tenant <strong>' . htmlspecialchars($tenant['name'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</strong>.</p>';
+        $bodyHtml .= '<p>Detectamos uma falha no pagamento da sua assinatura para a empresa <strong>' . htmlspecialchars($tenant['name'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</strong>.</p>';
 
         if ($amount !== null) {
             $bodyHtml .= '<p><strong>Valor da fatura:</strong> R$ ' . htmlspecialchars($this->formatCurrency($amount), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</p>';
@@ -78,17 +78,17 @@ class BillingNotificationService
     {
         $tenant = $this->tenantRepository->getTenantById($tenantId);
         if (!$tenant) {
-            return $this->buildResult(false, 'Tenant não encontrado', 'stripe_subscription_deleted', $tenantId);
+            return $this->buildResult(false, 'Empresa não encontrada', 'stripe_subscription_deleted', $tenantId);
         }
 
         $admin = $this->resolveTenantAdmin($tenantId);
         if (!$admin || empty($admin['email'])) {
-            return $this->buildResult(false, 'Administrador do tenant não encontrado', 'stripe_subscription_deleted', $tenantId);
+            return $this->buildResult(false, 'Administrador da empresa não encontrado', 'stripe_subscription_deleted', $tenantId);
         }
 
         $subject = 'Assinatura cancelada - Acesso bloqueado';
         $bodyText = "Olá {$admin['name']},\n\n";
-        $bodyText .= "Sua assinatura para o tenant '{$tenant['name']}' foi cancelada ou encerrada.\n";
+        $bodyText .= "Sua assinatura para a empresa '{$tenant['name']}' foi cancelada ou encerrada.\n";
 
         if ($subscriptionId) {
             $bodyText .= "ID da assinatura Stripe: {$subscriptionId}\n";
@@ -99,7 +99,7 @@ class BillingNotificationService
 
         $bodyHtml = '<h2>Assinatura cancelada</h2>';
         $bodyHtml .= '<p>Olá <strong>' . htmlspecialchars($admin['name'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</strong>,</p>';
-        $bodyHtml .= '<p>Sua assinatura para o tenant <strong>' . htmlspecialchars($tenant['name'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</strong> foi cancelada ou encerrada.</p>';
+        $bodyHtml .= '<p>Sua assinatura para a empresa <strong>' . htmlspecialchars($tenant['name'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</strong> foi cancelada ou encerrada.</p>';
 
         if ($subscriptionId) {
             $bodyHtml .= '<p><strong>ID da assinatura Stripe:</strong> ' . htmlspecialchars($subscriptionId, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</p>';
@@ -115,12 +115,12 @@ class BillingNotificationService
     {
         $tenant = $this->tenantRepository->getTenantById($tenantId);
         if (!$tenant) {
-            return $this->buildResult(false, 'Tenant não encontrado', 'expiracao_3dias', $tenantId);
+            return $this->buildResult(false, 'Empresa não encontrada', 'expiracao_3dias', $tenantId);
         }
 
         $admin = $this->resolveTenantAdmin($tenantId);
         if (!$admin || empty($admin['email'])) {
-            return $this->buildResult(false, 'Administrador do tenant não encontrado', 'expiracao_3dias', $tenantId);
+            return $this->buildResult(false, 'Administrador da empresa não encontrado', 'expiracao_3dias', $tenantId);
         }
 
         $expiration = strtotime($tenant['data_expiracao']);

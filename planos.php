@@ -74,20 +74,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['plano'])) {
             $mensagem = 'Para planos pagos, utilize o checkout Stripe clicando no botão correspondente.';
             $tipo_mensagem = 'warning';
         } elseif ($tenantBillingRepo->hasTrialHistory($tenantId)) {
-            $mensagem = 'Você já utilizou o período de trial. O trial está disponível apenas uma vez por empresa.';
+            $mensagem = 'Você já utilizou o período de avaliação. O período de avaliação está disponível apenas uma vez por empresa.';
             $tipo_mensagem = 'danger';
         } else {
             $diasTrial = $planos[$planoSelecionado]['dias_trial'] ?? 7;
             $resultado = $tenantBillingRepo->activateTrial($tenantId, $diasTrial);
 
             if ($resultado) {
-                $mensagem = 'Trial iniciado com sucesso! Aproveite o período gratuito.';
+                $mensagem = 'Período de avaliação iniciado com sucesso! Aproveite o período gratuito.';
                 $tipo_mensagem = 'success';
                 $_SESSION['tenant_plano'] = $planoSelecionado;
                 $_SESSION['tenant_status'] = 'active';
                 $tenantInfo = $tenantBillingRepo->getTenantData($tenantId);
             } else {
-                $mensagem = 'Erro ao iniciar trial. Tente novamente mais tarde.';
+                $mensagem = 'Erro ao iniciar o período de avaliação. Tente novamente mais tarde.';
                 $tipo_mensagem = 'danger';
             }
         }
@@ -371,13 +371,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['plano'])) {
                     }
                     ?>
                     <div class="trial-banner mt-3">
-                        <strong>⏰ Você está aproveitando o período de TRIAL!</strong><br>
+                        <strong>⏰ Você está aproveitando o período de avaliação!</strong><br>
                         <small>
                             <?php
                             if ($diasRestantes > 0) {
-                                echo "Faltam <strong>$diasRestantes dias</strong> para seu trial expirar.";
+                                echo "Faltam <strong>$diasRestantes dias</strong> para o período de avaliação expirar.";
                             } else {
-                                echo "Seu trial já expirou. Escolha um plano para continuar.";
+                                echo "Seu período de avaliação já expirou. Escolha um plano para continuar.";
                             }
                             ?>
                         </small>
@@ -465,7 +465,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['plano'])) {
                             </button>
                         <?php elseif ($trialJaUtilizado): ?>
                             <button class="btn btn-select-plan w-100" disabled style="background: #6c757d; color: white; cursor: not-allowed;">
-                                Trial Já Utilizado
+                                Período de avaliação já utilizado
                             </button>
                         <?php elseif ($isDowngrade): ?>
                             <button class="btn btn-select-plan w-100" disabled style="background: #6c757d; color: white; cursor: not-allowed;">
@@ -479,7 +479,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['plano'])) {
                                 </form>
                                 <button type="button" class="btn btn-select-plan btn-primary-plan w-100"
                                     onclick="document.getElementById('form-<?php echo $chave; ?>').submit();">
-                                    <?php echo ($allowRenewCurrent) ? 'Renovar Plano Atual' : 'Iniciar Trial'; ?>
+                                    <?php echo ($allowRenewCurrent) ? 'Renovar Plano Atual' : 'Iniciar período de avaliação'; ?>
                                 </button>
                             <?php else: ?>
                                 <button type="button" class="btn btn-select-plan btn-primary-plan w-100"
@@ -495,7 +495,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['plano'])) {
 
         <div class="text-center text-muted mt-4">
             <small>
-                Todos os planos incluem acesso completo. Você pode fazer upgrades a qualquer momento, mas downgrades não são permitidos. O período de trial está disponível apenas uma vez por empresa.
+                Todos os planos incluem acesso completo. Você pode fazer upgrades a qualquer momento, mas downgrades não são permitidos. O período de avaliação está disponível apenas uma vez por empresa.
             </small>
         </div>
     </div>
@@ -520,16 +520,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['plano'])) {
             showStripeFeedback('Redirecionando para o Stripe...', 'info');
 
             try {
+                const form = new URLSearchParams();
+                form.append('plan', plan);
+                form.append('csrf_token', stripeCsrfToken);
+
                 const response = await fetch(stripeApiUrl, {
                     method: 'POST',
                     credentials: 'same-origin',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                     },
-                    body: JSON.stringify({
-                        plan,
-                        csrf_token: stripeCsrfToken
-                    })
+                    body: form.toString()
                 });
 
                 const data = await response.json();

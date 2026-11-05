@@ -37,39 +37,6 @@ function markStripeSessionAsProcessed(string $sessionId): bool
     return (bool)@file_put_contents($file, $sessionId . PHP_EOL, FILE_APPEND | LOCK_EX);
 }
 
-function restoreSessionFromStripeMetadata(array $metadata): bool
-{
-    global $pdo;
-
-    if (empty($metadata['user_id'])) {
-        return false;
-    }
-
-    $userId = (int)$metadata['user_id'];
-    $stmt = $pdo->prepare('SELECT id, username, email, role, tenant_id, is_superadmin FROM users WHERE id = ? AND active = 1 LIMIT 1');
-    $stmt->execute([$userId]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$user) {
-        return false;
-    }
-
-    session_unset();
-    session_regenerate_id(true);
-
-    $_SESSION['user_id'] = $user['id'];
-    $_SESSION['role'] = $user['role'];
-    $_SESSION['username'] = $user['username'];
-    $_SESSION['email'] = $user['email'];
-    $_SESSION['tenant_id'] = $user['tenant_id'];
-    $_SESSION['is_superadmin'] = (int)($user['is_superadmin'] ?? 0);
-    $_SESSION['last_activity'] = time();
-    $_SESSION['last_regeneration'] = time();
-
-    TenantContext::initialize();
-    return true;
-}
-
 TenantContext::initialize();
 
 $sessionId = trim($_GET['session_id'] ?? '');
@@ -82,14 +49,12 @@ if (empty($sessionId)) {
     $paymentsConfig = require __DIR__ . '/config/payments.php';
     $stripeConfig = $paymentsConfig['stripe'] ?? [];
     $secretKey = $stripeConfig['secret_key'] ?? '';
-    $siteUrl = rtrim($stripeConfig['site_url'] ?? '', '/');
 
     if (empty($secretKey)) {
         $message = 'Configuração Stripe não encontrada.';
     } else {
         try {
             require_once __DIR__ . '/vendor/autoload.php';
-            $paymentsConfig = require __DIR__ . '/config/payments.php';
             $config = new \App\Infrastructure\Billing\StripeConfiguration($paymentsConfig);
             $apiClient = new \App\Infrastructure\Billing\StripeApiClient($config);
             $metadataService = new \App\Services\Billing\StripeSessionMetadataService($apiClient);
@@ -98,33 +63,35 @@ if (empty($sessionId)) {
             $serviceResult = $returnService->handleReturn($sessionId);
             $result = $serviceResult['session'] ?? [];
             $metadata = $serviceResult['metadata'] ?? [];
+            $tenantId = $serviceResult['tenant_id'] ?? null;
+            $tenantPlan = $serviceResult['tenant_plan'] ?? null;
 
             if (empty($result) || empty($result['payment_status'])) {
                 $message = 'Falha ao verificar pagamento Stripe.';
             } elseif ($result['payment_status'] !== 'paid') {
                 $message = 'Pagamento ainda não foi confirmado. Status: ' . htmlspecialchars($result['payment_status']);
             } else {
-                $tenantId = TenantContext::getTenantId();
+                $tenantExists = false;
 
-                if (!$tenantId && !empty($metadata)) {
-                    restoreSessionFromStripeMetadata($metadata);
-                    $tenantId = TenantContext::getTenantId();
+                if (!empty($tenantId)) {
+                    $tenantRepo = new \App\Infrastructure\Billing\TenantRepository($pdo);
+                    $tenant = $tenantRepo->getTenantById((int)$tenantId);
+                    $tenantExists = $tenant !== null;
                 }
 
-                if (!$tenantId) {
-                    $message = 'Tenant não identificado.';
-                } else {
-                    try {
-                        $paymentRepo = new \App\Infrastructure\Billing\PaymentRepository(null, $pdo);
-                        $tenantRepo = new \App\Infrastructure\Billing\TenantRepository($pdo);
-                        $tenantBillingService = new \App\Services\Billing\TenantBillingService($paymentRepo, $tenantRepo, null, $pdo);
-                        $tenantBillingService->syncStripeIdentifiers($tenantId, $result['customer'] ?? null, $result['subscription'] ?? null);
-                    } catch (\Throwable $e) {
-                        error_log('Stripe success sync identifiers error: ' . $e->getMessage());
-                    }
-
-                    $message = 'Pagamento confirmado. A ativação será concluída em alguns instantes após o processamento do webhook Stripe.';
+                if ($tenantId && $tenantExists) {
+                    $message = 'Pagamento confirmado em Stripe. A empresa #' . (int)$tenantId . ' foi identificada pela metadata da sessão. A ativação local permanece sob processamento do webhook autenticado.';
                     $status = 'success';
+                } elseif ($tenantId && !$tenantExists) {
+                    $message = 'Pagamento confirmado em Stripe, mas a empresa #' . (int)$tenantId . ' não foi encontrada no banco local. A ativação continua pendente do webhook autenticado.';
+                    $status = 'warning';
+                } else {
+                    $message = 'Pagamento confirmado em Stripe, mas a empresa não pôde ser identificada a partir da metadata da sessão. A ativação continua pendente do webhook autenticado.';
+                    $status = 'warning';
+                }
+
+                if (!empty($tenantPlan)) {
+                    $message .= ' Plano detectado: ' . htmlspecialchars($tenantPlan, ENT_QUOTES, 'UTF-8') . '.';
                 }
             }
         } catch (\Throwable $e) {

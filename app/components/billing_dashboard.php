@@ -18,7 +18,7 @@ function renderBillingDashboard($pdo, $tenantId = null)
     }
 
     if (!$tenantId) {
-        return '<div class="alert alert-danger">Tenant não identificado para exibir cobrança.</div>';
+        return '<div class="alert alert-danger">Empresa não identificada para exibir cobrança.</div>';
     }
 
     try {

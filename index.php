@@ -38,7 +38,7 @@ if ($tenant_id_for_injection === null || intval($tenant_id_for_injection) <= 0) 
     }
 
     http_response_code(404);
-    echo '<h1>Tenant não encontrado</h1><p>O domínio ou subdomínio solicitado não está cadastrado para este site público.</p>';
+    echo '<h1>Empresa não encontrada</h1><p>O domínio ou subdomínio solicitado não está cadastrado para este site público.</p>';
     exit;
 }
 
@@ -69,7 +69,7 @@ try {
 
     if (!$tenantStatus) {
         http_response_code(404);
-        echo '<h1>Tenant não encontrado</h1><p>O tenant requisitado não existe.</p>';
+        echo '<h1>Empresa não encontrada</h1><p>A empresa solicitada não foi encontrada.</p>';
         exit;
     }
 
@@ -78,7 +78,7 @@ try {
         http_response_code(503);
         echo '<div style="max-width:720px;margin:60px auto;padding:30px;background:#fff3cd;border:1px solid #ffeeba;color:#856404;border-radius:8px;font-family:Segoe UI, Arial, sans-serif;">';
         echo '<h1 style="margin-top:0;">Site temporariamente indisponível</h1>';
-        echo '<p>O tenant <strong>' . htmlspecialchars($tenantStatus['name']) . '</strong> está desabilitado.</p>';
+        echo '<p>A empresa <strong>' . htmlspecialchars($tenantStatus['name']) . '</strong> está desativada.</p>';
         echo '<p>Por favor, contate o administrador ou superadmin para reativação.</p>';
         echo '</div>';
         exit;

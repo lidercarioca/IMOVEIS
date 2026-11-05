@@ -547,7 +547,7 @@ $success = '';
                 <div class="summary-card">
                     <strong>O que será criado:</strong>
                     <ul>
-                        <li>Empresa no sistema com 7 dias de trial</li>
+                        <li>Empresa no sistema com 7 dias de período de avaliação</li>
                         <li>Conta de administrador com acesso completo</li>
                         <li>Configuração inicial pronta para ser usada</li>
                     </ul>
@@ -706,7 +706,7 @@ $success = '';
                                 <li><strong>Administrador:</strong> <span id="summaryAdminName">-</span></li>
                                 <li><strong>Usuário:</strong> <span id="summaryAdminUsername">-</span></li>
                                 <li><strong>Email admin:</strong> <span id="summaryAdminEmail">-</span></li>
-                                <li><strong>Plano:</strong> Trial</li>
+                                <li><strong>Plano:</strong> Período de avaliação</li>
                             </ul>
                         </div>
                         <div class="alert alert-info" role="alert">

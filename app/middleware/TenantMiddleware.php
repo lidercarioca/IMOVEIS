@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Middleware;
 
 require_once __DIR__ . '/../security/TenantContext.php';
@@ -12,8 +13,9 @@ require_once __DIR__ . '/../security/TenantContext.php';
  * 3. Filtragem automática de queries por tenant
  * 4. Logging de acessos suspeitos
  */
-class TenantMiddleware {
-    
+class TenantMiddleware
+{
+
     /**
      * Aplicar middleware - deve ser chamado no início de cada requisição authenticate
      * 
@@ -22,7 +24,8 @@ class TenantMiddleware {
      * - Usuários normais devem ter um tenant_id associado
      * - Validações de acesso ao recurso
      */
-    public static function apply() {
+    public static function apply()
+    {
         // Inicializa contexto de tenant
         \TenantContext::initialize();
 
@@ -54,7 +57,7 @@ class TenantMiddleware {
         // Validar integridade da sessão de tenant
         if (!\TenantContext::hasTenantSelected() && !isAdmin() && !hasRole('user') && !\TenantContext::isSuperAdmin()) {
             http_response_code(403);
-            exit('Acesso negado: tenant não selecionado');
+            exit('Acesso negado: selecione uma empresa para continuar');
         }
 
         // Se tenant foi selecionado, validar status ativo para todos (exceto superadmin)
@@ -69,15 +72,15 @@ class TenantMiddleware {
                 if (!$tenant || $tenant['status'] !== 'active') {
                     http_response_code(403);
 
-                    $tenantName = $tenant['name'] ?? 'desconhecido';
-                    $message = "<h1>Empresa congelada</h1>";
-                    $message .= "<p>O tenant <strong>{$tenantName}</strong> está desabilitado no momento.</p>";
-                    $message .= "<p>Somente o Superadmin pode reativá-lo em <a href='/select_tenant.php'>Selecionar Tenant</a>.</p>";
-                    $message .= "<p>Se você for o admin da empresa, entre em contato com o Superadmin.</p>";
+                    $tenantName = $tenant['name'] ?? 'desconhecida';
+                    $message = "<h1>Empresa indisponível</h1>";
+                    $message .= "<p>A empresa <strong>{$tenantName}</strong> está desativada no momento.</p>";
+                    $message .= "<p>Somente o Superadmin pode reativá-la em <a href='/select_tenant.php'>Selecionar empresa</a>.</p>";
+                    $message .= "<p>Se você for o administrador da empresa, entre em contato com o Superadmin.</p>";
 
                     if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/api/') === 0) {
                         header('Content-Type: application/json');
-                        echo json_encode(['success' => false, 'message' => 'Tenant inativo', 'tenant' => $tenantName]);
+                        echo json_encode(['success' => false, 'message' => 'Empresa inativa', 'tenant' => $tenantName]);
                     } else {
                         header('Content-Type: text/html; charset=UTF-8');
                         echo '<div style="max-width:740px; margin:60px auto; padding:30px; background:#fff3cd; color:#856404; border:1px solid #ffeeba; border-radius:10px; font-family:Arial, sans-serif;">' . $message . '</div>';
@@ -102,11 +105,12 @@ class TenantMiddleware {
      * // Resultado: "SELECT * FROM properties WHERE status = :status AND tenant_id = :tenant_id"
      * ```
      */
-    public static function applyTenantFilter(string $query, string $tableName): string {
+    public static function applyTenantFilter(string $query, string $tableName): string
+    {
         if (\TenantContext::hasTenantSelected()) {
             // Adicionar filtro de tenant se a tabela tiver a coluna
             $hasTenantColumn = self::tableHasTenantColumn($tableName);
-            
+
             if ($hasTenantColumn) {
                 if (stripos($query, 'WHERE') !== false) {
                     // Já tem WHERE, adicionar AND
@@ -128,7 +132,8 @@ class TenantMiddleware {
     /**
      * Obter parâmetros adicionais para a query com tenant_id
      */
-    public static function getTenantParams(array $existingParams = []): array {
+    public static function getTenantParams(array $existingParams = []): array
+    {
         if (\TenantContext::hasTenantSelected()) {
             $existingParams[':__tenant_id'] = \TenantContext::getTenantId();
         }
@@ -146,7 +151,8 @@ class TenantMiddleware {
      * - alerts
      * - etc.
      */
-    private static function tableHasTenantColumn(string $tableName): bool {
+    private static function tableHasTenantColumn(string $tableName): bool
+    {
         // Tabelas que possuem tenant_id
         $tenantAwareTables = [
             'users',
@@ -167,7 +173,8 @@ class TenantMiddleware {
      * 
      * Simula uma proteção adicional para certas rotas críticas
      */
-    public static function validateResourceAccess(string $resourceType, int $resourceId): bool {
+    public static function validateResourceAccess(string $resourceType, int $resourceId): bool
+    {
         global $pdo;
 
         // Construir nome da tabela baseado no tipo
@@ -190,7 +197,7 @@ class TenantMiddleware {
 
         // Verificar se o recurso pertence ao tenant atual
         $query = "SELECT id FROM {$table} WHERE id = :resource_id AND tenant_id = :tenant_id LIMIT 1";
-        
+
         try {
             $stmt = $pdo->prepare($query);
             $stmt->execute([
@@ -207,7 +214,8 @@ class TenantMiddleware {
     /**
      * Registrar tentativa de acesso indevido (possível breach)
      */
-    public static function logUnauthorizedAccess(string $reason, array $context = []) {
+    public static function logUnauthorizedAccess(string $reason, array $context = [])
+    {
         $logData = [
             'timestamp' => date('Y-m-d H:i:s'),
             'user_id' => \TenantContext::getUserId(),

@@ -63,7 +63,7 @@ if (!$authContext->isAdmin() && !$authContext->isSuperAdmin()) {
 $tenantId = TenantContext::getTenantId();
 if (!$tenantId) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'Tenant não selecionado']);
+    echo json_encode(['success' => false, 'error' => 'Empresa não selecionada']);
     exit;
 }
 

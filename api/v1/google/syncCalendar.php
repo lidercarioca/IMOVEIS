@@ -43,7 +43,7 @@ try {
         http_response_code(403);
         echo json_encode([
             'success' => false,
-            'message' => 'Tenant inválido ou não resolvido para esta sessão',
+            'message' => 'Empresa inválida ou não resolvida para esta sessão',
             'error_code' => 'TENANT_INVALID'
         ]);
         exit;

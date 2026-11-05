@@ -59,7 +59,7 @@ try {
     $status = $publicResolution['status'] ?? 'invalid_host';
     if ($status === 'invalid_host' || $status === 'tenant_not_found') {
         http_response_code(404);
-        echo '<h1>Tenant não encontrado</h1><p>O domínio ou subdomínio solicitado não está cadastrado para este site público.</p>';
+        echo '<h1>Empresa não encontrada</h1><p>O domínio ou subdomínio solicitado não está cadastrado para este site público.</p>';
         exit;
     }
 
@@ -79,7 +79,7 @@ try {
 
     if ($tenant_id === null || $tenant_id <= 0) {
         http_response_code(404);
-        echo '<h1>Tenant não encontrado</h1><p>O domínio ou subdomínio solicitado não está cadastrado para este site público.</p>';
+        echo '<h1>Empresa não encontrada</h1><p>O domínio ou subdomínio solicitado não está cadastrado para este site público.</p>';
         exit;
     }
 } catch (Exception $e) {
@@ -112,7 +112,7 @@ if ($old_subdomain_redirect && $subdomain && isset($redirect_map[$subdomain])) {
 
 if ($tenant_id === null || (int) $tenant_id <= 0) {
     http_response_code(404);
-    echo '<h1>Tenant não encontrado</h1><p>O domínio ou subdomínio solicitado não está cadastrado para este site público.</p>';
+    echo '<h1>Empresa não encontrada</h1><p>O domínio ou subdomínio solicitado não está cadastrado para este site público.</p>';
     exit;
 }
 

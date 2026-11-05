@@ -65,7 +65,7 @@ try {
 if (!\TenantContext::isSuperAdmin()) {
   if ($currentTenantId <= 0) {
     http_response_code(403);
-    echo '<h1>Acesso negado</h1><p>Tenant não selecionado.</p>';
+    echo '<h1>Acesso negado</h1><p>Empresa não selecionada.</p>';
     exit;
   }
 
@@ -134,13 +134,13 @@ try {
   $tenantData = $stmt->fetch(PDO::FETCH_ASSOC);
 
   if (!$tenantData) {
-    $viewSiteMessage = 'Tenant não encontrado no contexto administrativo atual.';
+    $viewSiteMessage = 'Empresa não encontrada no contexto administrativo atual.';
   } elseif (strtolower((string)($tenantData['status'] ?? 'inactive')) !== 'active') {
-    $viewSiteMessage = 'Este tenant está inativo. O site público não está disponível.';
+    $viewSiteMessage = 'Esta empresa está inativa. O site público não está disponível.';
   } else {
     $subdomain = strtolower(trim((string)($tenantData['company_subdomain'] ?? '')));
     if ($subdomain === '') {
-      $viewSiteMessage = 'Este tenant não possui subdomínio público configurado.';
+      $viewSiteMessage = 'Esta empresa não possui subdomínio público configurado.';
     } else {
       $candidateHosts = [];
       $configuredValue = getenv('TENANT_SUBDOMAIN_BASE_HOSTS') ?: ($_ENV['TENANT_SUBDOMAIN_BASE_HOSTS'] ?? null);
@@ -198,7 +198,7 @@ try {
   }
 } catch (Exception $e) {
   error_log('Erro construindo URL do site público: ' . $e->getMessage());
-  $viewSiteMessage = 'Não foi possível montar a URL pública do tenant selecionado.';
+  $viewSiteMessage = 'Não foi possível montar a URL pública da empresa selecionada.';
 }
 
 // Verificar permissões baseadas na role do usuário

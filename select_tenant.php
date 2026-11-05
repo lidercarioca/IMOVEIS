@@ -679,7 +679,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selecionar Tenant</title>
+    <title>Selecionar Empresa</title>
     <style>
         * {
             margin: 0;
@@ -1279,7 +1279,7 @@ try {
         </div>
 
         <!-- Título -->
-        <h1 class="title">Selecione um Tenant</h1>
+        <h1 class="title">Selecione uma empresa</h1>
 
         <!-- Mensagem de erro -->
         <?php if (isset($error)): ?>
@@ -1288,7 +1288,7 @@ try {
 
         <?php if (isSuperAdmin($user_type)): ?>
             <div class="tabs">
-                <button type="button" class="tab-button <?php echo ($activeTab === 'tab-select') ? 'active' : ''; ?>" onclick="switchTab('tab-select', this)">Selecionar Tenant</button>
+                <button type="button" class="tab-button <?php echo ($activeTab === 'tab-select') ? 'active' : ''; ?>" onclick="switchTab('tab-select', this)">Selecionar empresa</button>
                 <button type="button" class="tab-button <?php echo ($activeTab === 'tab-plans') ? 'active' : ''; ?>" onclick="switchTab('tab-plans', this)">Gerenciar Planos</button>
             </div>
 
@@ -1373,7 +1373,7 @@ try {
                             <div class="tenant-actions">
                                 <?php $canSelectTenant = $tenantStatus === 'active' || isSuperAdmin($user_type); ?>
                                 <button type="button" class="select-btn" onclick="selectTenant(this, <?php echo $tenant['id']; ?>)" <?php echo $canSelectTenant ? '' : 'disabled style="opacity:0.5;cursor:not-allowed;"'; ?>>
-                                    ✓ Selecionar Tenant
+                                    ✓ Selecionar empresa
                                 </button>
 
                                 <?php if (isSuperAdmin($user_type)): ?>
@@ -1393,7 +1393,7 @@ try {
                             </div>
 
                             <?php if ($current_tenant_id == $tenant['id']): ?>
-                                <div class="current-badge">✓ Tenant Atual</div>
+                                <div class="current-badge">✓ Empresa atual</div>
                             <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
@@ -1473,7 +1473,7 @@ try {
                             button.disabled = false;
                             button.style.opacity = '1';
 
-                            alert('Erro ao selecionar tenant: ' + error.message + '\n\nAbra o Console (F12) para mais detalhes.');
+                            alert('Erro ao selecionar empresa: ' + error.message + '\n\nAbra o Console (F12) para mais detalhes.');
                         });
                 }
 
@@ -1502,15 +1502,15 @@ try {
                             body
                         }) => {
                             if (status !== 200 || !body.success) {
-                                throw new Error(body.message || 'Erro ao alterar status do tenant');
+                                throw new Error(body.message || 'Erro ao alterar status da empresa');
                             }
 
-                            alert('Tenant atualizado com sucesso. A página será recarregada.');
+                            alert('Empresa atualizada com sucesso. A página será recarregada.');
                             window.location.reload();
                         })
                         .catch(error => {
-                            console.error('Erro ao alterar status do tenant:', error);
-                            alert('Erro ao alterar status do tenant: ' + error.message);
+                            console.error('Erro ao alterar status da empresa:', error);
+                            alert('Erro ao alterar status da empresa: ' + error.message);
                         })
                         .finally(() => {
                             loadingOverlay.classList.remove('active');

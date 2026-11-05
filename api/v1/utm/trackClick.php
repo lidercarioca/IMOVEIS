@@ -68,7 +68,7 @@ try {
         http_response_code(400);
         echo json_encode([
             'success' => false,
-            'message' => 'Tenant não identificado para rastreamento UTM.'
+            'message' => 'Empresa não identificada para rastreamento UTM.'
         ], JSON_UNESCAPED_UNICODE);
         exit;
     }

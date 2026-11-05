@@ -28,10 +28,23 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $rawBody = file_get_contents('php://input');
-$data = json_decode($rawBody, true);
+$data = [];
 
-$plan = isset($data['plan']) ? trim($data['plan']) : '';
-$csrfToken = isset($data['csrf_token']) ? $data['csrf_token'] : '';
+if (!empty($rawBody)) {
+    $decodedBody = json_decode($rawBody, true);
+    if (is_array($decodedBody)) {
+        $data = $decodedBody;
+    } else {
+        parse_str($rawBody, $data);
+    }
+}
+
+if (empty($data) && !empty($_POST)) {
+    $data = $_POST;
+}
+
+$plan = isset($data['plan']) ? trim((string)$data['plan']) : '';
+$csrfToken = isset($data['csrf_token']) ? (string)$data['csrf_token'] : '';
 
 if (!$plan || !$csrfToken) {
     http_response_code(400);
@@ -63,7 +76,7 @@ if (empty($stripeConfig['secret_key']) || empty($stripeConfig['publishable_key']
 $tenantId = TenantContext::getTenantId();
 if (!$tenantId) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Tenant não identificado.']);
+    echo json_encode(['success' => false, 'message' => 'Empresa não identificada.']);
     exit;
 }
 
@@ -83,7 +96,7 @@ if ($plan === 'trial') {
 $tenant = $tenantRepo->getTenantData($tenantId);
 if (!$tenant) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Tenant não encontrado.']);
+    echo json_encode(['success' => false, 'message' => 'Empresa não encontrada.']);
     exit;
 }
 
@@ -98,7 +111,7 @@ if (!empty($tenant['status']) && $tenant['status'] === 'active' && !empty($tenan
 
 if ($tenantRepo->hasTrialHistory($tenantId) && $plan === 'trial') {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Trial já utilizado.']);
+    echo json_encode(['success' => false, 'message' => 'Período de avaliação já utilizado.']);
     exit;
 }
 

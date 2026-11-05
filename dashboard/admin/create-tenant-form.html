@@ -1,306 +1,324 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar Novo Tenant - Preview de Subdomínio</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-    <style>
-        .form-section {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        
-        .subdomain-preview {
-            background: #e7f3ff;
-            border-left: 4px solid #0066cc;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 10px;
-            display: none;
-        }
-        
-        .subdomain-preview.available {
-            background: #d4edda;
-            border-left-color: #28a745;
-        }
-        
-        .subdomain-preview.taken {
-            background: #fff3cd;
-            border-left-color: #ffc107;
-        }
-        
-        .subdomain-preview h6 {
-            margin-top: 0;
-            font-weight: 600;
-        }
-        
-        .subdomain-value {
-            font-family: monospace;
-            font-size: 16px;
-            font-weight: bold;
-            color: #0066cc;
-        }
-        
-        .available .subdomain-value {
-            color: #28a745;
-        }
-        
-        .taken .subdomain-value {
-            color: #ffc107;
-        }
-        
-        .spinner-border-sm {
-            width: 1rem;
-            height: 1rem;
-            border-width: 0.15em;
-            vertical-align: text-bottom;
-        }
-        
-        .loading-badge {
-            display: inline-block;
-            margin-left: 10px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <h2 class="mb-4">Criar Novo Tenant</h2>
-                
-                <form id="tenantForm" class="needs-validation" novalidate>
-                    <div class="form-section">
-                        <div class="mb-3">
-                            <label for="company_name" class="form-label">Nome da Empresa</label>
-                            <input 
-                                type="text" 
-                                class="form-control" 
-                                id="company_name" 
-                                name="name"
-                                placeholder="Ex: Imóveis do Litoral"
-                                required
-                            >
-                            <div class="form-text">
-                                O subdomínio será gerado automaticamente a partir do nome.
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Criar Nova Empresa - Preview de Subdomínio</title>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+        />
+        <style>
+            .form-section {
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+            }
+
+            .subdomain-preview {
+                background: #e7f3ff;
+                border-left: 4px solid #0066cc;
+                padding: 15px;
+                border-radius: 4px;
+                margin-top: 10px;
+                display: none;
+            }
+
+            .subdomain-preview.available {
+                background: #d4edda;
+                border-left-color: #28a745;
+            }
+
+            .subdomain-preview.taken {
+                background: #fff3cd;
+                border-left-color: #ffc107;
+            }
+
+            .subdomain-preview h6 {
+                margin-top: 0;
+                font-weight: 600;
+            }
+
+            .subdomain-value {
+                font-family: monospace;
+                font-size: 16px;
+                font-weight: bold;
+                color: #0066cc;
+            }
+
+            .available .subdomain-value {
+                color: #28a745;
+            }
+
+            .taken .subdomain-value {
+                color: #ffc107;
+            }
+
+            .spinner-border-sm {
+                width: 1rem;
+                height: 1rem;
+                border-width: 0.15em;
+                vertical-align: text-bottom;
+            }
+
+            .loading-badge {
+                display: inline-block;
+                margin-left: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <h2 class="mb-4">Criar Nova Empresa</h2>
+
+                    <form id="tenantForm" class="needs-validation" novalidate>
+                        <div class="form-section">
+                            <div class="mb-3">
+                                <label for="company_name" class="form-label">Nome da Empresa</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="company_name"
+                                    name="name"
+                                    placeholder="Ex: Imóveis do Litoral"
+                                    required
+                                />
+                                <div class="form-text">
+                                    O subdomínio será gerado automaticamente a partir do nome.
+                                </div>
+                            </div>
+
+                            <!-- Preview do subdomínio -->
+                            <div class="subdomain-preview" id="subdomainPreview">
+                                <h6 id="previewTitle">Subdomínio Preview</h6>
+                                <p>
+                                    <span class="subdomain-value" id="subdomainValue">-</span>
+                                    <span class="subdomain-value">.meusite.com</span>
+                                </p>
+                                <small id="previewNote" class="d-block mt-2"></small>
+                            </div>
+
+                            <div class="loading-badge" id="loadingBadge" style="display: none">
+                                <div
+                                    class="spinner-border spinner-border-sm text-primary"
+                                    role="status"
+                                >
+                                    <span class="visually-hidden">Carregando...</span>
+                                </div>
+                                <span class="ms-2">Verificando disponibilidade...</span>
                             </div>
                         </div>
-                        
-                        <!-- Preview do subdomínio -->
-                        <div class="subdomain-preview" id="subdomainPreview">
-                            <h6 id="previewTitle">Subdomínio Preview</h6>
-                            <p>
-                                <span class="subdomain-value" id="subdomainValue">-</span>
-                                <span class="subdomain-value">.meusite.com</span>
-                            </p>
-                            <small id="previewNote" class="d-block mt-2"></small>
-                        </div>
-                        
-                        <div class="loading-badge" id="loadingBadge" style="display: none;">
-                            <div class="spinner-border spinner-border-sm text-primary" role="status">
-                                <span class="visually-hidden">Carregando...</span>
+
+                        <div class="form-section">
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Descrição</label>
+                                <textarea
+                                    class="form-control"
+                                    id="description"
+                                    name="description"
+                                    rows="3"
+                                    placeholder="Descrição opcional da empresa"
+                                ></textarea>
                             </div>
-                            <span class="ms-2">Verificando disponibilidade...</span>
                         </div>
-                    </div>
-                    
-                    <div class="form-section">
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Descrição</label>
-                            <textarea 
-                                class="form-control" 
-                                id="description" 
-                                name="description"
-                                rows="3"
-                                placeholder="Descrição opcional do tenant"
-                            ></textarea>
+
+                        <div class="form-section">
+                            <div class="mb-3">
+                                <label for="max_users" class="form-label">Máximo de Usuários</label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="max_users"
+                                    name="max_users"
+                                    value="10"
+                                    min="1"
+                                    max="1000"
+                                />
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="form-section">
-                        <div class="mb-3">
-                            <label for="max_users" class="form-label">Máximo de Usuários</label>
-                            <input 
-                                type="number" 
-                                class="form-control" 
-                                id="max_users" 
-                                name="max_users"
-                                value="10"
-                                min="1"
-                                max="1000"
-                            >
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary" id="submitBtn">
+                                Criar Empresa
+                            </button>
+                            <button type="reset" class="btn btn-secondary">Limpar</button>
                         </div>
-                    </div>
-                    
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary" id="submitBtn">Criar Tenant</button>
-                        <button type="reset" class="btn btn-secondary">Limpar</button>
-                    </div>
-                </form>
-                
-                <!-- Response message -->
-                <div id="messageAlert" class="alert mt-3" style="display: none;"></div>
+                    </form>
+
+                    <!-- Response message -->
+                    <div id="messageAlert" class="alert mt-3" style="display: none"></div>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <script>
-        const companyNameInput = document.getElementById('company_name');
-        const subdomainPreview = document.getElementById('subdomainPreview');
-        const subdomainValue = document.getElementById('subdomainValue');
-        const previewNote = document.getElementById('previewNote');
-        const loadingBadge = document.getElementById('loadingBadge');
-        const tenantForm = document.getElementById('tenantForm');
-        const messageAlert = document.getElementById('messageAlert');
-        
-        let debounceTimer = null;
-        const DEBOUNCE_DELAY = 500; // ms
-        
-        // Event listener para atualizar preview
-        companyNameInput.addEventListener('input', function() {
-            clearTimeout(debounceTimer);
-            
-            const name = this.value.trim();
-            
-            if (name.length < 2) {
+
+        <script>
+            const companyNameInput = document.getElementById('company_name');
+            const subdomainPreview = document.getElementById('subdomainPreview');
+            const subdomainValue = document.getElementById('subdomainValue');
+            const previewNote = document.getElementById('previewNote');
+            const loadingBadge = document.getElementById('loadingBadge');
+            const tenantForm = document.getElementById('tenantForm');
+            const messageAlert = document.getElementById('messageAlert');
+
+            let debounceTimer = null;
+            const DEBOUNCE_DELAY = 500; // ms
+
+            // Event listener para atualizar preview
+            companyNameInput.addEventListener('input', function () {
+                clearTimeout(debounceTimer);
+
+                const name = this.value.trim();
+
+                if (name.length < 2) {
+                    subdomainPreview.style.display = 'none';
+                    return;
+                }
+
+                // Mostrar loading
+                loadingBadge.style.display = 'block';
                 subdomainPreview.style.display = 'none';
-                return;
-            }
-            
-            // Mostrar loading
-            loadingBadge.style.display = 'block';
-            subdomainPreview.style.display = 'none';
-            
-            // Debounce: esperar 500ms sem digitação antes de fazer requisição
-            debounceTimer = setTimeout(() => {
-                fetchSubdomainPreview(name);
-            }, DEBOUNCE_DELAY);
-        });
-        
-        // Fetch preview via API
-        async function fetchSubdomainPreview(name) {
-            try {
-                const response = await fetch('/api/v1/tenants/preview-subdomain.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ name: name })
-                });
-                
-                const data = await response.json();
-                loadingBadge.style.display = 'none';
-                
-                if (data.success) {
-                    subdomainValue.textContent = data.subdomain;
-                    
-                    // Atualizar classe CSS baseado em disponibilidade
-                    subdomainPreview.classList.remove('available', 'taken');
-                    
-                    if (data.is_available) {
-                        subdomainPreview.classList.add('available');
-                        previewNote.innerHTML = '✓ <strong>Disponível!</strong> Este subdomínio pode ser usado.';
-                    } else if (data.collision_warning) {
-                        subdomainPreview.classList.add('taken');
-                        previewNote.innerHTML = '⚠️ ' + data.collision_warning;
+
+                // Debounce: esperar 500ms sem digitação antes de fazer requisição
+                debounceTimer = setTimeout(() => {
+                    fetchSubdomainPreview(name);
+                }, DEBOUNCE_DELAY);
+            });
+
+            // Fetch preview via API
+            async function fetchSubdomainPreview(name) {
+                try {
+                    const response = await fetch('/api/v1/tenants/preview-subdomain.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ name: name }),
+                    });
+
+                    const data = await response.json();
+                    loadingBadge.style.display = 'none';
+
+                    if (data.success) {
+                        subdomainValue.textContent = data.subdomain;
+
+                        // Atualizar classe CSS baseado em disponibilidade
+                        subdomainPreview.classList.remove('available', 'taken');
+
+                        if (data.is_available) {
+                            subdomainPreview.classList.add('available');
+                            previewNote.innerHTML =
+                                '✓ <strong>Disponível!</strong> Este subdomínio pode ser usado.';
+                        } else if (data.collision_warning) {
+                            subdomainPreview.classList.add('taken');
+                            previewNote.innerHTML = '⚠️ ' + data.collision_warning;
+                        }
+
+                        subdomainPreview.style.display = 'block';
+                    } else {
+                        showMessage('Erro: ' + data.error, 'danger');
+                        loadingBadge.style.display = 'none';
                     }
-                    
-                    subdomainPreview.style.display = 'block';
-                } else {
-                    showMessage('Erro: ' + data.error, 'danger');
+                } catch (error) {
+                    console.error('Erro:', error);
+                    showMessage('Erro ao verificar subdomínio: ' + error.message, 'danger');
                     loadingBadge.style.display = 'none';
                 }
-            } catch (error) {
-                console.error('Erro:', error);
-                showMessage('Erro ao verificar subdomínio: ' + error.message, 'danger');
-                loadingBadge.style.display = 'none';
             }
-        }
-        
-        // Submit form
-        tenantForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            if (!this.checkValidity()) {
-                e.stopPropagation();
-                this.classList.add('was-validated');
-                return;
-            }
-            
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Criando...';
-            
-            try {
-                const formData = new FormData(this);
-                const data = Object.fromEntries(formData);
-                
-                const response = await fetch('/api/v1/tenants/create.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showMessage(
-                        `<strong>Tenant criado com sucesso!</strong><br>` +
-                        `Subdomínio: <code>${result.subdomain}</code><br>` +
-                        `Acesso: <a href="${result.access_url}" target="_blank">${result.access_url}</a><br>` +
-                        `ID do Tenant: ${result.tenant_id}`,
-                        'success'
-                    );
-                    tenantForm.reset();
-                    subdomainPreview.style.display = 'none';
-                } else {
-                    showMessage(
-                        result.error || (result.errors?.join('<br>') || 'Erro desconhecido'),
-                        'danger'
-                    );
+
+            // Submit form
+            tenantForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                if (!this.checkValidity()) {
+                    e.stopPropagation();
+                    this.classList.add('was-validated');
+                    return;
                 }
-            } catch (error) {
-                console.error('Erro:', error);
-                showMessage('Erro ao criar tenant: ' + error.message, 'danger');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Criar Tenant';
+
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML =
+                    '<span class="spinner-border spinner-border-sm me-2"></span>Criando...';
+
+                try {
+                    const formData = new FormData(this);
+                    const data = Object.fromEntries(formData);
+
+                    const response = await fetch('/api/v1/tenants/create.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data),
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        showMessage(
+                            `<strong>Empresa criada com sucesso!</strong><br>` +
+                                `Subdomínio: <code>${result.subdomain}</code><br>` +
+                                `Acesso: <a href="${result.access_url}" target="_blank">${result.access_url}</a><br>` +
+                                `ID da Empresa: ${result.tenant_id}`,
+                            'success'
+                        );
+                        tenantForm.reset();
+                        subdomainPreview.style.display = 'none';
+                    } else {
+                        showMessage(
+                            result.error || result.errors?.join('<br>') || 'Erro desconhecido',
+                            'danger'
+                        );
+                    }
+                } catch (error) {
+                    console.error('Erro:', error);
+                    showMessage('Erro ao criar tenant: ' + error.message, 'danger');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Criar Empresa';
+                }
+            });
+
+            // Mostrar mensagem
+            function showMessage(text, type = 'info') {
+                messageAlert.className = `alert alert-${type}`;
+                messageAlert.innerHTML = text;
+                messageAlert.style.display = 'block';
+
+                // Auto-dismiss após 5s (só for sucesso)
+                if (type === 'success') {
+                    setTimeout(() => {
+                        messageAlert.style.display = 'none';
+                    }, 5000);
+                }
             }
-        });
-        
-        // Mostrar mensagem
-        function showMessage(text, type = 'info') {
-            messageAlert.className = `alert alert-${type}`;
-            messageAlert.innerHTML = text;
-            messageAlert.style.display = 'block';
-            
-            // Auto-dismiss após 5s (só for sucesso)
-            if (type === 'success') {
-                setTimeout(() => {
-                    messageAlert.style.display = 'none';
-                }, 5000);
-            }
-        }
-        
-        // Bootstrap form validation
-        (function() {
-            window.addEventListener('load', function() {
-                const forms = document.querySelectorAll('.needs-validation');
-                Array.prototype.slice.call(forms).forEach(function(form) {
-                    form.addEventListener('submit', function(event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-                        form.classList.add('was-validated');
-                    }, false);
-                });
-            }, false);
-        })();
-    </script>
-</body>
+
+            // Bootstrap form validation
+            (function () {
+                window.addEventListener(
+                    'load',
+                    function () {
+                        const forms = document.querySelectorAll('.needs-validation');
+                        Array.prototype.slice.call(forms).forEach(function (form) {
+                            form.addEventListener(
+                                'submit',
+                                function (event) {
+                                    if (!form.checkValidity()) {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                    }
+                                    form.classList.add('was-validated');
+                                },
+                                false
+                            );
+                        });
+                    },
+                    false
+                );
+            })();
+        </script>
+    </body>
 </html>

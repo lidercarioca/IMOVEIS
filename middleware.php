@@ -18,7 +18,7 @@ function verificarTenantAtivo($tenantId)
         $tenant = $tenantRepo->getTenantData((int)$tenantId);
 
         if (!$tenant) {
-            return ['ativo' => false, 'motivo' => 'Tenant não encontrado', 'tenant' => null];
+            return ['ativo' => false, 'motivo' => 'Empresa não encontrada', 'tenant' => null];
         }
 
         if ($tenant['status'] === 'trial') {
@@ -36,7 +36,7 @@ function verificarTenantAtivo($tenantId)
         }
 
         if ($tenant['status'] === 'inactive') {
-            return ['ativo' => false, 'motivo' => 'Tenant bloqueado', 'tenant' => $tenant];
+            return ['ativo' => false, 'motivo' => 'Acesso à empresa bloqueado', 'tenant' => $tenant];
         }
 
         if ($tenant['status'] === 'active') {
@@ -68,7 +68,7 @@ function podeCriarUsuario($tenantId)
     $tenantCheck = verificarTenantAtivo($tenantId);
 
     if (!$tenantCheck['ativo']) {
-        return ['pode' => false, 'motivo' => 'Tenant não está ativo: ' . $tenantCheck['motivo']];
+        return ['pode' => false, 'motivo' => 'Empresa inativa: ' . $tenantCheck['motivo']];
     }
 
     $tenant = $tenantCheck['tenant'];
@@ -144,7 +144,7 @@ function verificarAcessoTenant($redirectIfBlocked = true)
 function verificarLimiteUsuarios()
 {
     if (!isset($_SESSION['tenant_id'])) {
-        return ['pode' => false, 'motivo' => 'Tenant não definido'];
+        return ['pode' => false, 'motivo' => 'Empresa não definida'];
     }
 
     return podeCriarUsuario((int)$_SESSION['tenant_id']);
